@@ -65,15 +65,15 @@ To achieve that we plan to do progressive coverage and exploration of the khmer 
 \subsubsection{Hashing}
 Hashing is the implementation of hash functions used to map strings to an integer space, and in some cases this operation is reversed. It maps data of arbitrary size to data of fixed size.
 \subsubsection{HyperLogLog}	
-HyperLogLog is an algorithm that approximates the number of distinct elements in a multiset. It is a probabilistic cardinality estimator that uses significantly less and constant memory to obtain an approximation of the cardinality.
+HyperLogLog is an algorithm that approximates the number of distinct elements in a multiset. It is a probabilistic cardinality estimator that uses significantly less and constant memory to obtain an approximation of the cardinality. In the algorithm a hash funtion is applied to each element in the original multiset to obtain uniformly-distributed random numbers with the same cardinality as the original. Estimating the cardinality of a multiset by calculating the maximum number of leading zeros in the binary representation of each number is the basis of HyperLogLog algorithm.
 \subsubsection{Bloom Filter}
 A Bloom Filter is a data structure designed to check the presence of an element in a set rapidly and memory-effeciently. A bit vector is the base structure of a bloom filter, where each empty cell represents a bit and the number below is its index. In order to add an element to the table, we will hash it a few times and then set the bits in the bit vector at the index of those hashes to 1. False positive matches are possible, but false negatives are not.
 \subsubsection{Count-Min Sketch}
-Count-Min Sketch, a probabilistic data structure that serves as a frequency table of events in a stream of data by using hash functions to map events to frequencies. The goal is to consume a stream of event one at a time, and count the frequency of different types of events in it without storing the whole stream.
+Count-Min Sketch is a probabilistic data structure that serves as a frequency table of events in a stream of data by using hash functions to map events to frequencies. The goal is to consume a stream of event one at a time, and count the frequency of different types of events in it without storing the whole stream.
 \section{Related Work}
-\subsection{1}
-\subsection{2}
-\subsection{3}
+\subsection{QuickCheck}
+\subsection{Hypothesis}
+\subsection{khmer}
 \subsection{4}
 \section{Evaluation Methodology}
 \section{Team Member Contributions}
