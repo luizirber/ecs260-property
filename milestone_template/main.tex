@@ -36,13 +36,14 @@
 
 \begin{document}%
 
-\title{Title}
+\title{Milestone 1}
 
-\author{Author1}
-\author{Author2}
+\author{Mousumi Chattaraj}
+\author{Luiz Irber}
+\author{Li Li}
 
 \affil{\normalsize{University of California, Davis}\\
-\{\texttt{email1, email2\}@ucdavis.edu}}
+\{\texttt{mchattaraj@ucdavis.edu, luiz.irber@gmail.com, llili@ucdavis.edu\}@ucdavis.edu}}
 
 \maketitle
 
@@ -51,7 +52,33 @@
 
 \end{abstract}
 
-\section{Sample Section}
+\section{Introduction}
+
+\section{Motivating Example}
+\section{Technical Approaches}
+\subsection{QuickCheck}
+Property-based testing has its roots on the Haskell programming language, in a module called QuickCheck. Instead of defining test cases for specific values (like corner cases), QuickCheck proposes that tests should be verifiable by checking properties and invariants that describe what is expected for any input, and then generating inputs to try to falsify the test.
+Haskell is a functional language that avoids side-effects ("pure"), making it simpler to reason about properties as mathematical aspects, and apply concepts across many domains. This approach doesn't work so well in other languages, and for Python there is a library called Hypothesis implementing a mix of unit and property-based testing, and fuzzing.
+ \subection{}
+Our plan is to understand what are the best options to generate meaningful Hypothesis tests to find incorrect behavior in khmer.
+To achieve that we plan to do progressive coverage and exploration of the khmer codebase, starting from simpler pieces and building up knowledge to be able to tackle complex regions. We split the plan into four areas:
+\subsubsection{Hashing}
+Hashing is the implementation of hash functions used to map strings to an integer space, and in some cases this operation is reversed. It maps data of arbitrary size to data of fixed size.
+\subsubsection{HyperLogLog}	
+HyperLogLog is an algorithm that approximates the number of distinct elements in a multiset. It is a probabilistic cardinality estimator that uses significantly less and constant memory to obtain an approximation of the cardinality.
+\subsubsection{Bloom Filter}
+A Bloom Filter is a data structure designed to check the presence of an element in a set rapidly and memory-effeciently. A bit vector is the base structure of a bloom filter, where each empty cell represents a bit and the number below is its index. In order to add an element to the table, we will hash it a few times and then set the bits in the bit vector at the index of those hashes to 1. False positive matches are possible, but false negatives are not.
+\subsubsection{Count-Min Sketch}
+Count-Min Sketch, a probabilistic data structure that serves as a frequency table of events in a stream of data by using hash functions to map events to frequencies. The goal is to consume a stream of event one at a time, and count the frequency of different types of events in it without storing the whole stream.
+\section{Related Work}
+\subsection{1}
+\subsection{2}
+\subsection{3}
+\subsection{4}
+\section{Evaluation Methodology}
+\section{Team Member Contributions}
+\section{Milestone 2 Tasks}
+
 \citet{DBLP:conf/sc/Rubio-GonzalezNNDKSBIH13} is a sample reference.
 Sample reference \cite{DBLP:conf/sc/Rubio-GonzalezNNDKSBIH13}.
 
