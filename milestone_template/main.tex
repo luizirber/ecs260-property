@@ -59,24 +59,48 @@
 \section{Technical Approaches}
 
 \subsection{QuickCheck}
-Property-based testing has its roots on the Haskell programming language, in a module called QuickCheck. Instead of defining test cases for specific values (like corner cases), QuickCheck proposes that tests should be verifiable by checking properties and invariants that describe what is expected for any input, and then generating inputs to try to falsify the test.
-Haskell is a functional language that avoids side-effects ("pure"), making it simpler to reason about properties as mathematical aspects, and apply concepts across many domains. This approach doesn't work so well in other languages, and for Python there is a library called Hypothesis implementing a mix of unit and property-based testing, and fuzzing.
+Property-based testing has its roots on the Haskell programming language,
+in a module called QuickCheck.
+Instead of defining test cases for specific values (like corner cases),
+QuickCheck proposes that tests should be verifiable by checking properties and invariants that describe what is expected for any input,
+and then generating inputs to try to falsify the test.
+Haskell is a functional language that avoids side-effects ("pure"),
+making it simpler to reason about properties as mathematical aspects,
+and apply concepts across many domains.
+This approach doesn't work so well in other languages,
+and for Python there is a library called Hypothesis implementing a mix of unit and property-based testing,
+and fuzzing.
 
 \subsection{}
 Our plan is to understand what are the best options to generate meaningful Hypothesis tests to find incorrect behavior in khmer.
-To achieve that we plan to do progressive coverage and exploration of the khmer codebase, starting from simpler pieces and building up knowledge to be able to tackle complex regions. We split the plan into four areas:
+To achieve that we plan to do progressive coverage and exploration of the khmer codebase,
+starting from simpler pieces and building up knowledge to be able to tackle complex regions.
+We split the plan into four areas:
 
 \subsubsection{Hashing}
-Hashing is the implementation of hash functions used to map strings to an integer space, and in some cases this operation is reversed. It maps data of arbitrary size to data of fixed size.
+Hashing is the implementation of hash functions used to map strings to an integer space,
+and in some cases this operation is reversed.
+It maps data of arbitrary size to data of fixed size.
 
 \subsubsection{HyperLogLog}
-HyperLogLog is an algorithm that approximates the number of distinct elements in a multiset. It is a probabilistic cardinality estimator that uses significantly less and constant memory to obtain an approximation of the cardinality. In the algorithm a hash funtion is applied to each element in the original multiset to obtain uniformly-distributed random numbers with the same cardinality as the original. Estimating the cardinality of a multiset by calculating the maximum number of leading zeros in the binary representation of each number is the basis of HyperLogLog algorithm.
+HyperLogLog is an algorithm that approximates the number of distinct elements in a multiset.
+It is a probabilistic cardinality estimator that uses significantly less and constant memory to obtain an approximation of the cardinality.
+In the algorithm a hash funtion is applied to each element in the original multiset to obtain uniformly-distributed random numbers with the same cardinality as the original.
+Estimating the cardinality of a multiset by calculating the maximum number of leading zeros in the binary representation of each number is the basis of HyperLogLog algorithm.
 
 \subsubsection{Bloom Filter}
-A Bloom Filter is a data structure designed to check the presence of an element in a set rapidly and memory-effeciently. A bit vector is the base structure of a bloom filter, where each empty cell represents a bit and the number below is its index. In order to add an element to the table, we will hash it a few times and then set the bits in the bit vector at the index of those hashes to 1. False positive matches are possible, but false negatives are not.
+A Bloom Filter is a data structure designed to check the presence of an element in a set rapidly and memory-effeciently.
+A bit vector is the base structure of a bloom filter,
+where each empty cell represents a bit and the number below is its index.
+In order to add an element to the table,
+we will hash it a few times and then set the bits in the bit vector at the index of those hashes to 1.
+False positive matches are possible,
+but false negatives are not.
 
 \subsubsection{Count-Min Sketch}
-Count-Min Sketch is a probabilistic data structure that serves as a frequency table of events in a stream of data by using hash functions to map events to frequencies. The goal is to consume a stream of event one at a time, and count the frequency of different types of events in it without storing the whole stream.
+Count-Min Sketch is a probabilistic data structure that serves as a frequency table of events in a stream of data by using hash functions to map events to frequencies.
+The goal is to consume a stream of event one at a time,
+and count the frequency of different types of events in it without storing the whole stream.
 
 \section{Related Work}
 
@@ -84,13 +108,47 @@ Count-Min Sketch is a probabilistic data structure that serves as a frequency ta
 QuickCheck (\citet{claessen_quickcheck:_2011})
 
 \subsection{Hypothesis}
-Hypothesis (\citet{maciver_welcome_2015}) is a Python library for creating simple and powerful unit tests to find edge cases. It asks user to write cases that assert something should be true for every case instead of just the ones that could be thought of. For a normal unit test, the first step is to setup some data, and then performing some operations on the data, and at last asserting someting about the result. However Hypothesis asks user to write test cases for all data matching some specification, and then performs some oeration on the data, and makes the assesion in the end. This is often called property based testing. Hypothesis works by generating random data that match the specification for the data and checks if the guarantee still stills in the case. If not it will take the example and cut its size to simplify it untill a much smaller example that still causes the problem is found. Hypothesis then saves that example for later use.
+Hypothesis (\citet{maciver_welcome_2015}) is a Python library for creating simple and powerful unit tests to find edge cases.
+It asks user to write cases that assert something should be true for every case instead of just the ones that could be thought of.
+For a normal unit test,
+the first step is to setup some data,
+and then performing some operations on the data,
+and at last asserting someting about the result.
+However Hypothesis asks user to write test cases for all data matching some specification,
+and then performs some oeration on the data,
+and makes the assesion in the end.
+This is often called property based testing.
+Hypothesis works by generating random data that match the specification for the data and checks if the guarantee still stills in the case.
+If not it will take the example and cut its size to simplify it untill a much smaller example that still causes the problem is found.
+Hypothesis then saves that example for later use.
 
 \subsection{khmer}
-khmer (\citet{crusoe_khmer_2015}) is a free software library that works with fixed length DNA words (also known as $k$-mers) and implements a probabilistic k-mer counting data structure. Currently khmer is implemented in $C++$ and Python. The data structures and graph traversal code are implemented in $C++$, and then wrapped for Python in hand-written C code. khmer is primarily developed on Linux for Python 2.7 and 64-bit processors, and several core developers use Mac OS X. $k$-mers are a common abstraction in DNA sequence analysis that enable alignment -free sequence analysis and comparison. However the dramatic increase in sequence data generation has led to the development of data structures ad algorithms to discover possible improvements to k-mer-based approaches. The khmer project provides several efficient data structures and algorithms to analyze short-read nucleotide sequencing data while emphasizing online analysis, low memory data structures and streaming algorithms.
+khmer (\citet{crusoe_khmer_2015}) is a free software library that works with fixed length DNA words (also known as $k$-mers) and implements a probabilistic k-mer counting data structure.
+Currently khmer is implemented in $C++$ and Python.
+The data structures and graph traversal code are implemented in $C++$,
+and then wrapped for Python in hand-written C code.
+khmer is primarily developed on Linux for Python 2.7 and 64-bit processors,
+and several core developers use Mac OS X.
+$k$-mers are a common abstraction in DNA sequence analysis that enable alignment -free sequence analysis and comparison.
+However the dramatic increase in sequence data generation has led to the development of data structures ad algorithms to discover possible improvements to k-mer-based approaches.
+The khmer project provides several efficient data structures and algorithms to analyze short-read nucleotide sequencing data while emphasizing online analysis,
+low memory data structures and streaming algorithms.
 
 \subsection{The economics of software correctness}
-According to \citet{maciver_economics_2015}, it is almost impossible for someone to write a significant piece of correct software. It is reasonable to write bug-free small libraries, but the chances to write a whole perfect pwrogram are almost zero. The problem is not that people do not know how to write correct software, it is that correct software is too expensive. Being too expensive means that nobody would be willing to pay a price for the software, or a competing product could be released much ealier. The result of this is shipping buggy software to users. The problem is: bugs found by users are more expensive than bugs found before a user sees them, since in the former case the result could be lost users, lost time and theft. Hypothesis is a good example of reducing the effort of finding bugs.
+According to \citet{maciver_economics_2015},
+it is almost impossible for someone to write a significant piece of correct software.
+It is reasonable to write bug-free small libraries,
+but the chances to write a whole perfect pwrogram are almost zero.
+The problem is not that people do not know how to write correct software,
+it is that correct software is too expensive.
+Being too expensive means that nobody would be willing to pay a price for the software,
+or a competing product could be released much ealier.
+The result of this is shipping buggy software to users.
+The problem is:
+bugs found by users are more expensive than bugs found before a user sees them,
+since in the former case the result could be lost users,
+lost time and theft.
+Hypothesis is a good example of reducing the effort of finding bugs.
 
 \section{Evaluation Methodology}
 
