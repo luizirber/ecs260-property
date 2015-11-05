@@ -85,11 +85,11 @@ It maps data of arbitrary size to data of fixed size.
 \subsubsection{HyperLogLog}
 HyperLogLog is an algorithm that approximates the number of distinct elements in a multiset.
 It is a probabilistic cardinality estimator that uses significantly less and constant memory to obtain an approximation of the cardinality.
-In the algorithm a hash funtion is applied to each element in the original multiset to obtain uniformly-distributed random numbers with the same cardinality as the original.
+In the algorithm a hash function is applied to each element in the original multiset to obtain uniformly-distributed random numbers with the same cardinality as the original.
 Estimating the cardinality of a multiset by calculating the maximum number of leading zeros in the binary representation of each number is the basis of HyperLogLog algorithm.
 
 \subsubsection{Bloom Filter}
-A Bloom Filter is a data structure designed to check the presence of an element in a set rapidly and memory-effeciently.
+A Bloom Filter is a data structure designed to check the presence of an element in a set rapidly and memory-efficiently.
 A bit vector is the base structure of a bloom filter,
 where each empty cell represents a bit and the number below is its index.
 In order to add an element to the table,
@@ -113,13 +113,13 @@ It asks user to write cases that assert something should be true for every case 
 For a normal unit test,
 the first step is to setup some data,
 and then performing some operations on the data,
-and at last asserting someting about the result.
+and at last asserting something about the result.
 However Hypothesis asks user to write test cases for all data matching some specification,
-and then performs some oeration on the data,
-and makes the assesion in the end.
+and then performs some operation on the data,
+and makes the assertion in the end.
 This is often called property based testing.
-Hypothesis works by generating random data that match the specification for the data and checks if the guarantee still stills in the case.
-If not it will take the example and cut its size to simplify it untill a much smaller example that still causes the problem is found.
+Hypothesis works by generating random data that match the specification for the data and checks if the guarantee still holds in the case.
+If not it will take the example and cut its size to simplify it until a much smaller example that still causes the problem is found.
 Hypothesis then saves that example for later use.
 
 \subsection{khmer}
@@ -138,11 +138,11 @@ low memory data structures and streaming algorithms.
 According to \citet{maciver_economics_2015},
 it is almost impossible for someone to write a significant piece of correct software.
 It is reasonable to write bug-free small libraries,
-but the chances to write a whole perfect pwrogram are almost zero.
+but the chances to write a whole perfect program are almost zero.
 The problem is not that people do not know how to write correct software,
 it is that correct software is too expensive.
 Being too expensive means that nobody would be willing to pay a price for the software,
-or a competing product could be released much ealier.
+or a competing product could be released much earlier.
 The result of this is shipping buggy software to users.
 The problem is:
 bugs found by users are more expensive than bugs found before a user sees them,
