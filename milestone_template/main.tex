@@ -152,6 +152,21 @@ Hypothesis is a good example of reducing the effort of finding bugs.
 
 \section{Evaluation Methodology}
 
+It is hard to find a good metric for success in this project:
+number of bugs found wouldn't necessarily represent interesting or important bugs,
+but at the same time we can't guarantee we'll find any non-trivial bug.
+There is also the complexity of reasoning about the data structures to find testable properties and how to set up the tests.
+Nonetheless,
+we would like to track how many method calls we can cover,
+starting from the core data structures and moving to specialized methods (the ones used directly by data analysis scripts).
+We're not aiming at complete code coverage,
+but it is likely that we can get good coverage with the Hypothesis tests,
+even if inconsistent between runs because new test cases will be generated.
+Finally,
+we want to document and generates guidelines for testing similar software,
+be it other biological data analysis projects or scientific in general.
+This document can be used as a quickstart and introduction to these testing techniques in specialized fields.
+
 \section{Team Member Contributions}
 
 \section{Milestone 2 Tasks}
