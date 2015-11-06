@@ -51,8 +51,66 @@
 %\end{abstract}
 
 \section{Introduction}
+Correct software is expensive to develop.
+Scientific software suffers even more due to lack of software development expertise among scientists and maintainability problems:
+people leave labs,
+usually without creating enough documentation or processes for continued development.
+We would like to explore ways to increase our confidence in the correctness of scientific software or,
+more realistically,
+find cheap ways of show when it is incorrect.
+
+The khmer project is a mixed Python/C++ codebase implementing a few core data structures (sketches) and many methods and analysis on top of it.
+The source code is available on GitHub under a 3-clause BSD license,
+and every pull request is tested on a Continuous Integration server (Jenkins).
+It has high coverage (90\% line coverage) derived from manually written (~600) unit tests,
+but many tests were written just to trigger coverage,
+with no particular focus on correctness.
+Can we do better, without increasing development cost (too much)?
 
 \section{Motivating Example}
+
+Hashing is an essential operation in khmer,
+since all the core data structures depend on good hash functions to perform correctly.
+Since the development process is public and coordinated through GitHub,
+an exploratory branch was created,
+with an accompanying issue and discussion: https://github.com/dib-lab/khmer/issues/990
+
+This original exploration used a property from the hash function,
+reversibility:
+any string used as input generates a hash value (an integer),
+which can be used to generate the original string again.
+The implementation using Hypothesis is the following:
+
+\begin{lstlisting}[language=Python]
+@given(text("ACGT"))
+def test_forward_hash_no_rc(kmer):
+    ksize = len(kmer)
+    assume(ksize > 0)
+    assume(ksize < 32)
+
+    rh = reverse_hash(
+        forward_hash_no_rc(kmer, ksize),
+        ksize)
+    assert rh == kmer
+\end{lstlisting}
+
+This example contains some important aspects:
+\begin{enumerate}
+\item the input $kmer$ is generated automatically from a specification (the $given$ decorator),
+meaning each $kmer$ is a string with alphabet "ACGT".
+\item the $assume$ function asserts that the generated $kmer$ is not an empty string,
+and also not longer than 32 characters.
+\item the conditions are tested using normal Python syntax (assert, variables, function calls)
+\end{enumerate}
+
+The input specification was added later,
+by the way.
+The code was not prepared to deal with empty strings,
+strings longer than 32 characters or with a different alphabet.
+These are all bugs that need to be fixed,
+and they are good to show the approach.
+This example is very similar to typical unit testing in Python,
+while the Hypothesis extensions to the concept allow both property-based testing and fuzzing usage.
 
 \section{Technical Approaches}
 
@@ -99,7 +157,8 @@ Haskell is a functional language that avoids side-effects ("pure"),
 making it simpler to reason about properties as mathematical aspects,
 and apply concepts across many domains.
 This approach doesn't work so well in other languages,
-and for Python there is a library called Hypothesis implementing a mix of unit and property-based testing,
+and for Python there is a library called Hypothesis implementing a mix of unit testing,
+property-based testing,
 and fuzzing.
 
 \subsection{Hypothesis}
@@ -124,8 +183,8 @@ The data structures and graph traversal code are implemented in $C++$,
 and then wrapped for Python in hand-written C code.
 khmer is primarily developed on Linux for Python 2.7 and 64-bit processors,
 and several core developers use Mac OS X.
-$k$-mers are a common abstraction in DNA sequence analysis that enable alignment -free sequence analysis and comparison.
-However the dramatic increase in sequence data generation has led to the development of data structures ad algorithms to discover possible improvements to k-mer-based approaches.
+$k$-mers are a common abstraction in DNA sequence analysis that enable alignment-free sequence analysis and comparison.
+However the dramatic increase in sequence data generation has led to the development of data structures ad algorithms to discover possible improvements to $k$-mer-based approaches.
 The khmer project provides several efficient data structures and algorithms to analyze short-read nucleotide sequencing data while emphasizing online analysis,
 low memory data structures and streaming algorithms.
 
@@ -164,7 +223,31 @@ This document can be used as a quickstart and introduction to these testing tech
 
 \section{Team Member Contributions}
 
+\begin{enumerate}
+\item[] Mousumi Chattaraj: Evaluation methodology, milestone 2 tasks.
+\item[] Luiz Irber: Motivating example, Introduction, milestone 2 tasks.
+\item[] Li Li: Technical approaches, Related work, milestone 2 tasks.
+\end{enumerate}
+
 \section{Milestone 2 Tasks}
+
+We'll use test oracles to check basic sketch functionality.
+Each of the core data structures have exact representation equivalents,
+which can be used to verify some properties of the probabilistic ones:
+\begin{enumerate}
+\item Bloom filters: implement the set membership operation,
+can be tested by setting up a $set$ in Python and adding all the generated inputs to both.
+We can assert that every element present in the set is also present in the Bloom Filter.
+\item Count-min sketch: implements frequency counting.
+Can be teste by setting up a $collections.Counter$ object,
+and checking that every element in the counter is also available with equal or higher frequency on the Count-min sketch.
+\item HyperLogLog: implements set cardinality estimation.
+The setup is similar to Bloom Filter,
+but we check for the set size instead of membership of every element.
+\end{enumerate}
+
+These tasks also allow us to start exploring all the areas we described in the technical approach,
+and helps to describe all the main areas of code to all the project members.
 
 \bibliography{property}
 
