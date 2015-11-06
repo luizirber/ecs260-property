@@ -47,10 +47,8 @@
 
 \maketitle
 
-\begin{abstract}
-
-
-\end{abstract}
+%\begin{abstract}
+%\end{abstract}
 
 \section{Introduction}
 
@@ -58,20 +56,7 @@
 
 \section{Technical Approaches}
 
-\subsection{QuickCheck}
-Property-based testing has its roots on the Haskell programming language,
-in a module called QuickCheck.
-Instead of defining test cases for specific values (like corner cases),
-QuickCheck proposes that tests should be verifiable by checking properties and invariants that describe what is expected for any input,
-and then generating inputs to try to falsify the test.
-Haskell is a functional language that avoids side-effects ("pure"),
-making it simpler to reason about properties as mathematical aspects,
-and apply concepts across many domains.
-This approach doesn't work so well in other languages,
-and for Python there is a library called Hypothesis implementing a mix of unit and property-based testing,
-and fuzzing.
-
-\subsection{}
+\subsection{Incremental exploration}
 Our plan is to understand what are the best options to generate meaningful Hypothesis tests to find incorrect behavior in khmer.
 To achieve that we plan to do progressive coverage and exploration of the khmer codebase,
 starting from simpler pieces and building up knowledge to be able to tackle complex regions.
@@ -105,7 +90,17 @@ and count the frequency of different types of events in it without storing the w
 \section{Related Work}
 
 \subsection{QuickCheck}
-QuickCheck (\citet{claessen_quickcheck:_2011})
+Property-based testing has its roots on the Haskell programming language,
+in a module called QuickCheck (\citet{claessen_quickcheck:_2011}).
+Instead of defining test cases for specific values (like corner cases),
+QuickCheck proposes that tests should be verifiable by checking properties and invariants that describe what is expected for any input,
+and then generating inputs to try to falsify the test.
+Haskell is a functional language that avoids side-effects ("pure"),
+making it simpler to reason about properties as mathematical aspects,
+and apply concepts across many domains.
+This approach doesn't work so well in other languages,
+and for Python there is a library called Hypothesis implementing a mix of unit and property-based testing,
+and fuzzing.
 
 \subsection{Hypothesis}
 Hypothesis (\citet{maciver_welcome_2015}) is a Python library for creating simple and powerful unit tests to find edge cases.
