@@ -7,6 +7,7 @@
 ## Proposal
 
 [Presentation](proposal/ECS260 Project Proposal presentation.pdf)
+
 [Report](proposal/ECS260 Project Proposal.pdf)
 
 ## Implementation / code progress
