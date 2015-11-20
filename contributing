@@ -1,0 +1,49 @@
+
+#run this before running tests
+source ~/env/bin/activate
+make test
+
+#new repo
+https://github.com/luizirber/khmer
+
+#project repo
+https://github.com/luizirber/ecs260-property
+
+#exclude certain tests
+TESTATTR="hypothesis,!known_failing" make test
+
+#run test
+TESTATTR=hypothesis make test
+
+#run 1 test only
+./setup.py nosetests --tests tests.test_hypothesis:test_forward_hash
+
+#copied the command history 
+history|pbcopy
+
+  198  cd khmer
+  199  ls
+  200  source ~/env/bin/activate
+  201  make test
+  204  git fetch dib
+  210  git checkout -t luizirber/feature/hypothesis -b feature/hypothesis
+  211  git log
+  212  git status
+  213  git diff
+  215  git checkout -b consume_test #create a new branch
+  #edit file/tests
+  216  git add tests/test_hypothesis.py 
+  217  git commit
+  218  git push -u origin consume_test
+  221  TESTATTR=hypothesis make test
+  222  TESTATTR='hypothesis,!known_failing' make test
+  #running just one test  
+  226  ./setup.py nosetests --tests tests.test_hypothesis:test_forward_hash
+
+steps to do when making change:
+git status # check where I am now
+git checkout feature/hypothesis #switch to the remote branch
+git fetch dib #fetch changes
+git pull #apply changes
+
+#all changes are in feature/hypothesis
