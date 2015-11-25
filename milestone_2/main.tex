@@ -162,6 +162,18 @@ we want to document and generates guidelines for testing similar software,
 be it other biological data analysis projects or scientific in general.
 This document can be used as a quickstart and introduction to these testing techniques in specialized fields.
 
+\subsection{Failure In hypothesis Function}
+When running the hypothesis function to test HyperLogLog cardinality estimation, 
+a total error rate of 1\% or less is expected as an output. 
+However the actual result is 3\%, 
+which exceeds the expected error rate tremendously. 
+Our next step is to evaluate the test inputs and discover the cause of this failure.
+
+\subsection{Generating Random Inputs Without Preconditions}
+As up to date we are using \emph{@given} decorator to set preconditons before generating test inputs to meet the input format requirements. 
+However these inputs are insufficient to test the corner cases. 
+Our next step is to determine how to implement fuzzing to generate random inputs in order to test for the corner cases.
+
 \section{Related Work}
 
 \subsection{QuickCheck}
