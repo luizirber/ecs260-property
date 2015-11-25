@@ -10,7 +10,7 @@ https://github.com/luizirber/khmer
 https://github.com/luizirber/ecs260-property
 
 #exclude certain tests
-TESTATTR="hypothesis,!known_failing" make test
+TESTATTR='hypothesis,!known_failing' make test
 
 #run test
 TESTATTR=hypothesis make test
