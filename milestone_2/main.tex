@@ -130,7 +130,7 @@ Our plan is to understand what are the best options to generate meaningful Hypot
 To achieve that we plan to do progressive coverage and exploration of the khmer codebase,
 starting from simpler pieces and building up knowledge to be able to tackle complex regions.
 We are combining unit testing and fuzzing and if possible extend it to property based testing.
-Fuzzing is a technique introduced in 1990 and found failures in unix utilities by generating random inputs.
+Fuzzing \citet{qi2013research} is a technique introduced in 1990 and found failures in unix utilities by generating random inputs.
 In our tests in hypothesis we have restricted a alphabet ('A','C','G','T') on the start and then we'll also  
 generate random inputs to check that our methods do not crash.
 We split the plan into four areas:
