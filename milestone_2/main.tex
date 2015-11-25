@@ -73,7 +73,8 @@ Hashing is an essential operation in khmer,
 since all the core data structures depend on good hash functions to perform correctly.
 Since the development process is public and coordinated through GitHub,
 an exploratory branch was created,
-with an accompanying issue and discussion: https://github.com/dib-lab/khmer/issues/990
+with an accompanying issue and discussion:
+\url{https://github.com/dib-lab/khmer/issues/990}
 
 This original exploration used a property from the hash function,
 reversibility:
@@ -114,6 +115,16 @@ while the Hypothesis extensions to the concept allow both property-based testing
 
 \section{Technical Approaches}
 
+We extended the available infrastructure for running tests in khmer to also run our new tests.
+During development we also set up Travis CI for continuous integration and Coveralls for coverage reports
+(both for convenience,
+because khmer already have a Jenkins CI server up and running,
+but it is not as easy to track coverage in it).
+Every change committed to the repository is tested,
+generating coverage data (in \emph{gcov} format) and uploaded to Coveralls for analysis.
+Links for the reports are available in the project repository README:
+\url{https://github.com/luizirber/ecs260-property/}
+
 \subsection{Incremental exploration}
 Our plan is to understand what are the best options to generate meaningful Hypothesis tests to find incorrect behavior in khmer.
 To achieve that we plan to do progressive coverage and exploration of the khmer codebase,
@@ -145,8 +156,16 @@ Count-Min Sketch is a probabilistic data structure that serves as a frequency ta
 The goal is to consume a stream of event one at a time,
 and count the frequency of different types of events in it without storing the whole stream.
 
-\section{Evaluation Methodology}
+\subsection{Unit tests adaptation}
+Many unit tests for khmer are based on a single input,
+and checking the results for the case.
+Hypothesis has a decorator,
+\emph{@example},
+that can be used to run specific inputs and so to prototype new tests:
+by copying the unit test and setting the example,
+we have a working test and then can generalize for some property.
 
+\section{Evaluation Methodology}
 It is hard to find a good metric for success in this project:
 number of bugs found wouldn't necessarily represent interesting or important bugs,
 but at the same time we can't guarantee we'll find any non-trivial bug.
@@ -154,7 +173,7 @@ There is also the complexity of reasoning about the data structures to find test
 Nonetheless,
 we would like to track how many method calls we can cover,
 starting from the core data structures and moving to specialized methods (the ones used directly by data analysis scripts).
-We're not aiming at complete code coverage,
+We're not aiming at complete line or branch coverage,
 but it is likely that we can get good coverage with the Hypothesis tests,
 even if inconsistent between runs because new test cases will be generated.
 Finally,
