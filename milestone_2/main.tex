@@ -129,22 +129,22 @@ Links for the reports are available in the project repository README:
 Our plan is to understand what are the best options to generate meaningful Hypothesis tests to find incorrect behavior in khmer.
 To achieve that we plan to do progressive coverage and exploration of the khmer codebase,
 starting from simpler pieces and building up knowledge to be able to tackle complex regions.
-We are combining unit testing and fuzzing and if possible extend it to property based testing.
-Fuzzing \citet{qi2013research} is a technique introduced in 1990 and found failures in unix utilities by generating random inputs.
-In our tests in hypothesis we have restricted a alphabet ('A','C','G','T') on the start and then we'll also  
-generate random inputs to check that our methods do not crash.
 We split the plan into four areas:
 
 \subsubsection{Hashing}
 Hashing is the implementation of hash functions used to map strings to an integer space,
 and in some cases this operation is reversed.
 It maps data of arbitrary size to data of fixed size.
+We use one property from reverse_hash to return the smallest string between kmer and its reverse complement in lexicographical order.
 
 \subsubsection{HyperLogLog}
 HyperLogLog is an algorithm that approximates the number of distinct elements in a multiset.
 It is a probabilistic cardinality estimator that uses significantly less and constant memory to obtain an approximation of the cardinality.
 In the algorithm a hash function is applied to each element in the original multiset to obtain uniformly-distributed random numbers with the same cardinality as the original.
 Estimating the cardinality of a multiset by calculating the maximum number of leading zeros in the binary representation of each number is the basis of HyperLogLog algorithm.
+We implement a $set$ as an oracle in the test for HyperLogLog cardinality estimation,
+and add test inputs to both the oracle and HyperLogLog function to check the size of the set.
+Then the results will be compared and evaluated. 
 
 \subsubsection{Bloom Filter}
 A Bloom Filter is a data structure designed to check the presence of an element in a set rapidly and memory-efficiently.
@@ -154,11 +154,16 @@ In order to add an element to the table,
 we will hash it a few times and then set the bits in the bit vector at the index of those hashes to 1.
 False positive matches are possible,
 but false negatives are not.
+We implement a $set$ as an oracle in the test, and add test inputs to both the oracle and the Bloom Filter.
+The goal is to implement the set membership operation and make the assertion that every element present in 
+the set is also present in the Bloom Filter.
 
 \subsubsection{Count-Min Sketch}
 Count-Min Sketch is a probabilistic data structure that serves as a frequency table of events in a stream of data by using hash functions to map events to frequencies.
 The goal is to consume a stream of event one at a time,
 and count the frequency of different types of events in it without storing the whole stream.
+An object collection.Counter servers as an oracle in this case to implement frequency counting.
+The goal is to check whether every element in the counter is also available with equal or higher frequency on the Coun-Min sketch.
 
 \subsection{Unit tests adaptation}
 Many unit tests for khmer are based on a single input,
@@ -266,18 +271,25 @@ Hypothesis is a good example of reducing the effort of finding bugs.
 \item[] Li Li: Technical approaches, Related work, milestone 2 tasks.
 \end{enumerate}
 
-\section{Final project report tasks}
+\section{Milestone 2 Tasks}
 
+We'll use test oracles to check basic sketch functionality.
+Each of the core data structures have exact representation equivalents,
+which can be used to verify some properties of the probabilistic ones:
 \begin{enumerate}
-\item[] Random testing: Using the current tests,
-we will change the input generation to be generic (any Unicode string or Integer, for example),
-instead of tied to the specific input expected by khmer.
-Hypothesis will work like a fuzzer,
-and we can check for errors on input validation.
-\item[] Unit tests adaptation: Current unit tests well be used as templates for new Hypothesis tests,
-using the \emph{@example} decorator.
-\item[] Method coverage: We'll continue to add more methods from the core data structures to the tests.
+\item Bloom filters: implement the set membership operation,
+can be tested by setting up a $set$ in Python and adding all the generated inputs to both.
+We can assert that every element present in the set is also present in the Bloom Filter.
+\item Count-min sketch: implements frequency counting.
+Can be teste by setting up a $collections.Counter$ object,
+and checking that every element in the counter is also available with equal or higher frequency on the Count-min sketch.
+\item HyperLogLog: implements set cardinality estimation.
+The setup is similar to Bloom Filter,
+but we check for the set size instead of membership of every element.
 \end{enumerate}
+
+These tasks also allow us to start exploring all the areas we described in the technical approach,
+and helps to describe all the main areas of code to all the project members.
 
 \bibliography{property}
 
