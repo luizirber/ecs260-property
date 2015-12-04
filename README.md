@@ -19,8 +19,8 @@ We also set up [Travis][3] and [Coveralls][4] to have [continuous integration][5
 ## Reproducing the results
 
 We set up an automated build in Docker Hub for the code changes.
-To run this image,
-execute the following command:
+After installing Docker (we suggest the [Docker Toolbox][7] if you're running Windows or OSX),
+you can run it by executing the following command:
 
 ``` bash
 $ docker run -it luizirber/khmer
@@ -48,3 +48,4 @@ https://hub.docker.com/r/luizirber/khmer/~/dockerfile/
 [4]: https://coveralls.io/
 [5]: https://travis-ci.org/luizirber/khmer
 [6]: https://coveralls.io/github/luizirber/khmer?branch=feature%2Fhypothesis
+[7]: https://www.docker.com/docker-toolbox
