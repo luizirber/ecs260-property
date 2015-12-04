@@ -16,6 +16,32 @@ Code for the tests is being tracked on [PR #1324][1] on the main [khmer reposito
 
 We also set up [Travis][3] and [Coveralls][4] to have [continuous integration][5] and [code coverage reports][6].
 
+## Reproducing the results
+
+We set up an automated build in Docker Hub for the code changes.
+To run this image,
+execute the following command:
+
+``` bash
+$ docker run -it luizirber/khmer
+```
+
+If you access to a terminal with the software installed,
+you can also do
+
+``` bash
+$ docker run -it luizirber/khmer /bin/bash
+```
+
+and run
+
+``` bash
+$ make test
+```
+
+The Dockerfile describing how the image is build is available:
+https://hub.docker.com/r/luizirber/khmer/~/dockerfile/
+
 [1]: https://github.com/dib-lab/khmer/pull/1324
 [2]: https://github.com/dib-lab/khmer/
 [3]: https://travis-ci.org/
