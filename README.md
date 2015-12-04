@@ -1,5 +1,7 @@
 # Practical Property-based testing in scientific software
 
+[Mousumi Chattaraj](https://github.com/Sumi999), [Luiz Irber](https://github.com/luizirber), [Li Li](https://github.com/lili0824)
+
 ## Presentations
 
 [Project idea slide](Project idea slide.pdf)
