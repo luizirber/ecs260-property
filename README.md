@@ -17,6 +17,8 @@
 Code for the tests is being tracked on [PR #1324][1] on the main [khmer repository][2].
 
 We also set up [Travis][3] and [Coveralls][4] to have [continuous integration][5] and [code coverage reports][6].
+Since Coveralls doesn't show function coverage,
+we are also using [lcov][8] and uploading the results to [this page][9].
 
 ## Reproducing the results
 
@@ -51,3 +53,5 @@ https://hub.docker.com/r/luizirber/khmer/~/dockerfile/
 [5]: https://travis-ci.org/luizirber/khmer
 [6]: https://coveralls.io/github/luizirber/khmer?branch=feature%2Fhypothesis
 [7]: https://www.docker.com/docker-toolbox
+[8]: https://github.com/linux-test-project/lcov
+[9]: http://athyra.oxli.org/~luizirber/ecs260
