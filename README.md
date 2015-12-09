@@ -44,7 +44,7 @@ $ make test
 ```
 
 The Dockerfile describing how the image is build is available:
-https://hub.docker.com/r/luizirber/khmer/~/dockerfile/
+https://hub.docker.com/r/luizirber/khmer/
 
 [1]: https://github.com/dib-lab/khmer/pull/1324
 [2]: https://github.com/dib-lab/khmer/
