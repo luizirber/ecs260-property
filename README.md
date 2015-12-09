@@ -27,14 +27,14 @@ After installing Docker (we suggest the [Docker Toolbox][7] if you're running Wi
 you can run it by executing the following command:
 
 ``` bash
-$ docker run -it luizirber/khmer
+$ docker run -it luizirber/khmer:latest
 ```
 
 If you access to a terminal with the software installed,
 you can also do
 
 ``` bash
-$ docker run -it luizirber/khmer /bin/bash
+$ docker run -it luizirber/khmer:latest /bin/bash
 ```
 
 and run
