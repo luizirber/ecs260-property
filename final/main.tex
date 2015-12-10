@@ -204,20 +204,25 @@ It collects gcov data for multiple source files and creates HTML pages containin
 source code annotated with coverage information. 
 It also adds overview pages for easy navigation within the file structure. 
 LCOV supports statement, function and branch coverage measurement.
-%Below is the table from LCOV website.
-\begin{center}
-\begin{tabular}{ |c|c|c| } 
- \hline
- Directory & Line Coverage & Functions \\ 
- \hline
- khmer & 14.0\% (217/1554) & 19.5\% (29/149) \\ 
- \hline
- lib & 19.1\%(580/3042) & 37.9\% (96/253) \\ 
- \hline
- Total & 17.3\% (797/4596) & 31.1\% (125/402) \\
- \hline
-\end{tabular}
-\end{center}
+
+\noindent
+\begin{minipage}{\textwidth}
+  \captionsetup{type=table}
+  \centering
+  \begin{tabular}{|c|c|c|}
+  \toprule
+  Directory & Line Coverage & Functions \\ 
+  \midrule
+  khmer		& 14.0\% (217/1554)	& 19.5\% (29/149) \\ 
+  lib		& 19.1\%(580/3042)	& 37.9\% (96/253) \\ 
+  Total		& 17.3\% (797/4596)	& 31.1\% (125/402) \\
+  \bottomrule
+  \end{tabular}
+  \medskip
+
+  \caption{Line and function coverage information from LCOV.}\label{table:clove}
+\end{minipage}
+
 Finally,
 we want to document and generates guidelines for testing similar software,
 be it other biological data analysis projects or scientific in general.
