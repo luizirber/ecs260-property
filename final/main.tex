@@ -65,6 +65,10 @@ and every pull request is tested on a Continuous Integration server (Jenkins).
 It has high coverage (90\% line coverage) derived from manually written (~600) unit tests,
 but many tests were written just to trigger coverage,
 with no particular focus on correctness.
+According to\citet{claessen_quickcheck:_2011},
+the false sense of security could be the most serious deficiency when passing numerous tests to one’s program.
+In many cases of unification, one variable is heavily overrepresented among test cases that satisfy the precondition.
+Even every property is verified, they still cannot be considered as fully tested.
 Can we do better, without increasing development cost (too much)?
 
 \section{Motivating Example}
