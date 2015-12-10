@@ -146,14 +146,14 @@ We split the plan into four areas:
 \subsubsection{Hashing}
 Hashing is the implementation of hash functions used to map strings to an integer space,
 and in some cases this operation is reversed.
-It maps data of arbitrary size to data of fixed size.
+"Hash function maps data of arbitrary size to data of fixed size."\citet{hash}
 We use one property from reverse\_hash to return the smallest string between kmer and its reverse complement in lexicographical order.
 
 \subsubsection{HyperLogLog}
-HyperLogLog is an algorithm that approximates the number of distinct elements in a multiset.
-It is a probabilistic cardinality estimator that uses significantly less and constant memory to obtain an approximation of the cardinality.
-In the algorithm a hash function is applied to each element in the original multiset to obtain uniformly-distributed random numbers with the same cardinality as the original.
-Estimating the cardinality of a multiset by calculating the maximum number of leading zeros in the binary representation of each number is the basis of HyperLogLog algorithm.
+HyperLogLog is an algorithm that finds the relative number of unique elements in a data set.
+It is a probabilistic cardinality estimator that can accquire the cardinality while consuming less memory.
+The algorithm uses a hash function in the original multiset to produce uniformly-distributed random numbers that have the same cardinality.\cite{hyperloglog_2012}
+It estimates the cardinality of a multiset by calculating the maximum number of leading zeros in the binary representation of each number is the basis of HyperLogLog algorithm.\citet{hyperloglog_2007}
 We implement a $set$ as an oracle in the test for HyperLogLog cardinality estimation,
 and add test inputs to both the oracle and HyperLogLog function to check the size of the set.
 Then the results will be compared and evaluated. 
@@ -161,7 +161,7 @@ Then the results will be compared and evaluated.
 \subsubsection{Bloom Filter}
 A Bloom Filter is a data structure designed to check the presence of an element in a set rapidly and memory-efficiently.
 A bit vector is the base structure of a bloom filter,
-where each empty cell represents a bit and the number below is its index.
+where each empty cell represents a bit and the number below is its index.\citet{bloom_filter}
 In order to add an element to the table,
 we will hash it a few times and then set the bits in the bit vector at the index of those hashes to 1.
 False positive matches are possible,
@@ -171,9 +171,9 @@ The goal is to implement the set membership operation and make the assertion tha
 the set is also present in the Bloom Filter.
 
 \subsubsection{Count-Min Sketch}
-Count-Min Sketch is a probabilistic data structure that serves as a frequency table of events in a stream of data by using hash functions to map events to frequencies.
+Count-Min Sketch is a probabilistic data structure that serves as a frequency table of events in a stream of data by using hash functions to map events to frequencies.\citet{count_min_sketch}
 The goal is to consume a stream of event one at a time,
-and count the frequency of different types of events in it without storing the whole stream.
+and count the frequency of different types of events in it without storing the whole stream.\citet{count_min_sketch_2005}
 An object collection.Counter servers as an oracle in this case to implement frequency counting.
 The goal is to check whether every element in the counter is also available with equal or higher frequency on the Coun-Min sketch.
 
