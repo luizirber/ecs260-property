@@ -171,8 +171,9 @@ The goal is to implement the set membership operation and make the assertion tha
 the set is also present in the Bloom Filter.
 
 \subsubsection{Count-Min Sketch}
-Count-Min Sketch is a probabilistic data structure that serves as a frequency table of events in a stream of data by using hash functions to map events to frequencies.\citet{count_min_sketch}
-The goal is to consume a stream of event one at a time,
+Count-Min Sketch is a probabilistic data structure that projects events to frequencies with the implementation of hash functions.
+The output is a frequency table.\citet{count_min_sketch}
+The goal is to consume a stream of events one at a time,
 and count the frequency of different types of events in it without storing the whole stream.\citet{count_min_sketch_2005}
 An object collection.Counter servers as an oracle in this case to implement frequency counting.
 The goal is to check whether every element in the counter is also available with equal or higher frequency on the Coun-Min sketch.
