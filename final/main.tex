@@ -243,6 +243,8 @@ Our next step is to evaluate the test inputs and discover the cause of this fail
 As up to date we are using \emph{@given} decorator to set preconditons before generating test inputs to meet the input format requirements. 
 However these inputs are insufficient to test the corner cases. 
 Our next step is to determine how to implement fuzzing to generate random inputs in order to test for the corner cases.
+We created test cases that did not add format restraints when generating input list,
+and observed the behaviors between our functions and test oracles when the invalid inputs are fed.
 
 \section{Experimental Results}
 
