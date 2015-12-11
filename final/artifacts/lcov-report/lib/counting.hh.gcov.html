@@ -1,0 +1,424 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/counting.hh</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - counting.hh<span style="font-size: 80%;"> (source / <a href="counting.hh.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">63</td>
+            <td class="headerCovTableEntry">82</td>
+            <td class="headerCovTableEntryMed">76.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryMed">78.6 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2010-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #ifndef COUNTING_HH
+<span class="lineNum">      39 </span>            : #define COUNTING_HH
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #include &lt;stddef.h&gt;
+<span class="lineNum">      42 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      43 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      44 </span>            : #include &lt;map&gt;
+<span class="lineNum">      45 </span>            : #include &lt;string&gt;
+<span class="lineNum">      46 </span>            : #include &lt;utility&gt;
+<span class="lineNum">      47 </span>            : #include &lt;vector&gt;
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            : #include &quot;hashtable.hh&quot;
+<span class="lineNum">      50 </span>            : #include &quot;khmer.hh&quot;
+<span class="lineNum">      51 </span>            : #include &quot;kmer_hash.hh&quot;
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span>            : namespace khmer
+<span class="lineNum">      54 </span>            : {
+<span class="lineNum">      55 </span>            : class Hashbits;
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : namespace read_parsers
+<span class="lineNum">      58 </span>            : {
+<span class="lineNum">      59 </span>            : struct IParser;
+<span class="lineNum">      60 </span>            : }  // namespace read_parsers
+<span class="lineNum">      61 </span>            : }  // namespace khmer
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            : namespace khmer
+<span class="lineNum">      64 </span>            : {
+<span class="lineNum">      65 </span>            : typedef std::map&lt;HashIntoType, BoundedCounterType&gt; KmerCountMap;
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            : class CountingHashFile;
+<span class="lineNum">      68 </span>            : class CountingHashFileReader;
+<span class="lineNum">      69 </span>            : class CountingHashFileWriter;
+<span class="lineNum">      70 </span>            : class CountingHashGzFileReader;
+<span class="lineNum">      71 </span>            : class CountingHashGzFileWriter;
+<span class="lineNum">      72 </span>            : class CountingHashIntersect;
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            : class CountingHash : public khmer::Hashtable
+<span class="lineNum">      75 </span>            : {
+<span class="lineNum">      76 </span>            :     friend class CountingHashIntersect;
+<span class="lineNum">      77 </span>            :     friend class CountingHashFile;
+<span class="lineNum">      78 </span>            :     friend class CountingHashFileReader;
+<span class="lineNum">      79 </span>            :     friend class CountingHashFileWriter;
+<span class="lineNum">      80 </span>            :     friend class CountingHashGzFileReader;
+<span class="lineNum">      81 </span>            :     friend class CountingHashGzFileWriter;
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            : protected:
+<span class="lineNum">      84 </span>            :     bool _use_bigcount;         // keep track of counts &gt; Bloom filter hash count threshold?
+<span class="lineNum">      85 </span>            :     uint32_t _bigcount_spin_lock;
+<span class="lineNum">      86 </span>            :     std::vector&lt;HashIntoType&gt; _tablesizes;
+<span class="lineNum">      87 </span>            :     size_t _n_tables;
+<span class="lineNum">      88 </span>            :     HashIntoType _n_unique_kmers;
+<span class="lineNum">      89 </span>            :     HashIntoType _occupied_bins;
+<span class="lineNum">      90 </span>            : 
+<a name="91"><span class="lineNum">      91 </span>            :     Byte ** _counts;</a>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineCov">       1400 :     virtual void _allocate_counters()</span>
+<span class="lineNum">      94 </span>            :     {
+<span class="lineNum">      95 </span><span class="lineCov">       2800 :         _n_tables = _tablesizes.size();</span>
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span><span class="lineCov">       1400 :         _counts = new Byte*[_n_tables];</span>
+<span class="lineNum">      98 </span><span class="lineCov">      14000 :         for (size_t i = 0; i &lt; _n_tables; i++) {</span>
+<span class="lineNum">      99 </span><span class="lineCov">      11200 :             _counts[i] = new Byte[_tablesizes[i]];</span>
+<span class="lineNum">     100 </span><span class="lineCov">      11200 :             memset(_counts[i], 0, _tablesizes[i]);</span>
+<span class="lineNum">     101 </span>            :         }
+<span class="lineNum">     102 </span><span class="lineCov">       1400 :     }</span>
+<span class="lineNum">     103 </span>            : public:
+<span class="lineNum">     104 </span>            :     KmerCountMap _bigcounts;
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span>            :     CountingHash( WordLength ksize, HashIntoType single_tablesize ) :
+<span class="lineNum">     107 </span>            :         khmer::Hashtable(ksize), _use_bigcount(false),
+<span class="lineNum">     108 </span>            :         _bigcount_spin_lock(false), _n_unique_kmers(0), _occupied_bins(0)
+<span class="lineNum">     109 </span>            :     {
+<span class="lineNum">     110 </span>            :         _tablesizes.push_back(single_tablesize);
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span>            :         _allocate_counters();
+<a name="113"><span class="lineNum">     113 </span>            :     }</a>
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span><span class="lineCov">       1400 :     CountingHash( WordLength ksize, std::vector&lt;HashIntoType&gt;&amp; tablesizes ) :</span>
+<span class="lineNum">     116 </span>            :         khmer::Hashtable(ksize), _use_bigcount(false),
+<span class="lineNum">     117 </span>            :         _bigcount_spin_lock(false), _tablesizes(tablesizes),
+<span class="lineNum">     118 </span><span class="lineCov">       1400 :         _n_unique_kmers(0), _occupied_bins(0)</span>
+<span class="lineNum">     119 </span>            :     {
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span><span class="lineCov">       1400 :         _allocate_counters();</span>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">       1400 :     }</span></a>
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span><span class="lineCov">       2800 :     virtual ~CountingHash()</span>
+<span class="lineNum">     125 </span><span class="lineCov">       5600 :     {</span>
+<span class="lineNum">     126 </span><span class="lineCov">       1400 :         if (_counts) {</span>
+<span class="lineNum">     127 </span><span class="lineCov">      12600 :             for (size_t i = 0; i &lt; _n_tables; i++) {</span>
+<span class="lineNum">     128 </span><span class="lineCov">       5600 :                 if (_counts[i]) {</span>
+<span class="lineNum">     129 </span><span class="lineCov">       5600 :                     delete[] _counts[i];</span>
+<span class="lineNum">     130 </span><span class="lineCov">       5600 :                     _counts[i] = NULL;</span>
+<span class="lineNum">     131 </span>            :                 }
+<span class="lineNum">     132 </span>            :             }
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span><span class="lineCov">       1400 :             delete[] _counts;</span>
+<span class="lineNum">     135 </span><span class="lineCov">       1400 :             _counts = NULL;</span>
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span><span class="lineCov">       1400 :             _n_tables = 0;</span>
+<span class="lineNum">     138 </span>            :         }
+<span class="lineNum">     139 </span><span class="lineCov">       2800 :     }</span>
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span>            :     // Writing to the tables outside of defined methods has undefined behavior!
+<span class="lineNum">     142 </span>            :     // As such, this should only be used to return read-only interfaces
+<span class="lineNum">     143 </span>            :     Byte ** get_raw_tables()
+<span class="lineNum">     144 </span>            :     {
+<span class="lineNum">     145 </span>            :         return _counts;
+<a name="146"><span class="lineNum">     146 </span>            :     }</a>
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :     virtual BoundedCounterType test_and_set_bits(const char * kmer)</span>
+<span class="lineNum">     149 </span>            :     {
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         BoundedCounterType x = get_count(kmer); // @CTB just hash it, yo.</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         count(kmer);</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         return !x;</span>
+<a name="153"><span class="lineNum">     153 </span>            :     }</a>
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     virtual BoundedCounterType test_and_set_bits(HashIntoType khash)</span>
+<span class="lineNum">     156 </span>            :     {
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         BoundedCounterType x = get_count(khash);</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         count(khash);</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         return !x;</span>
+<a name="160"><span class="lineNum">     160 </span>            :     }</a>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineCov">        600 :     std::vector&lt;HashIntoType&gt; get_tablesizes() const</span>
+<span class="lineNum">     163 </span>            :     {
+<span class="lineNum">     164 </span><span class="lineCov">        600 :         return _tablesizes;</span>
+<a name="165"><span class="lineNum">     165 </span>            :     }</a>
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span><span class="lineCov">        600 :     virtual const HashIntoType n_unique_kmers() const</span>
+<span class="lineNum">     168 </span>            :     {
+<span class="lineNum">     169 </span><span class="lineCov">        600 :         return _n_unique_kmers;</span>
+<span class="lineNum">     170 </span>            :     }
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span>            :     void set_use_bigcount(bool b)
+<span class="lineNum">     173 </span>            :     {
+<span class="lineNum">     174 </span><span class="lineCov">        400 :         _use_bigcount = b;</span>
+<span class="lineNum">     175 </span>            :     }
+<span class="lineNum">     176 </span>            :     bool get_use_bigcount()
+<span class="lineNum">     177 </span>            :     {
+<span class="lineNum">     178 </span>            :         return _use_bigcount;
+<span class="lineNum">     179 </span>            :     }
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span>            :     virtual void save(std::string);
+<a name="182"><span class="lineNum">     182 </span>            :     virtual void load(std::string);</a>
+<span class="lineNum">     183 </span>            : 
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     const size_t n_tables() const</span>
+<span class="lineNum">     185 </span>            :     {
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         return _n_tables;</span>
+<span class="lineNum">     187 </span>            :     }
+<a name="188"><span class="lineNum">     188 </span>            : </a>
+<span class="lineNum">     189 </span>            :     // count number of occupied bins
+<span class="lineNum">     190 </span><span class="lineCov">        600 :     virtual const HashIntoType n_occupied() const</span>
+<span class="lineNum">     191 </span>            :     {
+<span class="lineNum">     192 </span><span class="lineCov">        600 :         return _occupied_bins;</span>
+<a name="193"><span class="lineNum">     193 </span>            :     }</a>
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span><span class="lineCov">      10060 :     virtual void count(const char * kmer)</span>
+<span class="lineNum">     196 </span>            :     {
+<span class="lineNum">     197 </span><span class="lineCov">      10060 :         HashIntoType hash = _hash(kmer, _ksize);</span>
+<span class="lineNum">     198 </span><span class="lineCov">      10060 :         count(hash);</span>
+<a name="199"><span class="lineNum">     199 </span><span class="lineCov">      10060 :     }</span></a>
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span><span class="lineCov">    3139435 :     virtual void count(HashIntoType khash)</span>
+<span class="lineNum">     202 </span>            :     {
+<span class="lineNum">     203 </span><span class="lineCov">    3139435 :         bool is_new_kmer = false;</span>
+<span class="lineNum">     204 </span><span class="lineCov">    3139435 :         unsigned int  n_full      = 0;</span>
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span><span class="lineCov">   15697175 :         for (unsigned int i = 0; i &lt; _n_tables; i++) {</span>
+<span class="lineNum">     207 </span><span class="lineCov">   25115480 :             const HashIntoType bin = khash % _tablesizes[i];</span>
+<span class="lineNum">     208 </span><span class="lineCov">   12557740 :             Byte current_count = _counts[ i ][ bin ];</span>
+<span class="lineNum">     209 </span><span class="lineCov">   12557740 :             if (!is_new_kmer) {</span>
+<span class="lineNum">     210 </span><span class="lineCov">    6999300 :                 if (current_count == 0) {</span>
+<span class="lineNum">     211 </span><span class="lineCov">    1859202 :                     is_new_kmer = true;</span>
+<span class="lineNum">     212 </span><span class="lineCov">    1859202 :                     if (i == 0) {</span>
+<span class="lineNum">     213 </span><span class="lineCov">    1840740 :                         __sync_add_and_fetch(&amp;_occupied_bins, 1);</span>
+<span class="lineNum">     214 </span>            :                     }
+<span class="lineNum">     215 </span>            :                 }
+<span class="lineNum">     216 </span>            :             }
+<span class="lineNum">     217 </span>            :             // NOTE: Technically, multiple threads can cause the bin to spill
+<span class="lineNum">     218 </span>            :             //   over max_count a little, if they all read it as less than
+<span class="lineNum">     219 </span>            :             //   max_count before any of them increment it.
+<span class="lineNum">     220 </span>            :             //   However, do we actually care if there is a little
+<span class="lineNum">     221 </span>            :             //   bit of slop here? It can always be trimmed off later, if
+<span class="lineNum">     222 </span>            :             //   that would help with stats.
+<span class="lineNum">     223 </span><span class="lineCov">   12557740 :             if ( _max_count &gt; current_count ) {</span>
+<span class="lineNum">     224 </span><span class="lineCov">   12340532 :                 __sync_add_and_fetch( *(_counts + i) + bin, 1 );</span>
+<span class="lineNum">     225 </span>            :             } else {
+<span class="lineNum">     226 </span><span class="lineCov">     217208 :                 n_full++;</span>
+<span class="lineNum">     227 </span>            :             }
+<span class="lineNum">     228 </span>            :         } // for each table
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span><span class="lineCov">    3139435 :         if (n_full == _n_tables &amp;&amp; _use_bigcount) {</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :             while (!__sync_bool_compare_and_swap( &amp;_bigcount_spin_lock, 0, 1 ));</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :             if (_bigcounts[khash] == 0) {</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :                 _bigcounts[khash] = _max_count + 1;</span>
+<span class="lineNum">     234 </span>            :             } else {
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                 if (_bigcounts[khash] &lt; _max_bigcount) {</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                     _bigcounts[khash] += 1;</span>
+<span class="lineNum">     237 </span>            :                 }
+<span class="lineNum">     238 </span>            :             }
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :             __sync_bool_compare_and_swap( &amp;_bigcount_spin_lock, 1, 0 );</span>
+<span class="lineNum">     240 </span>            :         }
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span><span class="lineCov">    3139435 :         if (is_new_kmer) {</span>
+<span class="lineNum">     243 </span><span class="lineCov">    1859202 :             __sync_add_and_fetch(&amp;_n_unique_kmers, 1);</span>
+<span class="lineNum">     244 </span>            :         }
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span><span class="lineCov">    3139435 :     } // count</span>
+<a name="247"><span class="lineNum">     247 </span>            : </a>
+<span class="lineNum">     248 </span>            :     // get the count for the given k-mer.
+<span class="lineNum">     249 </span><span class="lineCov">      18051 :     virtual const BoundedCounterType get_count(const char * kmer) const</span>
+<span class="lineNum">     250 </span>            :     {
+<span class="lineNum">     251 </span><span class="lineCov">      18051 :         HashIntoType hash = _hash(kmer, _ksize);</span>
+<span class="lineNum">     252 </span><span class="lineCov">      18051 :         return get_count(hash);</span>
+<span class="lineNum">     253 </span>            :     }
+<a name="254"><span class="lineNum">     254 </span>            : </a>
+<span class="lineNum">     255 </span>            :     // get the count for the given k-mer hash.
+<span class="lineNum">     256 </span><span class="lineCov">      18051 :     virtual const BoundedCounterType get_count(HashIntoType khash) const</span>
+<span class="lineNum">     257 </span>            :     {
+<span class="lineNum">     258 </span><span class="lineCov">      18051 :         unsigned int      max_count     = _max_count;</span>
+<span class="lineNum">     259 </span><span class="lineCov">      18051 :         BoundedCounterType  min_count   = max_count;</span>
+<span class="lineNum">     260 </span><span class="lineCov">      90255 :         for (unsigned int i = 0; i &lt; _n_tables; i++) {</span>
+<span class="lineNum">     261 </span><span class="lineCov">     144408 :             BoundedCounterType the_count = _counts[i][khash % _tablesizes[i]];</span>
+<span class="lineNum">     262 </span><span class="lineCov">      72204 :             if (the_count &lt; min_count) {</span>
+<span class="lineNum">     263 </span><span class="lineCov">      18051 :                 min_count = the_count;</span>
+<span class="lineNum">     264 </span>            :             }
+<span class="lineNum">     265 </span>            :         }
+<span class="lineNum">     266 </span><span class="lineCov">      18051 :         if (min_count == max_count &amp;&amp; _use_bigcount) {</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :             KmerCountMap::const_iterator it = _bigcounts.find(khash);</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 :             if (it != _bigcounts.end()) {</span>
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :                 min_count = it-&gt;second;</span>
+<span class="lineNum">     270 </span>            :             }
+<span class="lineNum">     271 </span>            :         }
+<span class="lineNum">     272 </span><span class="lineCov">      18051 :         return min_count;</span>
+<span class="lineNum">     273 </span>            :     }
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span>            :     void output_fasta_kmer_pos_freq(const std::string &amp;inputfile,
+<span class="lineNum">     276 </span>            :                                     const std::string &amp;outputfile);
+<span class="lineNum">     277 </span>            : 
+<span class="lineNum">     278 </span>            :     BoundedCounterType get_min_count(const std::string &amp;s);
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span>            :     BoundedCounterType get_max_count(const std::string &amp;s);
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span>            :     HashIntoType * abundance_distribution(read_parsers::IParser * parser,
+<span class="lineNum">     283 </span>            :                                           Hashbits * tracking);
+<span class="lineNum">     284 </span>            :     HashIntoType * abundance_distribution(std::string filename,
+<span class="lineNum">     285 </span>            :                                           Hashbits * tracking);
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span>            :     HashIntoType * fasta_count_kmers_by_position(const std::string &amp;inputfile,
+<span class="lineNum">     288 </span>            :             const unsigned int max_read_len,
+<span class="lineNum">     289 </span>            :             BoundedCounterType limit_by_count=0,
+<span class="lineNum">     290 </span>            :             CallbackFn callback = NULL,
+<span class="lineNum">     291 </span>            :             void * callback_data = NULL);
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span>            :     void fasta_dump_kmers_by_abundance(const std::string &amp;inputfile,
+<span class="lineNum">     294 </span>            :                                        BoundedCounterType limit_by_count,
+<span class="lineNum">     295 </span>            :                                        CallbackFn callback = NULL,
+<span class="lineNum">     296 </span>            :                                        void * callback_data = NULL);
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span>            :     unsigned long trim_on_abundance(std::string seq,
+<span class="lineNum">     299 </span>            :                                     BoundedCounterType min_abund) const;
+<span class="lineNum">     300 </span>            :     unsigned long trim_below_abundance(std::string seq,
+<span class="lineNum">     301 </span>            :                                        BoundedCounterType max_abund) const;
+<span class="lineNum">     302 </span>            :     std::vector&lt;unsigned int&gt; find_spectral_error_positions(std::string seq,
+<span class="lineNum">     303 </span>            :             BoundedCounterType min_abund) const;
+<span class="lineNum">     304 </span>            : 
+<span class="lineNum">     305 </span>            :     void collect_high_abundance_kmers(const std::string &amp;infilename,
+<span class="lineNum">     306 </span>            :                                       unsigned int lower_count,
+<span class="lineNum">     307 </span>            :                                       unsigned int upper_count,
+<span class="lineNum">     308 </span>            :                                       SeenSet&amp; kmers);
+<span class="lineNum">     309 </span>            : };
+<span class="lineNum">     310 </span>            : 
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span>            : class CountingHashFile
+<span class="lineNum">     313 </span>            : {
+<span class="lineNum">     314 </span>            : public:
+<span class="lineNum">     315 </span>            :     static void load(const std::string &amp;infilename, CountingHash &amp;ht);
+<span class="lineNum">     316 </span>            :     static void save(const std::string &amp;outfilename, const CountingHash &amp;ht);
+<span class="lineNum">     317 </span>            : };
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span>            : class CountingHashFileReader : public CountingHashFile
+<span class="lineNum">     320 </span>            : {
+<span class="lineNum">     321 </span>            : public:
+<span class="lineNum">     322 </span>            :     CountingHashFileReader(const std::string &amp;infilename, CountingHash &amp;ht);
+<span class="lineNum">     323 </span>            : };
+<span class="lineNum">     324 </span>            : 
+<span class="lineNum">     325 </span>            : class CountingHashGzFileReader : public CountingHashFile
+<span class="lineNum">     326 </span>            : {
+<span class="lineNum">     327 </span>            : public:
+<span class="lineNum">     328 </span>            :     CountingHashGzFileReader(const std::string &amp;infilename, CountingHash &amp;ht);
+<span class="lineNum">     329 </span>            : };
+<span class="lineNum">     330 </span>            : 
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            : class CountingHashFileWriter : public CountingHashFile
+<span class="lineNum">     333 </span>            : {
+<span class="lineNum">     334 </span>            : public:
+<span class="lineNum">     335 </span>            :     CountingHashFileWriter(const std::string &amp;outfilename, const CountingHash &amp;ht);
+<span class="lineNum">     336 </span>            : };
+<span class="lineNum">     337 </span>            : 
+<span class="lineNum">     338 </span>            : class CountingHashGzFileWriter : public CountingHashFile
+<span class="lineNum">     339 </span>            : {
+<span class="lineNum">     340 </span>            : public:
+<span class="lineNum">     341 </span>            :     CountingHashGzFileWriter(const std::string &amp;outfilename,
+<span class="lineNum">     342 </span>            :                              const CountingHash &amp;ht);
+<span class="lineNum">     343 </span>            : };
+<span class="lineNum">     344 </span>            : }
+<span class="lineNum">     345 </span>            : 
+<span class="lineNum">     346 </span>            : #endif // COUNTING_HH
+<span class="lineNum">     347 </span>            : 
+<span class="lineNum">     348 </span>            : // vim: set sts=2 sw=2:
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

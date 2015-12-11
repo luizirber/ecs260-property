@@ -1,0 +1,359 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/read_aligner.hh</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - read_aligner.hh<span style="font-size: 80%;"> (source / <a href="read_aligner.hh.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2013-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #ifndef READ_ALIGNER_HH
+<span class="lineNum">      39 </span>            : #define READ_ALIGNER_HH
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      42 </span>            : #include &lt;stddef.h&gt;
+<span class="lineNum">      43 </span>            : #include &lt;algorithm&gt;
+<span class="lineNum">      44 </span>            : #include &lt;limits&gt;
+<span class="lineNum">      45 </span>            : #include &lt;memory&gt;
+<span class="lineNum">      46 </span>            : #include &lt;queue&gt;
+<span class="lineNum">      47 </span>            : #include &lt;set&gt;
+<span class="lineNum">      48 </span>            : #include &lt;string&gt;
+<span class="lineNum">      49 </span>            : #include &lt;vector&gt;
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            : #include &quot;counting.hh&quot;
+<span class="lineNum">      52 </span>            : #include &quot;khmer.hh&quot;
+<span class="lineNum">      53 </span>            : #include &quot;kmer_hash.hh&quot;
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            : #define READ_ALIGNER_DEBUG 0
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : namespace khmer
+<span class="lineNum">      58 </span>            : {
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            : enum State { MATCH, INSERT_READ, INSERT_GRAPH,
+<span class="lineNum">      61 </span>            :              MATCH_UNTRUSTED, INSERT_READ_UNTRUSTED, INSERT_GRAPH_UNTRUSTED
+<span class="lineNum">      62 </span>            :            };
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            : // Constants for state transitions
+<span class="lineNum">      65 </span>            : enum Transition { MM, MIr, MIg, MMu, MIru, MIgu,
+<span class="lineNum">      66 </span>            :                   IrM, IrIr, IrMu, IrIru,
+<span class="lineNum">      67 </span>            :                   IgM, IgIg, IgMu, IgIgu,
+<span class="lineNum">      68 </span>            :                   MuM, MuIr, MuIg, MuMu, MuIru, MuIgu,
+<span class="lineNum">      69 </span>            :                   IruM, IruIr, IruMu, IruIru,
+<span class="lineNum">      70 </span>            :                   IguM, IguIg, IguMu, IguIgu,
+<span class="lineNum">      71 </span>            :                   disallowed
+<span class="lineNum">      72 </span>            :                 };
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            : /*
+<span class="lineNum">      75 </span>            : Ig_t-Ig_t       0.2294619
+<span class="lineNum">      76 </span>            : Ig_t-Ig_u       0.0021453
+<span class="lineNum">      77 </span>            : Ig_t-M_t        0.7611255
+<span class="lineNum">      78 </span>            : Ig_t-M_u        0.0072673
+<span class="lineNum">      79 </span>            : Ig_u-Ig_t       0.0431328
+<span class="lineNum">      80 </span>            : Ig_u-Ig_u       0.1821200
+<span class="lineNum">      81 </span>            : Ig_u-M_t        0.1384551
+<span class="lineNum">      82 </span>            : Ig_u-M_u        0.6362921
+<span class="lineNum">      83 </span>            : Ir_t-Ir_t       0.4647955
+<span class="lineNum">      84 </span>            : Ir_t-Ir_u       0.0096792
+<span class="lineNum">      85 </span>            : Ir_t-M_t        0.5196194
+<span class="lineNum">      86 </span>            : Ir_t-M_u        0.0059060
+<span class="lineNum">      87 </span>            : Ir_u-Ir_t       0.0036995
+<span class="lineNum">      88 </span>            : Ir_u-Ir_u       0.5885548
+<span class="lineNum">      89 </span>            : Ir_u-M_t        0.1434529
+<span class="lineNum">      90 </span>            : Ir_u-M_u        0.2642928
+<span class="lineNum">      91 </span>            : M_t-Ig_t        0.0000334
+<span class="lineNum">      92 </span>            : M_t-Ig_u        0.0000003
+<span class="lineNum">      93 </span>            : M_t-Ir_t        0.0000735
+<span class="lineNum">      94 </span>            : M_t-Ir_u        0.0000017
+<span class="lineNum">      95 </span>            : M_t-M_t 0.9848843
+<span class="lineNum">      96 </span>            : M_t-M_u 0.0150068
+<span class="lineNum">      97 </span>            : M_u-Ig_t        0.0001836
+<span class="lineNum">      98 </span>            : M_u-Ig_u        0.0004173
+<span class="lineNum">      99 </span>            : M_u-Ir_t        0.0000262
+<span class="lineNum">     100 </span>            : M_u-Ir_u        0.0033370
+<span class="lineNum">     101 </span>            : M_u-M_t 0.0799009
+<span class="lineNum">     102 </span>            : M_u-M_u 0.9161349
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            : */
+<span class="lineNum">     105 </span>            : // log probabilities for state transitions
+<span class="lineNum">     106 </span>            : static double trans_default[] = { log2(0.9848843), log2(0.0000735), log2(0.0000334), log2(0.0150068), log2(0.0000017), log2(0.0000003),  // M_t
+<span class="lineNum">     107 </span>            :                                   log2(0.5196194), log2(0.4647955), log2(0.0059060), log2(0.0096792),                        // Ir_t
+<span class="lineNum">     108 </span>            :                                   log2(0.7611255), log2(0.2294619), log2(0.0072673), log2(0.0021453),                        // Ig_t
+<span class="lineNum">     109 </span>            :                                   log2(0.0799009), log2(0.0000262), log2(0.0001836), log2(0.9161349), log2(0.0033370), log2(0.0004173),  // M_u
+<span class="lineNum">     110 </span>            :                                   log2(0.1434529), log2(0.0036995), log2(0.2642928), log2(0.5885548),                        // Ir_u
+<span class="lineNum">     111 </span>            :                                   log2(0.1384551), log2(0.0431328), log2(0.6362921), log2(0.1821200),                        // Ig_u
+<span class="lineNum">     112 </span>            :                                 };
+<span class="lineNum">     113 </span>            : /*{ log2(.80), log2(.045), log2(.045), log2(.06), log2(.025), log2(.025),
+<span class="lineNum">     114 </span>            :                                   log2(.875), log2(.045), log2(.055), log2(.025),
+<span class="lineNum">     115 </span>            :                                   log2(.875), log2(.045), log2(.055), log2(.025),
+<span class="lineNum">     116 </span>            :                             log2(.80), log2(.045), log2(.045), log2(.06), log2(.025), log2(.025),
+<span class="lineNum">     117 </span>            :                                   log2(.875), log2(.045), log2(.055), log2(.025),
+<span class="lineNum">     118 </span>            :                                   log2(.875), log2(.045), log2(.055), log2(.025),
+<span class="lineNum">     119 </span>            : };*/
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            : enum Nucl {A, C, G, T};
+<span class="lineNum">     122 </span>            : static const char nucl_lookup[4] = {'A', 'C', 'G', 'T'};
+<span class="lineNum">     123 </span>            : static const double background_prob = 0;//log2(.99);
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            : struct AlignmentNode {
+<span class="lineNum">     126 </span>            :     AlignmentNode* prev;
+<span class="lineNum">     127 </span>            :     Nucl base;
+<span class="lineNum">     128 </span>            :     size_t seq_idx;
+<span class="lineNum">     129 </span>            :     State state;
+<span class="lineNum">     130 </span>            :     Transition trans;
+<span class="lineNum">     131 </span>            :     HashIntoType fwd_hash;
+<span class="lineNum">     132 </span>            :     HashIntoType rc_hash;
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            :     double score;
+<span class="lineNum">     135 </span>            :     double f_score;
+<span class="lineNum">     136 </span>            :     double h_score;
+<span class="lineNum">     137 </span>            :     bool trusted;
+<span class="lineNum">     138 </span>            :     BoundedCounterType cov;
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span>            :     size_t num_indels;
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            :     size_t length;
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span>            :     AlignmentNode(AlignmentNode* _prev, Nucl _emission, size_t _seq_idx,
+<span class="lineNum">     145 </span>            :                   State _state, Transition _trans, HashIntoType _fwd_hash,
+<span class="lineNum">     146 </span>            :                   HashIntoType _rc_hash, size_t _length)
+<span class="lineNum">     147 </span>            :         :prev(_prev), base(_emission), seq_idx(_seq_idx),
+<span class="lineNum">     148 </span>            :          state(_state), trans(_trans), fwd_hash(_fwd_hash),
+<span class="lineNum">     149 </span>            :          rc_hash(_rc_hash), score(0), f_score(0), h_score(0), trusted(false),
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :          cov(0), num_indels(0), length(_length) {}</span>
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span>            :     bool operator== (const AlignmentNode&amp; rhs) const
+<span class="lineNum">     153 </span>            :     {
+<span class="lineNum">     154 </span>            :         return (seq_idx == rhs.seq_idx) &amp;&amp; (state == rhs.state) &amp;&amp;
+<span class="lineNum">     155 </span>            :                uniqify_rc(fwd_hash, rc_hash) == uniqify_rc(rhs.fwd_hash, rhs.rc_hash)
+<span class="lineNum">     156 </span>            :                &amp;&amp; trans == rhs.trans;
+<span class="lineNum">     157 </span>            :     }
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span>            :     bool operator&lt; (const AlignmentNode&amp; rhs) const
+<span class="lineNum">     160 </span>            :     {
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :         return f_score &lt; rhs.f_score;</span>
+<span class="lineNum">     162 </span>            :     }
+<span class="lineNum">     163 </span>            : };
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span>            : class AlignmentNodeCompare
+<span class="lineNum">     166 </span>            : {
+<span class="lineNum">     167 </span>            : public:
+<span class="lineNum">     168 </span>            :     bool operator()(AlignmentNode* o1, AlignmentNode* o2)
+<span class="lineNum">     169 </span>            :     {
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         if (o1-&gt;f_score &lt; o2-&gt;f_score) {</span>
+<span class="lineNum">     171 </span>            :             return true;
+<span class="lineNum">     172 </span>            :         } else {
+<span class="lineNum">     173 </span>            :             return false;
+<span class="lineNum">     174 </span>            :         }
+<span class="lineNum">     175 </span>            :     }
+<span class="lineNum">     176 </span>            : };
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span>            : typedef std::priority_queue&lt;AlignmentNode*,
+<span class="lineNum">     179 </span>            :         std::vector&lt;AlignmentNode*&gt;,
+<span class="lineNum">     180 </span>            :         AlignmentNodeCompare&gt; NodeHeap;
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span>            : struct ScoringMatrix {
+<span class="lineNum">     183 </span>            :     const double trusted_match;
+<span class="lineNum">     184 </span>            :     const double trusted_mismatch;
+<span class="lineNum">     185 </span>            :     const double untrusted_match;
+<span class="lineNum">     186 </span>            :     const double untrusted_mismatch;
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span>            :     const double* tsc;
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span>            :     ScoringMatrix(double trusted_match, double trusted_mismatch,
+<span class="lineNum">     191 </span>            :                   double untrusted_match, double untrusted_mismatch,
+<span class="lineNum">     192 </span>            :                   double* trans)
+<span class="lineNum">     193 </span>            :         : trusted_match(trusted_match), trusted_mismatch(trusted_mismatch),
+<span class="lineNum">     194 </span>            :           untrusted_match(untrusted_match),
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :           untrusted_mismatch(untrusted_mismatch), tsc(trans) {}</span>
+<span class="lineNum">     196 </span>            : };
+<a name="197"><span class="lineNum">     197 </span>            : </a>
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 : struct Alignment {</span>
+<span class="lineNum">     200 </span>            :     std::string graph_alignment;
+<span class="lineNum">     201 </span>            :     std::string read_alignment;
+<span class="lineNum">     202 </span>            :     std::string trusted;
+<span class="lineNum">     203 </span>            :     std::vector&lt;BoundedCounterType&gt; covs;
+<span class="lineNum">     204 </span>            :     double score;
+<span class="lineNum">     205 </span>            :     bool truncated;
+<span class="lineNum">     206 </span>            : };
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span>            : 
+<span class="lineNum">     209 </span>            : class ReadAligner
+<span class="lineNum">     210 </span>            : {
+<span class="lineNum">     211 </span>            : private:
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span>            :     Alignment* ExtractAlignment(AlignmentNode*,
+<span class="lineNum">     214 </span>            :                                 bool forward, const std::string&amp;);
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            :     void Enumerate(NodeHeap&amp;, std::vector&lt;AlignmentNode*&gt;&amp; all_nodes,
+<span class="lineNum">     217 </span>            :                    AlignmentNode*, bool, const std::string&amp;);
+<span class="lineNum">     218 </span>            :     Alignment* Subalign(AlignmentNode*, size_t, bool, const std::string&amp;);
+<span class="lineNum">     219 </span>            : 
+<span class="lineNum">     220 </span>            : #if READ_ALIGNER_DEBUG
+<span class="lineNum">     221 </span>            :     void WriteNode(AlignmentNode* curr);
+<span class="lineNum">     222 </span>            : #endif
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span>            :     // These variables are required to use the _revhash and hash macros
+<span class="lineNum">     225 </span>            :     // might as well just compute them once
+<span class="lineNum">     226 </span>            :     const HashIntoType bitmask;
+<span class="lineNum">     227 </span>            :     const size_t rc_left_shift;
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            :     khmer::CountingHash* m_ch;
+<span class="lineNum">     230 </span>            :     ScoringMatrix m_sm;
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span>            :     size_t m_trusted_cutoff;
+<span class="lineNum">     233 </span>            :     double m_bits_theta;
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            :     HashIntoType comp_bitmask(WordLength k)
+<span class="lineNum">     236 </span>            :     {
+<span class="lineNum">     237 </span>            :         HashIntoType ret = 0;
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :         for (size_t i = 0; i &lt; k; i++) {</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :             ret = (ret &lt;&lt; 2) | 3;</span>
+<span class="lineNum">     240 </span>            :         }
+<span class="lineNum">     241 </span>            :         return ret;
+<span class="lineNum">     242 </span>            :     }
+<span class="lineNum">     243 </span>            : public:
+<span class="lineNum">     244 </span>            :     Alignment* Align(const std::string&amp;);
+<span class="lineNum">     245 </span>            :     Alignment* AlignForward(const std::string&amp;);
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span>            :     ReadAligner(khmer::CountingHash* ch,
+<span class="lineNum">     248 </span>            :                 BoundedCounterType trusted_cutoff, double bits_theta)
+<span class="lineNum">     249 </span>            :         : bitmask(comp_bitmask(ch-&gt;ksize())),
+<span class="lineNum">     250 </span>            :           rc_left_shift(ch-&gt;ksize() * 2 - 2),
+<span class="lineNum">     251 </span>            :           m_ch(ch), m_sm(
+<span class="lineNum">     252 </span>            :               log2(.955), log2(.04), log2(.004),
+<span class="lineNum">     253 </span>            :               log2(.001), trans_default),
+<span class="lineNum">     254 </span>            :           m_trusted_cutoff(trusted_cutoff),
+<span class="lineNum">     255 </span>            :           m_bits_theta(bits_theta)
+<span class="lineNum">     256 </span>            :     {
+<span class="lineNum">     257 </span>            : #if READ_ALIGNER_DEBUG
+<span class="lineNum">     258 </span>            :         std::cerr &lt;&lt; &quot;Trusted cutoff: &quot; &lt;&lt; m_trusted_cutoff
+<span class="lineNum">     259 </span>            :                   &lt;&lt; &quot; bits theta: &quot; &lt;&lt; bits_theta
+<span class="lineNum">     260 </span>            :                   &lt;&lt; &quot; trusted match: &quot; &lt;&lt; m_sm.trusted_match
+<span class="lineNum">     261 </span>            :                   &lt;&lt; &quot; untrusted match: &quot; &lt;&lt; m_sm.untrusted_match
+<span class="lineNum">     262 </span>            :                   &lt;&lt; &quot; trusted mismatch: &quot; &lt;&lt; m_sm.trusted_mismatch
+<span class="lineNum">     263 </span>            :                   &lt;&lt; &quot; untrusted mismatch: &quot; &lt;&lt; m_sm.untrusted_mismatch
+<span class="lineNum">     264 </span>            :                   &lt;&lt; std::endl;
+<span class="lineNum">     265 </span>            : #endif
+<span class="lineNum">     266 </span>            :     }
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span>            :     ReadAligner(khmer::CountingHash* ch,
+<span class="lineNum">     269 </span>            :                 BoundedCounterType trusted_cutoff, double bits_theta,
+<span class="lineNum">     270 </span>            :                 double* scoring_matrix, double* transitions)
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         : bitmask(comp_bitmask(ch-&gt;ksize())),</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :           rc_left_shift(ch-&gt;ksize() * 2 - 2),</span>
+<span class="lineNum">     273 </span>            :           m_ch(ch), m_sm(scoring_matrix[0], scoring_matrix[1],
+<span class="lineNum">     274 </span>            :                          scoring_matrix[2], scoring_matrix[3],
+<span class="lineNum">     275 </span>            :                          transitions),
+<span class="lineNum">     276 </span>            :           m_trusted_cutoff(trusted_cutoff),
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 :           m_bits_theta(bits_theta) {};</span>
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span>            :     ScoringMatrix getScoringMatrix();
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span>            : };
+<span class="lineNum">     282 </span>            : }
+<span class="lineNum">     283 </span>            : #endif // READ_ALIGNER_HH
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

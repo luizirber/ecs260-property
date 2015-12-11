@@ -1,0 +1,403 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/read_parsers.cc</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - read_parsers.cc<span style="font-size: 80%;"> (source / <a href="read_parsers.cc.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">62</td>
+            <td class="headerCovTableEntry">115</td>
+            <td class="headerCovTableEntryLo">53.9 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">60.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2012-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #include &lt;seqan/seq_io.h&gt; // IWYU pragma: keep
+<span class="lineNum">      39 </span>            : #include &lt;seqan/sequence.h&gt; // IWYU pragma: keep
+<span class="lineNum">      40 </span>            : #include &lt;seqan/stream.h&gt; // IWYU pragma: keep
+<span class="lineNum">      41 </span>            : #include &lt;fstream&gt;
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span>            : #include &quot;khmer_exception.hh&quot;
+<span class="lineNum">      44 </span>            : #include &quot;read_parsers.hh&quot;
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            : namespace khmer
+<span class="lineNum">      47 </span>            : {
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span>            : namespace read_parsers
+<span class="lineNum">      51 </span>            : {
+<a name="52"><span class="lineNum">      52 </span>            : </a>
+<span class="lineNum">      53 </span>            : void
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 : Read::write_to(std::ostream&amp; output)</span>
+<span class="lineNum">      55 </span>            : {
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     if (quality.length() != 0) {</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :         output &lt;&lt; &quot;@&quot; &lt;&lt; name &lt;&lt; std::endl</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :                &lt;&lt; sequence &lt;&lt; std::endl</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :                &lt;&lt; &quot;+&quot; &lt;&lt; std::endl</span>
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 :                &lt;&lt; quality &lt;&lt; std::endl;</span>
+<span class="lineNum">      61 </span>            :     } else {
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :         output &lt;&lt; &quot;&gt;&quot; &lt;&lt; name &lt;&lt; std::endl</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :                &lt;&lt; sequence &lt;&lt; std::endl;</span>
+<span class="lineNum">      64 </span>            :     }
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span><span class="lineCov">       2806 : struct SeqAnParser::Handle {</span>
+<span class="lineNum">      69 </span>            :     seqan::SequenceStream stream;
+<span class="lineNum">      70 </span>            :     uint32_t seqan_spin_lock;
+<a name="71"><span class="lineNum">      71 </span>            : };</a>
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span><span class="lineCov">        957 : SeqAnParser::SeqAnParser( char const * filename ) : IParser( )</span>
+<span class="lineNum">      74 </span>            : {
+<span class="lineNum">      75 </span><span class="lineCov">       1888 :     _private = new SeqAnParser::Handle();</span>
+<span class="lineNum">      76 </span><span class="lineCov">        944 :     seqan::open(_private-&gt;stream, filename);</span>
+<span class="lineNum">      77 </span><span class="lineCov">        944 :     if (!seqan::isGood(_private-&gt;stream)) {</span>
+<span class="lineNum">      78 </span><span class="lineCov">         13 :         std::string message = &quot;Could not open &quot;;</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         message = message + filename + &quot; for reading.&quot;;</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :         throw InvalidStream(message);</span>
+<span class="lineNum">      81 </span><span class="lineCov">        944 :     } else if (seqan::atEnd(_private-&gt;stream)) {</span>
+<span class="lineNum">      82 </span><span class="lineCov">         39 :         std::string message = &quot;File &quot;;</span>
+<span class="lineNum">      83 </span><span class="lineCov">         39 :         message = message + filename + &quot; does not contain any sequences!&quot;;</span>
+<span class="lineNum">      84 </span><span class="lineCov">         26 :         throw InvalidStream(message);</span>
+<span class="lineNum">      85 </span>            :     }
+<span class="lineNum">      86 </span><span class="lineCov">        931 :     __asm__ __volatile__ (&quot;&quot; ::: &quot;memory&quot;);</span>
+<span class="lineNum">      87 </span><span class="lineCov">        931 :     _private-&gt;seqan_spin_lock = 0;</span>
+<a name="88"><span class="lineNum">      88 </span><span class="lineCov">        931 : }</span></a>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineCov">      35530 : bool SeqAnParser::is_complete()</span>
+<span class="lineNum">      91 </span>            : {
+<span class="lineNum">      92 </span><span class="lineCov">      35530 :     return !seqan::isGood(_private-&gt;stream) || seqan::atEnd(_private-&gt;stream);</span>
+<a name="93"><span class="lineNum">      93 </span>            : }</a>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span><span class="lineCov">      34599 : void SeqAnParser::imprint_next_read(Read &amp;the_read)</span>
+<span class="lineNum">      96 </span>            : {
+<span class="lineNum">      97 </span><span class="lineCov">      34599 :     the_read.reset();</span>
+<span class="lineNum">      98 </span><span class="lineCov">      34599 :     int ret = -1;</span>
+<span class="lineNum">      99 </span><span class="lineCov">      34599 :     const char *invalid_read_exc = NULL;</span>
+<span class="lineNum">     100 </span><span class="lineCov">      34599 :     while (!__sync_bool_compare_and_swap(&amp; _private-&gt;seqan_spin_lock, 0, 1));</span>
+<span class="lineNum">     101 </span><span class="lineCov">      34599 :     bool atEnd = seqan::atEnd(_private-&gt;stream);</span>
+<span class="lineNum">     102 </span><span class="lineCov">      34599 :     if (!atEnd) {</span>
+<span class="lineNum">     103 </span><span class="lineCov">      34599 :         ret = seqan::readRecord(the_read.name, the_read.sequence,</span>
+<span class="lineNum">     104 </span><span class="lineCov">      34599 :                                 the_read.quality, _private-&gt;stream);</span>
+<span class="lineNum">     105 </span><span class="lineCov">      34599 :         if (ret == 0) {</span>
+<span class="lineNum">     106 </span>            :             // Detect if we're parsing something w/ qualities on the first read
+<span class="lineNum">     107 </span>            :             // only
+<span class="lineNum">     108 </span><span class="lineCov">      35530 :             if (_num_reads == 0 &amp;&amp; the_read.quality.length() != 0) {</span>
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :                 _have_qualities = true;</span>
+<span class="lineNum">     110 </span>            :             }
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span>            :             // Handle error cases, or increment number of reads on success
+<span class="lineNum">     113 </span><span class="lineCov">      69198 :             if (the_read.sequence.length() == 0) {</span>
+<span class="lineNum">     114 </span>            :                 invalid_read_exc = &quot;Sequence is empty&quot;;
+<span class="lineNum">     115 </span><span class="lineCov">      34599 :             } else if (_have_qualities &amp;&amp; (the_read.sequence.length() != \</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :                                            the_read.quality.length())) {</span>
+<span class="lineNum">     117 </span>            :                 invalid_read_exc = &quot;Sequence and quality lengths differ&quot;;
+<span class="lineNum">     118 </span>            :             } else {
+<span class="lineNum">     119 </span><span class="lineCov">      34599 :                 _num_reads++;</span>
+<span class="lineNum">     120 </span>            :             }
+<span class="lineNum">     121 </span>            :         }
+<span class="lineNum">     122 </span>            :     }
+<span class="lineNum">     123 </span><span class="lineCov">      34599 :     __asm__ __volatile__ (&quot;&quot; ::: &quot;memory&quot;);</span>
+<span class="lineNum">     124 </span><span class="lineCov">      34599 :     _private-&gt;seqan_spin_lock = 0;</span>
+<span class="lineNum">     125 </span>            :     // Throw any error in the read, even if we're at the end
+<span class="lineNum">     126 </span><span class="lineCov">      34599 :     if (invalid_read_exc != NULL) {</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :         throw InvalidRead(invalid_read_exc);</span>
+<span class="lineNum">     128 </span>            :     }
+<span class="lineNum">     129 </span>            :     // Throw NoMoreReadsAvailable if none of the above errors were raised, even
+<span class="lineNum">     130 </span>            :     // if ret == 0
+<span class="lineNum">     131 </span><span class="lineCov">      34599 :     if (atEnd) {</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         throw NoMoreReadsAvailable();</span>
+<span class="lineNum">     133 </span>            :     }
+<span class="lineNum">     134 </span>            :     // Catch-all error in readRecord that isn't one of the above
+<span class="lineNum">     135 </span><span class="lineCov">      34599 :     if (ret != 0) {</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         throw StreamReadError();</span>
+<span class="lineNum">     137 </span>            :     }
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">      34599 : }</span></a>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span><span class="lineCov">       2793 : SeqAnParser::~SeqAnParser()</span>
+<span class="lineNum">     141 </span>            : {
+<span class="lineNum">     142 </span><span class="lineCov">        931 :     seqan::close(_private-&gt;stream);</span>
+<span class="lineNum">     143 </span><span class="lineCov">       1862 :     delete _private;</span>
+<span class="lineNum">     144 </span><span class="lineCov">       1862 : }</span>
+<a name="145"><span class="lineNum">     145 </span>            : </a>
+<span class="lineNum">     146 </span>            : IParser * const
+<span class="lineNum">     147 </span><span class="lineCov">        944 : IParser::</span>
+<span class="lineNum">     148 </span>            : get_parser(
+<span class="lineNum">     149 </span>            :     std:: string const      &amp;ifile_name
+<span class="lineNum">     150 </span>            : )
+<span class="lineNum">     151 </span>            : {
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span><span class="lineCov">        944 :     return new SeqAnParser(ifile_name.c_str());</span>
+<span class="lineNum">     154 </span>            : }
+<a name="155"><span class="lineNum">     155 </span>            : </a>
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span><span class="lineCov">        944 : IParser::</span>
+<span class="lineNum">     158 </span>            : IParser(
+<span class="lineNum">     159 </span><span class="lineCov">        944 : )</span>
+<span class="lineNum">     160 </span>            : {
+<span class="lineNum">     161 </span>            :     int regex_rc =
+<span class="lineNum">     162 </span><span class="lineCov">        944 :         regcomp(</span>
+<span class="lineNum">     163 </span>            :             &amp;_re_read_2_nosub,
+<span class="lineNum">     164 </span>            :             // &quot;.+(/2| 2:[YN]:[[:digit:]]+:[[:alpha:]]+)$&quot;,
+<span class="lineNum">     165 </span>            :             &quot;^.+(/2| 2:[YN]:[[:digit:]]+:[[:alpha:]]+).{0}&quot;,
+<span class="lineNum">     166 </span>            :             REG_EXTENDED | REG_NOSUB
+<span class="lineNum">     167 </span><span class="lineCov">        944 :         );</span>
+<span class="lineNum">     168 </span><span class="lineCov">        944 :     if (regex_rc) {</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         throw khmer_exception(&quot;Could not compile R2 nosub regex&quot;);</span>
+<span class="lineNum">     170 </span>            :     }
+<span class="lineNum">     171 </span>            :     regex_rc =
+<span class="lineNum">     172 </span><span class="lineCov">        944 :         regcomp(</span>
+<span class="lineNum">     173 </span>            :             &amp;_re_read_1,
+<span class="lineNum">     174 </span>            :             &quot;^.+(/1| 1:[YN]:[[:digit:]]+:[[:alpha:]]+).{0}&quot;, REG_EXTENDED
+<span class="lineNum">     175 </span><span class="lineCov">        944 :         );</span>
+<span class="lineNum">     176 </span><span class="lineCov">        944 :     if (regex_rc) {</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :         throw khmer_exception(&quot;Could not compile R1 regex&quot;);</span>
+<span class="lineNum">     178 </span>            :     }
+<span class="lineNum">     179 </span>            :     regex_rc =
+<span class="lineNum">     180 </span><span class="lineCov">        944 :         regcomp(</span>
+<span class="lineNum">     181 </span>            :             &amp;_re_read_2,
+<span class="lineNum">     182 </span>            :             &quot;^.+(/2| 2:[YN]:[[:digit:]]+:[[:alpha:]]+).{0}&quot;, REG_EXTENDED
+<span class="lineNum">     183 </span><span class="lineCov">        944 :         );</span>
+<span class="lineNum">     184 </span><span class="lineCov">        944 :     if (regex_rc) {</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         throw khmer_exception(&quot;Could not compile R2 regex&quot;);</span>
+<span class="lineNum">     186 </span>            :     }
+<span class="lineNum">     187 </span><span class="lineCov">        944 :     _num_reads = 0;</span>
+<span class="lineNum">     188 </span><span class="lineCov">        944 :     _have_qualities = false;</span>
+<a name="189"><span class="lineNum">     189 </span><span class="lineCov">        944 : }</span></a>
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span><span class="lineCov">        944 : IParser::</span>
+<span class="lineNum">     192 </span><span class="lineCov">       1888 : ~IParser( )</span>
+<span class="lineNum">     193 </span>            : {
+<span class="lineNum">     194 </span><span class="lineCov">        944 :     regfree( &amp;_re_read_2_nosub );</span>
+<span class="lineNum">     195 </span><span class="lineCov">        944 :     regfree( &amp;_re_read_1 );</span>
+<span class="lineNum">     196 </span><span class="lineCov">        944 :     regfree( &amp;_re_read_2 );</span>
+<span class="lineNum">     197 </span><span class="lineCov">        944 : }</span>
+<a name="198"><span class="lineNum">     198 </span>            : </a>
+<span class="lineNum">     199 </span>            : void
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 : IParser::</span>
+<span class="lineNum">     201 </span>            : imprint_next_read_pair( ReadPair &amp;the_read_pair, uint8_t mode )
+<span class="lineNum">     202 </span>            : {
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     switch (mode) {</span>
+<span class="lineNum">     204 </span>            : #if (0)
+<span class="lineNum">     205 </span>            :     case IParser:: PAIR_MODE_ALLOW_UNPAIRED:
+<span class="lineNum">     206 </span>            :         _imprint_next_read_pair_in_allow_mode( the_read_pair );
+<span class="lineNum">     207 </span>            :         break;
+<span class="lineNum">     208 </span>            : #endif
+<span class="lineNum">     209 </span>            :     case IParser:: PAIR_MODE_IGNORE_UNPAIRED:
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :         _imprint_next_read_pair_in_ignore_mode( the_read_pair );</span>
+<span class="lineNum">     211 </span>            :         break;
+<span class="lineNum">     212 </span>            :     case IParser:: PAIR_MODE_ERROR_ON_UNPAIRED:
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :         _imprint_next_read_pair_in_error_mode( the_read_pair );</span>
+<span class="lineNum">     214 </span>            :         break;
+<span class="lineNum">     215 </span>            :     default:
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :         std::ostringstream oss;</span>
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         oss &lt;&lt; &quot;Unknown pair reading mode: &quot; &lt;&lt; mode;</span>
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         throw UnknownPairReadingMode(oss.str());</span>
+<span class="lineNum">     219 </span>            :     }
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span>            : #if (0)
+<span class="lineNum">     224 </span>            : void
+<span class="lineNum">     225 </span>            : IParser::
+<span class="lineNum">     226 </span>            : _imprint_next_read_pair_in_allow_mode( ReadPair &amp;the_read_pair )
+<span class="lineNum">     227 </span>            : {
+<span class="lineNum">     228 </span>            :     // TODO: Implement.
+<span class="lineNum">     229 </span>            :     //       Probably need caching of reads between invocations
+<span class="lineNum">     230 </span>            :     //       and the ability to return pairs which are half empty.
+<span class="lineNum">     231 </span>            : }
+<span class="lineNum">     232 </span>            : #endif
+<span class="lineNum">     233 </span>            : 
+<a name="234"><span class="lineNum">     234 </span>            : </a>
+<span class="lineNum">     235 </span>            : void
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 : IParser::</span>
+<span class="lineNum">     237 </span>            : _imprint_next_read_pair_in_ignore_mode( ReadPair &amp;the_read_pair )
+<span class="lineNum">     238 </span>            : {
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :     Read            &amp;read_1         = the_read_pair.first;</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :     Read            &amp;read_2         = the_read_pair.second;</span>
+<span class="lineNum">     241 </span>            :     regmatch_t      match_1, match_2;
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span>            :     // Hunt for a read pair until one is found or end of reads is reached.
+<span class="lineNum">     244 </span>            :     while (true) {
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span>            :         // Toss out all reads which are not marked as first of a pair.
+<span class="lineNum">     247 </span>            :         // Note: We let any exception, which flies out of the following,
+<span class="lineNum">     248 </span>            :         //       pass through unhandled.
+<span class="lineNum">     249 </span>            :         while (true) {
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :             imprint_next_read( read_1 );</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :             if (!regexec(</span>
+<span class="lineNum">     252 </span>            :                         &amp;_re_read_1, read_1.name.c_str( ), 1, &amp;match_1, 0
+<span class="lineNum">     253 </span>            :                     )) {
+<span class="lineNum">     254 </span>            :                 break;
+<span class="lineNum">     255 </span>            :             }
+<span class="lineNum">     256 </span>            :         }
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span>            :         // If first read of a pair was found, then insist upon second read.
+<span class="lineNum">     259 </span>            :         // If not found, then restart search for pair.
+<span class="lineNum">     260 </span>            :         // If found, then validate match.
+<span class="lineNum">     261 </span>            :         // If invalid pair, then restart search for pair.
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         imprint_next_read( read_2 );</span>
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :         if (!regexec(</span>
+<span class="lineNum">     264 </span>            :                     &amp;_re_read_2, read_2.name.c_str( ), 1, &amp;match_2, 0
+<span class="lineNum">     265 </span>            :                 )) {
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :             if (_is_valid_read_pair( the_read_pair, match_1, match_2 )) {</span>
+<span class="lineNum">     267 </span>            :                 break;
+<span class="lineNum">     268 </span>            :             }
+<span class="lineNum">     269 </span>            :         }
+<span class="lineNum">     270 </span>            : 
+<span class="lineNum">     271 </span>            :     } // while pair not found
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 : } // _imprint_next_read_pair_in_ignore_mode</span>
+<span class="lineNum">     274 </span>            : 
+<a name="275"><span class="lineNum">     275 </span>            : </a>
+<span class="lineNum">     276 </span>            : void
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 : IParser::</span>
+<span class="lineNum">     278 </span>            : _imprint_next_read_pair_in_error_mode( ReadPair &amp;the_read_pair )
+<span class="lineNum">     279 </span>            : {
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :     Read            &amp;read_1         = the_read_pair.first;</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :     Read            &amp;read_2         = the_read_pair.second;</span>
+<span class="lineNum">     282 </span>            :     regmatch_t      match_1, match_2;
+<span class="lineNum">     283 </span>            : 
+<span class="lineNum">     284 </span>            :     // Note: We let any exception, which flies out of the following,
+<span class="lineNum">     285 </span>            :     //       pass through unhandled.
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :     imprint_next_read( read_1 );</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 :     imprint_next_read( read_2 );</span>
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span>            :     // Is the first read really the first member of a pair?
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :     if (REG_NOMATCH == regexec(</span>
+<span class="lineNum">     291 </span>            :                 &amp;_re_read_1, read_1.name.c_str( ), 1, &amp;match_1, 0
+<span class="lineNum">     292 </span>            :             )) {
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :         throw InvalidReadPair( );</span>
+<span class="lineNum">     294 </span>            :     }
+<span class="lineNum">     295 </span>            :     // Is the second read really the second member of a pair?
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :     if (REG_NOMATCH == regexec(</span>
+<span class="lineNum">     297 </span>            :                 &amp;_re_read_2, read_2.name.c_str( ), 1, &amp;match_2, 0
+<span class="lineNum">     298 </span>            :             )) {
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :         throw InvalidReadPair( );</span>
+<span class="lineNum">     300 </span>            :     }
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span>            :     // Is the pair valid?
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :     if (!_is_valid_read_pair( the_read_pair, match_1, match_2 )) {</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :         throw InvalidReadPair( );</span>
+<span class="lineNum">     305 </span>            :     }
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 : } // _imprint_next_read_pair_in_error_mode</span>
+<span class="lineNum">     308 </span>            : 
+<a name="309"><span class="lineNum">     309 </span>            : </a>
+<span class="lineNum">     310 </span>            : bool
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 : IParser::</span>
+<span class="lineNum">     312 </span>            : _is_valid_read_pair(
+<span class="lineNum">     313 </span>            :     ReadPair &amp;the_read_pair, regmatch_t &amp;match_1, regmatch_t &amp;match_2
+<span class="lineNum">     314 </span>            : )
+<span class="lineNum">     315 </span>            : {
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :     return      (match_1.rm_so == match_2.rm_so)</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :             &amp;&amp;  (match_1.rm_eo == match_2.rm_eo)</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :             &amp;&amp;  (       the_read_pair.first.name.substr( 0, match_1.rm_so )</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :                     ==  the_read_pair.second.name.substr( 0, match_1.rm_so ));</span>
+<span class="lineNum">     320 </span>            : }
+<span class="lineNum">     321 </span>            : 
+<span class="lineNum">     322 </span>            : } // namespace read_parsers
+<a name="323"><span class="lineNum">     323 </span>            : </a>
+<span class="lineNum">     324 </span>            : 
+<span class="lineNum">     325 </span><span class="lineCov">          2 : } // namespace khmer</span>
+<span class="lineNum">     326 </span>            : 
+<span class="lineNum">     327 </span>            : // vim: set ft=cpp sts=4 sw=4 tw=80:
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

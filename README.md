@@ -46,6 +46,19 @@ $ make test
 The Dockerfile describing how the image is build is available:
 https://hub.docker.com/r/luizirber/khmer/
 
+## Final project artifacts
+
+We collected artifacts on [final/artifacts](final/artifacts) for convenience,
+but they are also available online (mostly on [PR #1324][1]).
+
+- [lcov-report/index.html][11]: LCOV report for function and line coverage.
+- [diff.htm][12]: Graphical diff containing our tests and additions to the original codebase.
+  This is just a copy of the HTML page of PR #1324 [changes][13] tab.
+- [khmer-feature-hypothesis.zip][15]: A snapshot of the git branch,
+  downloaded using the [Download ZIP][14] button from the GitHub UI.
+- [Dockerfile][16]: Used for creating the image on [Docker Hub][10].
+  This is also contained in [diff.htm][12] and in the [snapshot][15].
+
 [1]: https://github.com/dib-lab/khmer/pull/1324
 [2]: https://github.com/dib-lab/khmer/
 [3]: https://travis-ci.org/
@@ -55,3 +68,10 @@ https://hub.docker.com/r/luizirber/khmer/
 [7]: https://www.docker.com/docker-toolbox
 [8]: https://github.com/linux-test-project/lcov
 [9]: http://athyra.oxli.org/~luizirber/ecs260
+[10]: https://hub.docker.com/r/luizirber/khmer/
+[11]: final/artifacts/lcov-report/index.html
+[12]: final/artifacts/diff.htm
+[13]: https://github.com/dib-lab/khmer/pull/1324/files
+[14]: https://github.com/luizirber/khmer/archive/feature/hypothesis.zip
+[15]: final/artifacts/khmer-feature-hypothesis.zip
+[16]: final/artifacts/Dockerfile

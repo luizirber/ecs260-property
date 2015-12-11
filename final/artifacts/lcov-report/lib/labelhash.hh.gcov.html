@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/labelhash.hh</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - labelhash.hh<span style="font-size: 80%;"> (source / <a href="labelhash.hh.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2013-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #ifndef LABELHASH_HH
+<span class="lineNum">      39 </span>            : #define LABELHASH_HH
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #include &lt;stddef.h&gt;
+<span class="lineNum">      42 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      43 </span>            : #include &lt;map&gt;
+<span class="lineNum">      44 </span>            : #include &lt;string&gt;
+<span class="lineNum">      45 </span>            : #include &lt;utility&gt;
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : #include &quot;hashbits.hh&quot;
+<span class="lineNum">      48 </span>            : #include &quot;hashtable.hh&quot;
+<span class="lineNum">      49 </span>            : #include &quot;khmer.hh&quot;
+<span class="lineNum">      50 </span>            : #include &quot;read_parsers.hh&quot;
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            : namespace khmer
+<span class="lineNum">      53 </span>            : {
+<span class="lineNum">      54 </span>            : class Hashtable;
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            : namespace read_parsers
+<span class="lineNum">      57 </span>            : {
+<span class="lineNum">      58 </span>            : struct IParser;
+<span class="lineNum">      59 </span>            : }  // namespace read_parsers
+<span class="lineNum">      60 </span>            : }  // namespace khmer
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            : namespace khmer
+<span class="lineNum">      63 </span>            : {
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            : class LabelHash
+<span class="lineNum">      66 </span>            : {
+<span class="lineNum">      67 </span>            : protected:
+<span class="lineNum">      68 </span>            :     // Does the given tag already have the given label?
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :     bool _cmap_contains_label(const TagLabelPtrMap&amp; cmap,</span>
+<span class="lineNum">      70 </span>            :                               HashIntoType&amp; kmer,
+<span class="lineNum">      71 </span>            :                               Label&amp; the_label)
+<span class="lineNum">      72 </span>            :     {
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :         std::pair&lt;TagLabelPtrMap::const_iterator, TagLabelPtrMap::const_iterator&gt; ret;</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :         ret = cmap.equal_range(kmer);</span>
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :         for (TagLabelPtrMap::const_iterator it=ret.first; it!=ret.second; ++it) {</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :             if (*(it-&gt;second) == the_label) {</span>
+<span class="lineNum">      77 </span>            :                 return true;
+<span class="lineNum">      78 </span>            :             }
+<span class="lineNum">      79 </span>            :         }
+<span class="lineNum">      80 </span>            :         return false;
+<span class="lineNum">      81 </span>            :     }
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            :     // Does the given label already have a tag associated with it?
+<span class="lineNum">      84 </span>            :     bool _cmap_contains_tag(const LabelTagMap&amp; cmap,
+<span class="lineNum">      85 </span>            :                             Label&amp; the_label,
+<span class="lineNum">      86 </span>            :                             HashIntoType&amp; kmer)
+<span class="lineNum">      87 </span>            :     {
+<span class="lineNum">      88 </span>            :         std::pair&lt;LabelTagMap::const_iterator, LabelTagMap::const_iterator&gt; ret;
+<span class="lineNum">      89 </span>            :         ret = cmap.equal_range(the_label);
+<span class="lineNum">      90 </span>            :         for (LabelTagMap::const_iterator it=ret.first; it!=ret.second; ++it) {
+<span class="lineNum">      91 </span>            :             if(it-&gt;second == kmer) {
+<span class="lineNum">      92 </span>            :                 return true;
+<span class="lineNum">      93 </span>            :             }
+<span class="lineNum">      94 </span>            :         }
+<span class="lineNum">      95 </span>            :         return false;
+<span class="lineNum">      96 </span>            :     }
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     unsigned int _get_tag_labels(const HashIntoType&amp; tag,</span>
+<span class="lineNum">      99 </span>            :                                  const TagLabelPtrMap&amp; cmap,
+<span class="lineNum">     100 </span>            :                                  LabelPtrSet&amp; found_labels)
+<span class="lineNum">     101 </span>            :     {
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         unsigned int num_labels = 0;</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :         std::pair&lt;TagLabelPtrMap::const_iterator, TagLabelPtrMap::const_iterator&gt; ret;</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         ret = cmap.equal_range(tag);</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :         for (TagLabelPtrMap::const_iterator it=ret.first; it!=ret.second; ++it) {</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             found_labels.insert(it-&gt;second);</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :             ++num_labels;</span>
+<span class="lineNum">     108 </span>            :         }
+<span class="lineNum">     109 </span><span class="lineNoCov">          0 :         return num_labels;</span>
+<span class="lineNum">     110 </span>            :     }
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span>            :     unsigned int _get_tags_from_label(const Label&amp; label,
+<span class="lineNum">     113 </span>            :                                       const LabelTagMap&amp; cmap,
+<span class="lineNum">     114 </span>            :                                       TagSet&amp; labeled_tags)
+<span class="lineNum">     115 </span>            :     {
+<span class="lineNum">     116 </span>            :         unsigned int num_tags = 0;
+<span class="lineNum">     117 </span>            :         std::pair&lt;LabelTagMap::const_iterator, LabelTagMap::const_iterator&gt; ret;
+<span class="lineNum">     118 </span>            :         ret = cmap.equal_range(label);
+<span class="lineNum">     119 </span>            :         for (LabelTagMap::const_iterator it=ret.first; it!=ret.second; ++it) {
+<span class="lineNum">     120 </span>            :             labeled_tags.insert(it-&gt;second);
+<span class="lineNum">     121 </span>            :             ++num_tags;
+<span class="lineNum">     122 </span>            :         }
+<span class="lineNum">     123 </span>            :         return num_tags;
+<span class="lineNum">     124 </span>            :     }
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span>            :     uint32_t _tag_labels_spin_lock;
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            : public:
+<span class="lineNum">     129 </span>            :     khmer::Hashtable * graph;
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     explicit LabelHash(Hashtable * ht) : graph(ht)</span>
+<span class="lineNum">     132 </span>            :     {
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         _tag_labels_spin_lock = 0;</span>
+<span class="lineNum">     134 </span>            : 
+<span class="lineNum">     135 </span>            :     }
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span>            :     ~LabelHash();
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span>            :     TagLabelPtrMap tag_labels;
+<span class="lineNum">     140 </span>            :     LabelTagMap label_tag_ptrs;
+<span class="lineNum">     141 </span>            :     LabelPtrMap label_ptrs;
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span>            :     size_t n_labels() const
+<span class="lineNum">     144 </span>            :     {
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         return label_ptrs.size();</span>
+<span class="lineNum">     146 </span>            :     }
+<a name="147"><span class="lineNum">     147 </span>            : </a>
+<span class="lineNum">     148 </span>            : 
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     Label * check_and_allocate_label(Label new_label)</span>
+<span class="lineNum">     150 </span>            :     {
+<span class="lineNum">     151 </span>            :         Label * c;
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         if (label_ptrs.count(new_label)) {</span>
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :             c = label_ptrs[new_label];</span>
+<span class="lineNum">     154 </span>            :         } else {
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :             c = new Label(new_label);</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :             label_ptrs[*c] = c;</span>
+<span class="lineNum">     157 </span>            :         }
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         return c;</span>
+<span class="lineNum">     159 </span>            :     }
+<span class="lineNum">     160 </span>            :     void consume_fasta_and_tag_with_labels(
+<span class="lineNum">     161 </span>            :         std::string const         &amp;filename,
+<span class="lineNum">     162 </span>            :         unsigned int      &amp;total_reads,
+<span class="lineNum">     163 </span>            :         unsigned long long  &amp;n_consumed,
+<span class="lineNum">     164 </span>            :         CallbackFn        callback        = NULL,
+<span class="lineNum">     165 </span>            :         void *            callback_data   = NULL);
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            :     void consume_fasta_and_tag_with_labels(
+<span class="lineNum">     168 </span>            :         read_parsers:: IParser *            parser,
+<span class="lineNum">     169 </span>            :         unsigned int        &amp;total_reads,
+<span class="lineNum">     170 </span>            :         unsigned long long  &amp;n_consumed,
+<span class="lineNum">     171 </span>            :         CallbackFn          callback        = NULL,
+<span class="lineNum">     172 </span>            :         void *              callback_data   = NULL);
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span>            :     void consume_partitioned_fasta_and_tag_with_labels(const std::string &amp;filename,
+<span class="lineNum">     175 </span>            :             unsigned int &amp;total_reads,
+<span class="lineNum">     176 </span>            :             unsigned long long &amp;n_consumed,
+<span class="lineNum">     177 </span>            :             CallbackFn callback = NULL,
+<span class="lineNum">     178 </span>            :             void * callback_datac = NULL);
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span>            :     void consume_sequence_and_tag_with_labels(const std::string&amp; seq,
+<span class="lineNum">     181 </span>            :             unsigned long long&amp; n_consumed,
+<span class="lineNum">     182 </span>            :             Label&amp; current_label,
+<span class="lineNum">     183 </span>            :             SeenSet * new_tags = 0);
+<span class="lineNum">     184 </span>            : 
+<span class="lineNum">     185 </span>            :     LabelPtrSet get_tag_labels(const HashIntoType&amp; tag);
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            :     void link_tag_and_label(HashIntoType&amp; kmer, Label&amp; label);
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span>            :     unsigned int sweep_label_neighborhood(const std::string &amp; seq,
+<span class="lineNum">     190 </span>            :                                           LabelPtrSet&amp; found_labels,
+<span class="lineNum">     191 </span>            :                                           unsigned int range,
+<span class="lineNum">     192 </span>            :                                           bool break_on_stoptags,
+<span class="lineNum">     193 </span>            :                                           bool stop_big_traversals);
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span>            :     void traverse_labels_and_resolve(const SeenSet&amp; tagged_kmers,
+<span class="lineNum">     196 </span>            :                                      LabelPtrSet&amp; found_labels);
+<span class="lineNum">     197 </span>            : 
+<span class="lineNum">     198 </span>            :     void save_labels_and_tags(std::string);
+<span class="lineNum">     199 </span>            :     void load_labels_and_tags(std::string);
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span>            : };
+<span class="lineNum">     202 </span>            : }
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span>            : #define ACQUIRE_TAG_COLORS_SPIN_LOCK \
+<span class="lineNum">     205 </span>            :   while(!__sync_bool_compare_and_swap( &amp;_tag_labels_spin_lock, 0, 1));
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span>            : #define RELEASE_TAG_COLORS_SPIN_LOCK \
+<span class="lineNum">     208 </span>            :   __sync_bool_compare_and_swap( &amp;_tag_labels_spin_lock, 1, 0);
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span>            : #endif
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

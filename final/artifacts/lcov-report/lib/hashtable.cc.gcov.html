@@ -1,0 +1,1388 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/hashtable.cc</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - hashtable.cc<span style="font-size: 80%;"> (source / <a href="hashtable.cc.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">53</td>
+            <td class="headerCovTableEntry">548</td>
+            <td class="headerCovTableEntryLo">9.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntry">34</td>
+            <td class="headerCovTableEntryLo">20.6 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2010-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #include &lt;errno.h&gt;
+<span class="lineNum">      39 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      40 </span>            : #include &lt;algorithm&gt;
+<span class="lineNum">      41 </span>            : #include &lt;deque&gt;
+<span class="lineNum">      42 </span>            : #include &lt;fstream&gt;
+<span class="lineNum">      43 </span>            : #include &lt;iostream&gt;
+<span class="lineNum">      44 </span>            : #include &lt;sstream&gt; // IWYU pragma: keep
+<span class="lineNum">      45 </span>            : #include &lt;queue&gt;
+<span class="lineNum">      46 </span>            : #include &lt;set&gt;
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : #include &quot;counting.hh&quot;
+<span class="lineNum">      49 </span>            : #include &quot;hashtable.hh&quot;
+<span class="lineNum">      50 </span>            : #include &quot;khmer.hh&quot;
+<span class="lineNum">      51 </span>            : #include &quot;read_parsers.hh&quot;
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span>            : using namespace std;
+<span class="lineNum">      54 </span>            : using namespace khmer;
+<span class="lineNum">      55 </span>            : using namespace khmer:: read_parsers;
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : //
+<span class="lineNum">      58 </span>            : // check_and_process_read: checks for non-ACGT characters before consuming
+<a name="59"><span class="lineNum">      59 </span>            : //</a>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineCov">      17627 : unsigned int Hashtable::check_and_process_read(std::string &amp;read,</span>
+<span class="lineNum">      62 </span>            :         bool &amp;is_valid)
+<span class="lineNum">      63 </span>            : {
+<span class="lineNum">      64 </span><span class="lineCov">      17627 :     is_valid = check_and_normalize_read(read);</span>
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineCov">      17627 :     if (!is_valid) {</span>
+<span class="lineNum">      67 </span>            :         return 0;
+<span class="lineNum">      68 </span>            :     }
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineCov">      17627 :     return consume_string(read);</span>
+<span class="lineNum">      71 </span>            : }
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            : //
+<span class="lineNum">      74 </span>            : // check_and_normalize_read: checks for non-ACGT characters
+<span class="lineNum">      75 </span>            : //                           converts lowercase characters to uppercase one
+<span class="lineNum">      76 </span>            : // Note: Usually it is desirable to keep checks and mutations separate.
+<span class="lineNum">      77 </span>            : //       However, in the interests of efficiency (we are potentially working
+<span class="lineNum">      78 </span>            : //       with TB of data), a check and mutation have been placed inside the
+<span class="lineNum">      79 </span>            : //       same loop. Potentially trillions fewer fetches from memory would
+<span class="lineNum">      80 </span>            : //       seem to be a worthwhile goal.
+<a name="81"><span class="lineNum">      81 </span>            : //</a>
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span><span class="lineCov">      29198 : bool Hashtable::check_and_normalize_read(std::string &amp;read) const</span>
+<span class="lineNum">      84 </span>            : {
+<span class="lineNum">      85 </span><span class="lineCov">      29198 :     bool rc = true;</span>
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineCov">      29198 :     if (read.length() &lt; _ksize) {</span>
+<span class="lineNum">      88 </span>            :         return false;
+<span class="lineNum">      89 </span>            :     }
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span><span class="lineCov">   31600552 :     for (unsigned int i = 0; i &lt; read.length(); i++)  {</span>
+<span class="lineNum">      92 </span><span class="lineCov">   21028104 :         read[ i ] &amp;= 0xdf; // toupper - knock out the &quot;lowercase bit&quot;</span>
+<span class="lineNum">      93 </span><span class="lineCov">   37783733 :         if (!is_valid_dna( read[ i ] )) {</span>
+<span class="lineNum">      94 </span>            :             rc = false;
+<span class="lineNum">      95 </span>            :             break;
+<span class="lineNum">      96 </span>            :         }
+<span class="lineNum">      97 </span>            :     }
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            :     return rc;
+<span class="lineNum">     100 </span>            : }
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span>            : //
+<span class="lineNum">     103 </span>            : // consume_fasta: consume a FASTA file of reads
+<span class="lineNum">     104 </span>            : //
+<span class="lineNum">     105 </span>            : 
+<a name="106"><span class="lineNum">     106 </span>            : // TODO? Inline in header.</a>
+<span class="lineNum">     107 </span>            : void
+<span class="lineNum">     108 </span><span class="lineCov">        572 : Hashtable::</span>
+<span class="lineNum">     109 </span>            : consume_fasta(
+<span class="lineNum">     110 </span>            :     std:: string const  &amp;filename,
+<span class="lineNum">     111 </span>            :     unsigned int              &amp;total_reads, unsigned long long      &amp;n_consumed
+<span class="lineNum">     112 </span>            : )
+<span class="lineNum">     113 </span>            : {
+<span class="lineNum">     114 </span>            :     IParser *     parser =
+<span class="lineNum">     115 </span><span class="lineCov">        572 :         IParser::get_parser( filename );</span>
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span>            :     consume_fasta(
+<span class="lineNum">     118 </span>            :         parser,
+<span class="lineNum">     119 </span>            :         total_reads, n_consumed
+<span class="lineNum">     120 </span><span class="lineCov">        561 :     );</span>
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span><span class="lineCov">        561 :     delete parser;</span>
+<span class="lineNum">     123 </span><span class="lineCov">        561 : }</span>
+<a name="124"><span class="lineNum">     124 </span>            : </a>
+<span class="lineNum">     125 </span>            : void
+<span class="lineNum">     126 </span><span class="lineCov">        561 : Hashtable::</span>
+<span class="lineNum">     127 </span>            : consume_fasta(
+<span class="lineNum">     128 </span>            :     read_parsers:: IParser *  parser,
+<span class="lineNum">     129 </span>            :     unsigned int                    &amp;total_reads, unsigned long long  &amp;n_consumed
+<span class="lineNum">     130 </span>            : )
+<span class="lineNum">     131 </span>            : {
+<span class="lineNum">     132 </span><span class="lineCov">        561 :     Read                          read;</span>
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            :     // Iterate through the reads and consume their k-mers.
+<span class="lineNum">     135 </span><span class="lineCov">      35815 :     while (!parser-&gt;is_complete( )) {</span>
+<span class="lineNum">     136 </span>            :         bool is_valid;
+<span class="lineNum">     137 </span>            :         try {
+<span class="lineNum">     138 </span><span class="lineCov">      17627 :             read = parser-&gt;get_next_read( );</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         } catch (NoMoreReadsAvailable) {</span>
+<span class="lineNum">     140 </span>            :             break;
+<span class="lineNum">     141 </span>            :         }
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span>            :         unsigned int this_n_consumed =
+<span class="lineNum">     144 </span><span class="lineCov">      17627 :             check_and_process_read(read.sequence, is_valid);</span>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span><span class="lineCov">      17627 :         __sync_add_and_fetch( &amp;n_consumed, this_n_consumed );</span>
+<span class="lineNum">     147 </span><span class="lineCov">      17627 :         __sync_add_and_fetch( &amp;total_reads, 1 );</span>
+<span class="lineNum">     148 </span>            : 
+<span class="lineNum">     149 </span>            :     } // while reads left for parser
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span><span class="lineCov">        561 : } // consume_fasta</span>
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span>            : //
+<span class="lineNum">     154 </span>            : // consume_string: run through every k-mer in the given string, &amp; hash it.
+<a name="155"><span class="lineNum">     155 </span>            : //</a>
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span><span class="lineCov">      46951 : unsigned int Hashtable::consume_string(const std::string &amp;s)</span>
+<span class="lineNum">     158 </span>            : {
+<span class="lineNum">     159 </span><span class="lineCov">      46951 :     const char * sp = s.c_str();</span>
+<span class="lineNum">     160 </span><span class="lineCov">      46951 :     unsigned int n_consumed = 0;</span>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineCov">      46951 :     KmerIterator kmers(sp, _ksize);</span>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span><span class="lineCov">   28284062 :     while(!kmers.done()) {</span>
+<span class="lineNum">     165 </span><span class="lineCov">    9396720 :         HashIntoType kmer = kmers.next();</span>
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span><span class="lineCov">    9396720 :         count(kmer);</span>
+<span class="lineNum">     168 </span><span class="lineCov">    9396720 :         n_consumed++;</span>
+<span class="lineNum">     169 </span>            :     }
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineCov">      46951 :     return n_consumed;</span>
+<span class="lineNum">     172 </span>            : }
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span>            : // technically, get medioid count... our &quot;median&quot; is always a member of the
+<span class="lineNum">     175 </span>            : // population.
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 : void Hashtable::get_median_count(const std::string &amp;s,</span>
+<span class="lineNum">     178 </span>            :                                  BoundedCounterType &amp;median,
+<span class="lineNum">     179 </span>            :                                  float &amp;average,
+<span class="lineNum">     180 </span>            :                                  float &amp;stddev)
+<span class="lineNum">     181 </span>            : {
+<span class="lineNum">     182 </span>            :     std::vector&lt;BoundedCounterType&gt; counts;
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :     this-&gt;get_kmer_counts(s, counts);</span>
+<span class="lineNum">     184 </span>            : 
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :     if (!counts.size()) {</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         throw khmer_exception(&quot;no k-mer counts for this string; too short?&quot;);</span>
+<span class="lineNum">     187 </span>            :     }
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     average = 0;</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :     for (std::vector&lt;BoundedCounterType&gt;::const_iterator i = counts.begin();</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :             i != counts.end(); ++i) {</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :         average += *i;</span>
+<span class="lineNum">     193 </span>            :     }
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     average /= float(counts.size());</span>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     stddev = 0;</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     for (std::vector&lt;BoundedCounterType&gt;::const_iterator i = counts.begin();</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :             i != counts.end(); ++i) {</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :         stddev += (float(*i) - average) * (float(*i) - average);</span>
+<span class="lineNum">     200 </span>            :     }
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     stddev /= float(counts.size());</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :     stddev = sqrt(stddev);</span>
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     sort(counts.begin(), counts.end());</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     median = counts[counts.size() / 2]; // rounds down</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span>            : //
+<a name="209"><span class="lineNum">     209 </span>            : // Optimized filter function for normalize-by-median</a>
+<span class="lineNum">     210 </span>            : //
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 : bool Hashtable::median_at_least(const std::string &amp;s,</span>
+<span class="lineNum">     212 </span>            :                                 unsigned int cutoff)
+<span class="lineNum">     213 </span>            : {
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :     KmerIterator kmers(s.c_str(), _ksize);</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :     unsigned int min_req = 0.5 + float(s.size() - _ksize + 1) / 2;</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :     unsigned int num_cutoff_kmers = 0;</span>
+<span class="lineNum">     217 </span>            : 
+<span class="lineNum">     218 </span>            :     // first loop:
+<span class="lineNum">     219 </span>            :     // accumulate at least min_req worth of counts before checking to see
+<span class="lineNum">     220 </span>            :     // if we have enough high-abundance k-mers to indicate success.
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :     for (unsigned int i = 0; i &lt; min_req; ++i) {</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :         HashIntoType kmer = kmers.next();</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :         if (this-&gt;get_count(kmer) &gt;= cutoff) {</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :             ++num_cutoff_kmers;</span>
+<span class="lineNum">     225 </span>            :         }
+<span class="lineNum">     226 </span>            :     }
+<span class="lineNum">     227 </span>            : 
+<span class="lineNum">     228 </span>            :     // second loop: now check to see if we pass the threshold for each k-mer.
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :     if (num_cutoff_kmers &gt;= min_req) {</span>
+<span class="lineNum">     230 </span>            :         return true;
+<span class="lineNum">     231 </span>            :     }
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :     while(!kmers.done()) {</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :         HashIntoType kmer = kmers.next();</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         if (this-&gt;get_count(kmer) &gt;= cutoff) {</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :             ++num_cutoff_kmers;</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :             if (num_cutoff_kmers &gt;= min_req) {</span>
+<span class="lineNum">     237 </span>            :                 return true;
+<span class="lineNum">     238 </span>            :             }
+<span class="lineNum">     239 </span>            :         }
+<span class="lineNum">     240 </span>            :     }
+<span class="lineNum">     241 </span>            :     return false;
+<span class="lineNum">     242 </span>            : }
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 : void Hashtable::save_tagset(std::string outfilename)</span>
+<span class="lineNum">     245 </span>            : {
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :     ofstream outfile(outfilename.c_str(), ios::binary);</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :     const size_t tagset_size = n_tags();</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :     unsigned int save_ksize = _ksize;</span>
+<span class="lineNum">     249 </span>            : 
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :     HashIntoType * buf = new HashIntoType[tagset_size];</span>
+<span class="lineNum">     251 </span>            : 
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :     outfile.write(SAVED_SIGNATURE, 4);</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :     unsigned char version = SAVED_FORMAT_VERSION;</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;version, 1);</span>
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span><span class="lineNoCov">          0 :     unsigned char ht_type = SAVED_TAGS;</span>
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;ht_type, 1);</span>
+<span class="lineNum">     258 </span>            : 
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;save_ksize, sizeof(save_ksize));</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;tagset_size, sizeof(tagset_size));</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;_tag_density, sizeof(_tag_density));</span>
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :     unsigned int i = 0;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :     for (SeenSet::iterator pi = all_tags.begin(); pi != all_tags.end();</span>
+<span class="lineNum">     265 </span>            :             ++pi, i++) {
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :         buf[i] = *pi;</span>
+<span class="lineNum">     267 </span>            :     }
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :     outfile.write((const char *) buf, sizeof(HashIntoType) * tagset_size);</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :     if (outfile.fail()) {</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         delete[] buf;</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :         throw khmer_file_exception(strerror(errno));</span>
+<span class="lineNum">     273 </span>            :     }
+<span class="lineNum">     274 </span><span class="lineNoCov">          0 :     outfile.close();</span>
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     delete[] buf;</span>
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 : void Hashtable::load_tagset(std::string infilename, bool clear_tags)</span>
+<span class="lineNum">     280 </span>            : {
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :     ifstream infile;</span>
+<span class="lineNum">     282 </span>            : 
+<span class="lineNum">     283 </span>            :     // configure ifstream to raise exceptions for everything.
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :     infile.exceptions(std::ifstream::failbit | std::ifstream::badbit |</span>
+<span class="lineNum">     285 </span>            :                       std::ifstream::eofbit);
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span>            :     try {
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :         infile.open(infilename.c_str(), ios::binary);</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :     } catch (std::ifstream::failure &amp;e) {</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         std::string err;</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :         if (!(infile.is_open())) {</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :             err = &quot;Cannot open tagset file: &quot; + infilename;</span>
+<span class="lineNum">     293 </span>            :         } else {
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :             err = &quot;Unknown error in opening file: &quot; + infilename;</span>
+<span class="lineNum">     295 </span>            :         }
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :         throw khmer_file_exception(err);</span>
+<span class="lineNum">     297 </span>            :     }
+<span class="lineNum">     298 </span>            : 
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :     if (clear_tags) {</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :         all_tags.clear();</span>
+<span class="lineNum">     301 </span>            :     }
+<span class="lineNum">     302 </span>            : 
+<span class="lineNum">     303 </span>            :     unsigned char version, ht_type;
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :     unsigned int save_ksize = 0;</span>
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :     size_t tagset_size = 0;</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :     HashIntoType * buf = NULL;</span>
+<span class="lineNum">     308 </span>            : 
+<span class="lineNum">     309 </span>            :     try {
+<span class="lineNum">     310 </span>            :         char signature[4];
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 :         infile.read(signature, 4);</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;version, 1);</span>
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;ht_type, 1);</span>
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :         if (!(std::string(signature, 4) == SAVED_SIGNATURE)) {</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect file signature 0x&quot;;</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :             for(size_t i=0; i &lt; 4; ++i) {</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :                 err &lt;&lt; std::hex &lt;&lt; (int) signature[i];</span>
+<span class="lineNum">     319 </span>            :             }
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot; while reading tagset from &quot; &lt;&lt; infilename</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot;; should be &quot; &lt;&lt; SAVED_SIGNATURE;</span>
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">     323 </span><span class="lineNoCov">          0 :         } else if (!(version == SAVED_FORMAT_VERSION)) {</span>
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect file format version &quot; &lt;&lt; (int) version</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot; while reading tagset from &quot; &lt;&lt; infilename</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot;; should be &quot; &lt;&lt; (int) SAVED_FORMAT_VERSION;</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :         } else if (!(ht_type == SAVED_TAGS)) {</span>
+<span class="lineNum">     330 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect file format type &quot; &lt;&lt; (int) ht_type</span>
+<span class="lineNum">     332 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot; while reading tagset from &quot; &lt;&lt; infilename;</span>
+<span class="lineNum">     333 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">     334 </span>            :         }
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;save_ksize, sizeof(save_ksize));</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :         if (!(save_ksize == _ksize)) {</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect k-mer size &quot; &lt;&lt; save_ksize</span>
+<span class="lineNum">     340 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot; while reading tagset from &quot; &lt;&lt; infilename;</span>
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">     342 </span>            :         }
+<span class="lineNum">     343 </span>            : 
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;tagset_size, sizeof(tagset_size));</span>
+<span class="lineNum">     345 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;_tag_density, sizeof(_tag_density));</span>
+<span class="lineNum">     346 </span>            : 
+<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         buf = new HashIntoType[tagset_size];</span>
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 :         infile.read((char *) buf, sizeof(HashIntoType) * tagset_size);</span>
+<span class="lineNum">     350 </span>            : 
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         for (unsigned int i = 0; i &lt; tagset_size; i++) {</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :             all_tags.insert(buf[i]);</span>
+<span class="lineNum">     353 </span>            :         }
+<span class="lineNum">     354 </span>            : 
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :         delete[] buf;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :     } catch (std::ifstream::failure &amp;e) {</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :         std::string err = &quot;Error reading data from: &quot; + infilename;</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :         if (buf != NULL) {</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :             delete[] buf;</span>
+<span class="lineNum">     360 </span>            :         }
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :         throw khmer_file_exception(err);</span>
+<span class="lineNum">     362 </span>            :     }
+<a name="363"><span class="lineNum">     363 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     364 </span>            : 
+<span class="lineNum">     365 </span><span class="lineNoCov">          0 : void Hashtable::consume_sequence_and_tag(const std::string&amp; seq,</span>
+<span class="lineNum">     366 </span>            :         unsigned long long&amp; n_consumed,
+<span class="lineNum">     367 </span>            :         SeenSet * found_tags)
+<span class="lineNum">     368 </span>            : {
+<span class="lineNum">     369 </span>            :     bool kmer_tagged;
+<span class="lineNum">     370 </span>            : 
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :     KmerIterator kmers(seq.c_str(), _ksize);</span>
+<span class="lineNum">     372 </span>            :     HashIntoType kmer;
+<span class="lineNum">     373 </span>            : 
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :     unsigned int since = _tag_density / 2 + 1;</span>
+<span class="lineNum">     375 </span>            : 
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :     while(!kmers.done()) {</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :         kmer = kmers.next();</span>
+<span class="lineNum">     378 </span>            :         bool is_new_kmer;
+<span class="lineNum">     379 </span>            : 
+<span class="lineNum">     380 </span>            :         // Set the bits for the kmer in the various hashtables,
+<span class="lineNum">     381 </span>            :         // and report on whether or not they had already been set.
+<span class="lineNum">     382 </span>            :         // This is probably better than first testing and then setting the bits,
+<span class="lineNum">     383 </span>            :         // as a failed test essentially results in doing the same amount of work
+<span class="lineNum">     384 </span>            :         // twice.
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 :         if ((is_new_kmer = test_and_set_bits( kmer ))) {</span>
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :             ++n_consumed;</span>
+<span class="lineNum">     387 </span>            :         }
+<span class="lineNum">     388 </span>            : 
+<span class="lineNum">     389 </span>            : #if (1)
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :         if (is_new_kmer) {</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :             ++since;</span>
+<span class="lineNum">     392 </span>            :         } else {
+<span class="lineNum">     393 </span><span class="lineNoCov">          0 :             ACQUIRE_ALL_TAGS_SPIN_LOCK</span>
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :             kmer_tagged = set_contains(all_tags, kmer);</span>
+<span class="lineNum">     395 </span><span class="lineNoCov">          0 :             RELEASE_ALL_TAGS_SPIN_LOCK</span>
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :             if (kmer_tagged) {</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :                 since = 1;</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :                 if (found_tags) {</span>
+<span class="lineNum">     399 </span>            :                     found_tags-&gt;insert(kmer);
+<span class="lineNum">     400 </span>            :                 }
+<span class="lineNum">     401 </span>            :             } else {
+<span class="lineNum">     402 </span><span class="lineNoCov">          0 :                 ++since;</span>
+<span class="lineNum">     403 </span>            :             }
+<span class="lineNum">     404 </span>            :         }
+<span class="lineNum">     405 </span>            : #else
+<span class="lineNum">     406 </span>            :         if (!is_new_kmer &amp;&amp; set_contains(all_tags, kmer)) {
+<span class="lineNum">     407 </span>            :             since = 1;
+<span class="lineNum">     408 </span>            :             if (found_tags) {
+<span class="lineNum">     409 </span>            :                 found_tags-&gt;insert(kmer);
+<span class="lineNum">     410 </span>            :             }
+<span class="lineNum">     411 </span>            :         } else {
+<span class="lineNum">     412 </span>            :             since++;
+<span class="lineNum">     413 </span>            :         }
+<span class="lineNum">     414 </span>            : #endif
+<span class="lineNum">     415 </span>            : 
+<span class="lineNum">     416 </span><span class="lineNoCov">          0 :         if (since &gt;= _tag_density) {</span>
+<span class="lineNum">     417 </span><span class="lineNoCov">          0 :             ACQUIRE_ALL_TAGS_SPIN_LOCK</span>
+<span class="lineNum">     418 </span><span class="lineNoCov">          0 :             all_tags.insert(kmer);</span>
+<span class="lineNum">     419 </span><span class="lineNoCov">          0 :             RELEASE_ALL_TAGS_SPIN_LOCK</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 :             if (found_tags) {</span>
+<span class="lineNum">     421 </span>            :                 found_tags-&gt;insert(kmer);
+<span class="lineNum">     422 </span>            :             }
+<span class="lineNum">     423 </span>            :             since = 1;
+<span class="lineNum">     424 </span>            :         }
+<span class="lineNum">     425 </span>            : 
+<span class="lineNum">     426 </span>            :     } // iteration over kmers
+<span class="lineNum">     427 </span>            : 
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :     if (since &gt;= _tag_density/2 - 1) {</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :         ACQUIRE_ALL_TAGS_SPIN_LOCK</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :         all_tags.insert(kmer);  // insert the last k-mer, too.</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :         RELEASE_ALL_TAGS_SPIN_LOCK</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :         if (found_tags) {</span>
+<span class="lineNum">     433 </span>            :             found_tags-&gt;insert(kmer);
+<span class="lineNum">     434 </span>            :         }
+<span class="lineNum">     435 </span>            :     }
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     437 </span>            : 
+<span class="lineNum">     438 </span>            : //
+<span class="lineNum">     439 </span>            : // consume_fasta_and_tag: consume a FASTA file of reads, tagging reads every
+<span class="lineNum">     440 </span>            : //     so often.
+<span class="lineNum">     441 </span>            : //
+<span class="lineNum">     442 </span>            : 
+<a name="443"><span class="lineNum">     443 </span>            : // TODO? Inline in header.</a>
+<span class="lineNum">     444 </span>            : void
+<span class="lineNum">     445 </span><span class="lineNoCov">          0 : Hashtable::</span>
+<span class="lineNum">     446 </span>            : consume_fasta_and_tag(
+<span class="lineNum">     447 </span>            :     std:: string const  &amp;filename,
+<span class="lineNum">     448 </span>            :     unsigned int              &amp;total_reads, unsigned long long      &amp;n_consumed
+<span class="lineNum">     449 </span>            : )
+<span class="lineNum">     450 </span>            : {
+<span class="lineNum">     451 </span>            :     IParser *     parser =
+<span class="lineNum">     452 </span><span class="lineNoCov">          0 :         IParser::get_parser( filename );</span>
+<span class="lineNum">     453 </span>            : 
+<span class="lineNum">     454 </span>            :     consume_fasta_and_tag(
+<span class="lineNum">     455 </span>            :         parser,
+<span class="lineNum">     456 </span>            :         total_reads, n_consumed
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :     );</span>
+<span class="lineNum">     458 </span>            : 
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :     delete parser;</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 : }</span>
+<a name="461"><span class="lineNum">     461 </span>            : </a>
+<span class="lineNum">     462 </span>            : void
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 : Hashtable::</span>
+<span class="lineNum">     464 </span>            : consume_fasta_and_tag(
+<span class="lineNum">     465 </span>            :     read_parsers:: IParser *  parser,
+<span class="lineNum">     466 </span>            :     unsigned int                    &amp;total_reads,   unsigned long long      &amp;n_consumed
+<span class="lineNum">     467 </span>            : )
+<span class="lineNum">     468 </span>            : {
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 :     Read                          read;</span>
+<span class="lineNum">     470 </span>            : 
+<span class="lineNum">     471 </span>            :     // TODO? Delete the following assignments.
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :     total_reads = 0;</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :     n_consumed = 0;</span>
+<span class="lineNum">     474 </span>            : 
+<span class="lineNum">     475 </span>            :     // Iterate through the reads and consume their k-mers.
+<span class="lineNum">     476 </span><span class="lineNoCov">          0 :     while (!parser-&gt;is_complete( )) {</span>
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span>            :         try {
+<span class="lineNum">     479 </span><span class="lineNoCov">          0 :             read = parser-&gt;get_next_read( );</span>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :         } catch (NoMoreReadsAvailable &amp;e) {</span>
+<span class="lineNum">     481 </span>            :             // Bail out if this error is raised
+<span class="lineNum">     482 </span>            :             break;
+<span class="lineNum">     483 </span>            :         }
+<span class="lineNum">     484 </span>            : 
+<span class="lineNum">     485 </span><span class="lineNoCov">          0 :         if (check_and_normalize_read( read.sequence )) {</span>
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 :             unsigned long long this_n_consumed = 0;</span>
+<span class="lineNum">     487 </span><span class="lineNoCov">          0 :             consume_sequence_and_tag( read.sequence, this_n_consumed );</span>
+<span class="lineNum">     488 </span>            : 
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :             __sync_add_and_fetch( &amp;n_consumed, this_n_consumed );</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :             __sync_add_and_fetch( &amp;total_reads, 1 );</span>
+<span class="lineNum">     491 </span>            :         }
+<span class="lineNum">     492 </span>            :     } // while reads left for parser
+<span class="lineNum">     493 </span>            : 
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     495 </span>            : 
+<span class="lineNum">     496 </span>            : //
+<span class="lineNum">     497 </span>            : // consume_fasta_and_tag_with_stoptags: consume a FASTA file of reads,
+<span class="lineNum">     498 </span>            : //     tagging reads every so often.  Do not insert matches to stoptags,
+<span class="lineNum">     499 </span>            : //     and join the tags across those gaps.
+<span class="lineNum">     500 </span>            : //
+<span class="lineNum">     501 </span>            : 
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 : void Hashtable::consume_fasta_and_tag_with_stoptags(const std::string &amp;filename,</span>
+<span class="lineNum">     503 </span>            :         unsigned int &amp;total_reads,
+<span class="lineNum">     504 </span>            :         unsigned long long &amp;n_consumed)
+<span class="lineNum">     505 </span>            : {
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :     total_reads = 0;</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :     n_consumed = 0;</span>
+<span class="lineNum">     508 </span>            : 
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :     IParser* parser = IParser::get_parser(filename.c_str());</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :     Read read;</span>
+<span class="lineNum">     511 </span>            : 
+<span class="lineNum">     512 </span><span class="lineNoCov">          0 :     string seq = &quot;&quot;;</span>
+<span class="lineNum">     513 </span>            : 
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :     SeenSet read_tags;</span>
+<span class="lineNum">     515 </span>            : 
+<span class="lineNum">     516 </span>            :     //
+<span class="lineNum">     517 </span>            :     // iterate through the FASTA file &amp; consume the reads.
+<span class="lineNum">     518 </span>            :     //
+<span class="lineNum">     519 </span>            : 
+<span class="lineNum">     520 </span><span class="lineNoCov">          0 :     while(!parser-&gt;is_complete())  {</span>
+<span class="lineNum">     521 </span>            :         try {
+<span class="lineNum">     522 </span><span class="lineNoCov">          0 :             read = parser-&gt;get_next_read();</span>
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 :         } catch (NoMoreReadsAvailable &amp;exc) {</span>
+<span class="lineNum">     524 </span>            :             break;
+<span class="lineNum">     525 </span>            :         }
+<span class="lineNum">     526 </span>            :         seq = read.sequence;
+<span class="lineNum">     527 </span>            : 
+<span class="lineNum">     528 </span>            :         read_tags.clear();
+<span class="lineNum">     529 </span>            : 
+<span class="lineNum">     530 </span>            :         // n_consumed += this_n_consumed;
+<span class="lineNum">     531 </span>            : 
+<span class="lineNum">     532 </span><span class="lineNoCov">          0 :         if (check_and_normalize_read(seq)) {    // process?</span>
+<span class="lineNum">     533 </span>            :             bool is_new_kmer;
+<span class="lineNum">     534 </span><span class="lineNoCov">          0 :             KmerIterator kmers(seq.c_str(), _ksize);</span>
+<span class="lineNum">     535 </span>            : 
+<span class="lineNum">     536 </span>            :             HashIntoType kmer, last_kmer;
+<span class="lineNum">     537 </span><span class="lineNoCov">          0 :             bool is_first_kmer = true;</span>
+<span class="lineNum">     538 </span>            : 
+<span class="lineNum">     539 </span><span class="lineNoCov">          0 :             unsigned int since = _tag_density / 2 + 1;</span>
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :             while (!kmers.done()) {</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :                 kmer = kmers.next();</span>
+<span class="lineNum">     542 </span>            : 
+<span class="lineNum">     543 </span><span class="lineNoCov">          0 :                 if (!set_contains(stop_tags, kmer)) { // NOT a stop tag... ok.</span>
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :                     is_new_kmer = (bool) !get_count(kmer);</span>
+<span class="lineNum">     545 </span><span class="lineNoCov">          0 :                     if (is_new_kmer) {</span>
+<span class="lineNum">     546 </span><span class="lineNoCov">          0 :                         count(kmer);</span>
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 :                         n_consumed++;</span>
+<span class="lineNum">     548 </span>            :                     }
+<span class="lineNum">     549 </span>            : 
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :                     if (!is_new_kmer &amp;&amp; set_contains(all_tags, kmer)) {</span>
+<span class="lineNum">     551 </span>            :                         read_tags.insert(kmer);
+<span class="lineNum">     552 </span><span class="lineNoCov">          0 :                         since = 1;</span>
+<span class="lineNum">     553 </span>            :                     } else {
+<span class="lineNum">     554 </span><span class="lineNoCov">          0 :                         since++;</span>
+<span class="lineNum">     555 </span>            :                     }
+<span class="lineNum">     556 </span>            : 
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :                     if (since &gt;= _tag_density) {</span>
+<span class="lineNum">     558 </span><span class="lineNoCov">          0 :                         all_tags.insert(kmer);</span>
+<span class="lineNum">     559 </span>            :                         read_tags.insert(kmer);
+<span class="lineNum">     560 </span><span class="lineNoCov">          0 :                         since = 1;</span>
+<span class="lineNum">     561 </span>            :                     }
+<span class="lineNum">     562 </span>            :                 } else {                // stop tag!  do not insert, but connect.
+<span class="lineNum">     563 </span>            :                     // before first tag insertion; insert last kmer.
+<span class="lineNum">     564 </span><span class="lineNoCov">          0 :                     if (!is_first_kmer &amp;&amp; read_tags.empty()) {</span>
+<span class="lineNum">     565 </span>            :                         read_tags.insert(last_kmer);
+<span class="lineNum">     566 </span><span class="lineNoCov">          0 :                         all_tags.insert(last_kmer);</span>
+<span class="lineNum">     567 </span>            :                     }
+<span class="lineNum">     568 </span>            : 
+<span class="lineNum">     569 </span><span class="lineNoCov">          0 :                     since = _tag_density - 1; // insert next kmer, too.</span>
+<span class="lineNum">     570 </span>            :                 }
+<span class="lineNum">     571 </span>            : 
+<span class="lineNum">     572 </span><span class="lineNoCov">          0 :                 last_kmer = kmer;</span>
+<span class="lineNum">     573 </span><span class="lineNoCov">          0 :                 is_first_kmer = false;</span>
+<span class="lineNum">     574 </span>            :             }
+<span class="lineNum">     575 </span>            : 
+<span class="lineNum">     576 </span><span class="lineNoCov">          0 :             if (!set_contains(stop_tags, kmer)) { // NOT a stop tag... ok.</span>
+<span class="lineNum">     577 </span><span class="lineNoCov">          0 :                 is_new_kmer = (bool) !get_count(kmer);</span>
+<span class="lineNum">     578 </span><span class="lineNoCov">          0 :                 if (is_new_kmer) {</span>
+<span class="lineNum">     579 </span><span class="lineNoCov">          0 :                     count(kmer);</span>
+<span class="lineNum">     580 </span><span class="lineNoCov">          0 :                     n_consumed++;</span>
+<span class="lineNum">     581 </span>            :                 }
+<span class="lineNum">     582 </span>            : 
+<span class="lineNum">     583 </span><span class="lineNoCov">          0 :                 if (since &gt;= _tag_density/2 - 1) {</span>
+<span class="lineNum">     584 </span><span class="lineNoCov">          0 :                     all_tags.insert(kmer);      // insert the last k-mer, too.</span>
+<span class="lineNum">     585 </span>            :                     read_tags.insert(kmer);
+<span class="lineNum">     586 </span>            :                 }
+<span class="lineNum">     587 </span>            :             }
+<span class="lineNum">     588 </span>            :         }
+<span class="lineNum">     589 </span>            : 
+<span class="lineNum">     590 </span><span class="lineNoCov">          0 :         if (read_tags.size() &gt; 1) {</span>
+<span class="lineNum">     591 </span><span class="lineNoCov">          0 :             partition-&gt;assign_partition_id(*(read_tags.begin()), read_tags);</span>
+<span class="lineNum">     592 </span>            :         }
+<span class="lineNum">     593 </span>            : 
+<span class="lineNum">     594 </span>            :         // reset the sequence info, increment read number
+<span class="lineNum">     595 </span><span class="lineNoCov">          0 :         total_reads++;</span>
+<span class="lineNum">     596 </span>            : 
+<span class="lineNum">     597 </span>            :     }
+<span class="lineNum">     598 </span><span class="lineNoCov">          0 :     delete parser;</span>
+<span class="lineNum">     599 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     600 </span>            : 
+<span class="lineNum">     601 </span>            : //
+<span class="lineNum">     602 </span>            : // divide_tags_into_subsets - take all of the tags in 'all_tags', and
+<span class="lineNum">     603 </span>            : //   divide them into subsets (based on starting tag) of &lt;= given size.
+<a name="604"><span class="lineNum">     604 </span>            : //</a>
+<span class="lineNum">     605 </span>            : 
+<span class="lineNum">     606 </span><span class="lineNoCov">          0 : void Hashtable::divide_tags_into_subsets(unsigned int subset_size,</span>
+<span class="lineNum">     607 </span>            :         SeenSet&amp; divvy)
+<span class="lineNum">     608 </span>            : {
+<span class="lineNum">     609 </span><span class="lineNoCov">          0 :     unsigned int i = 0;</span>
+<span class="lineNum">     610 </span>            : 
+<span class="lineNum">     611 </span><span class="lineNoCov">          0 :     for (SeenSet::const_iterator si = all_tags.begin(); si != all_tags.end();</span>
+<span class="lineNum">     612 </span>            :             ++si) {
+<span class="lineNum">     613 </span><span class="lineNoCov">          0 :         if (i % subset_size == 0) {</span>
+<span class="lineNum">     614 </span><span class="lineNoCov">          0 :             divvy.insert(*si);</span>
+<span class="lineNum">     615 </span><span class="lineNoCov">          0 :             i = 0;</span>
+<span class="lineNum">     616 </span>            :         }
+<span class="lineNum">     617 </span><span class="lineNoCov">          0 :         i++;</span>
+<span class="lineNum">     618 </span>            :     }
+<span class="lineNum">     619 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     620 </span>            : 
+<span class="lineNum">     621 </span>            : //
+<span class="lineNum">     622 </span>            : // consume_partitioned_fasta: consume a FASTA file of reads
+<span class="lineNum">     623 </span>            : //
+<span class="lineNum">     624 </span>            : 
+<span class="lineNum">     625 </span><span class="lineNoCov">          0 : void Hashtable::consume_partitioned_fasta(const std::string &amp;filename,</span>
+<span class="lineNum">     626 </span>            :         unsigned int &amp;total_reads,
+<span class="lineNum">     627 </span>            :         unsigned long long &amp;n_consumed)
+<span class="lineNum">     628 </span>            : {
+<span class="lineNum">     629 </span><span class="lineNoCov">          0 :     total_reads = 0;</span>
+<span class="lineNum">     630 </span><span class="lineNoCov">          0 :     n_consumed = 0;</span>
+<span class="lineNum">     631 </span>            : 
+<span class="lineNum">     632 </span><span class="lineNoCov">          0 :     IParser* parser = IParser::get_parser(filename.c_str());</span>
+<span class="lineNum">     633 </span><span class="lineNoCov">          0 :     Read read;</span>
+<span class="lineNum">     634 </span>            : 
+<span class="lineNum">     635 </span><span class="lineNoCov">          0 :     string seq = &quot;&quot;;</span>
+<span class="lineNum">     636 </span>            : 
+<span class="lineNum">     637 </span>            :     // reset the master subset partition
+<span class="lineNum">     638 </span><span class="lineNoCov">          0 :     delete partition;</span>
+<span class="lineNum">     639 </span><span class="lineNoCov">          0 :     partition = new SubsetPartition(this);</span>
+<span class="lineNum">     640 </span>            : 
+<span class="lineNum">     641 </span>            :     //
+<span class="lineNum">     642 </span>            :     // iterate through the FASTA file &amp; consume the reads.
+<span class="lineNum">     643 </span>            :     //
+<span class="lineNum">     644 </span>            : 
+<span class="lineNum">     645 </span><span class="lineNoCov">          0 :     while(!parser-&gt;is_complete())  {</span>
+<span class="lineNum">     646 </span>            :         try {
+<span class="lineNum">     647 </span><span class="lineNoCov">          0 :             read = parser-&gt;get_next_read();</span>
+<span class="lineNum">     648 </span><span class="lineNoCov">          0 :         } catch (NoMoreReadsAvailable &amp;exc) {</span>
+<span class="lineNum">     649 </span>            :             break;
+<span class="lineNum">     650 </span>            :         }
+<span class="lineNum">     651 </span>            :         seq = read.sequence;
+<span class="lineNum">     652 </span>            : 
+<span class="lineNum">     653 </span><span class="lineNoCov">          0 :         if (check_and_normalize_read(seq)) {</span>
+<span class="lineNum">     654 </span>            :             // First, figure out what the partition is (if non-zero), and save that.
+<span class="lineNum">     655 </span><span class="lineNoCov">          0 :             PartitionID p = _parse_partition_id(read.name);</span>
+<span class="lineNum">     656 </span>            : 
+<span class="lineNum">     657 </span>            :             // Then consume the sequence
+<span class="lineNum">     658 </span><span class="lineNoCov">          0 :             n_consumed += consume_string(seq); // @CTB why are we doing this?</span>
+<span class="lineNum">     659 </span>            : 
+<span class="lineNum">     660 </span>            :             // Next, compute the tag &amp; set the partition, if nonzero
+<span class="lineNum">     661 </span><span class="lineNoCov">          0 :             HashIntoType kmer = _hash(seq.c_str(), _ksize);</span>
+<span class="lineNum">     662 </span><span class="lineNoCov">          0 :             all_tags.insert(kmer);</span>
+<span class="lineNum">     663 </span><span class="lineNoCov">          0 :             if (p &gt; 0) {</span>
+<span class="lineNum">     664 </span><span class="lineNoCov">          0 :                 partition-&gt;set_partition_id(kmer, p);</span>
+<span class="lineNum">     665 </span>            :             }
+<span class="lineNum">     666 </span>            :         }
+<span class="lineNum">     667 </span>            : 
+<span class="lineNum">     668 </span>            :         // reset the sequence info, increment read number
+<span class="lineNum">     669 </span><span class="lineNoCov">          0 :         total_reads++;</span>
+<span class="lineNum">     670 </span>            :     }
+<span class="lineNum">     671 </span>            : 
+<span class="lineNum">     672 </span><span class="lineNoCov">          0 :     delete parser;</span>
+<span class="lineNum">     673 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     674 </span>            : 
+<span class="lineNum">     675 </span>            : //
+<span class="lineNum">     676 </span>            : // consume_fasta: consume a FASTA file of reads
+<span class="lineNum">     677 </span>            : //
+<span class="lineNum">     678 </span>            : 
+<span class="lineNum">     679 </span><span class="lineNoCov">          0 : void Hashtable::consume_fasta_and_traverse(const std::string &amp;filename,</span>
+<span class="lineNum">     680 </span>            :         unsigned int radius,
+<span class="lineNum">     681 </span>            :         unsigned int big_threshold,
+<span class="lineNum">     682 </span>            :         unsigned int transfer_threshold,
+<span class="lineNum">     683 </span>            :         CountingHash &amp;counting)
+<span class="lineNum">     684 </span>            : {
+<span class="lineNum">     685 </span><span class="lineNoCov">          0 :     unsigned long long total_reads = 0;</span>
+<span class="lineNum">     686 </span>            : 
+<span class="lineNum">     687 </span><span class="lineNoCov">          0 :     IParser* parser = IParser::get_parser(filename.c_str());</span>
+<span class="lineNum">     688 </span><span class="lineNoCov">          0 :     Read read;</span>
+<span class="lineNum">     689 </span>            : 
+<span class="lineNum">     690 </span><span class="lineNoCov">          0 :     string seq = &quot;&quot;;</span>
+<span class="lineNum">     691 </span>            : 
+<span class="lineNum">     692 </span>            :     //
+<span class="lineNum">     693 </span>            :     // iterate through the FASTA file &amp; consume the reads.
+<span class="lineNum">     694 </span>            :     //
+<span class="lineNum">     695 </span>            : 
+<span class="lineNum">     696 </span><span class="lineNoCov">          0 :     while(!parser-&gt;is_complete())  {</span>
+<span class="lineNum">     697 </span>            :         try {
+<span class="lineNum">     698 </span><span class="lineNoCov">          0 :             read = parser-&gt;get_next_read();</span>
+<span class="lineNum">     699 </span><span class="lineNoCov">          0 :         } catch (NoMoreReadsAvailable &amp;exc) {</span>
+<span class="lineNum">     700 </span>            :             break;
+<span class="lineNum">     701 </span>            :         }
+<span class="lineNum">     702 </span>            :         seq = read.sequence;
+<span class="lineNum">     703 </span>            : 
+<span class="lineNum">     704 </span><span class="lineNoCov">          0 :         if (check_and_normalize_read(seq)) {    // process?</span>
+<span class="lineNum">     705 </span><span class="lineNoCov">          0 :             KmerIterator kmers(seq.c_str(), _ksize);</span>
+<span class="lineNum">     706 </span>            : 
+<span class="lineNum">     707 </span><span class="lineNoCov">          0 :             bool is_first_kmer = true;</span>
+<span class="lineNum">     708 </span>            :             Kmer kmer(0,0,0);
+<span class="lineNum">     709 </span><span class="lineNoCov">          0 :             while (!kmers.done()) {</span>
+<span class="lineNum">     710 </span><span class="lineNoCov">          0 :                 kmer = kmers.next();</span>
+<span class="lineNum">     711 </span>            : 
+<span class="lineNum">     712 </span><span class="lineNoCov">          0 :                 if (set_contains(stop_tags, kmer)) {</span>
+<span class="lineNum">     713 </span>            :                     break;
+<span class="lineNum">     714 </span>            :                 }
+<span class="lineNum">     715 </span><span class="lineNoCov">          0 :                 count(kmer);</span>
+<span class="lineNum">     716 </span>            :                 is_first_kmer = false;
+<span class="lineNum">     717 </span>            :             }
+<span class="lineNum">     718 </span>            : 
+<span class="lineNum">     719 </span><span class="lineNoCov">          0 :             if (!is_first_kmer) {       // traverse</span>
+<span class="lineNum">     720 </span>            :                 KmerSet keeper;
+<span class="lineNum">     721 </span><span class="lineNoCov">          0 :                 unsigned int n = traverse_from_kmer(kmer, radius, keeper);</span>
+<span class="lineNum">     722 </span><span class="lineNoCov">          0 :                 if (n &gt;= big_threshold) {</span>
+<span class="lineNum">     723 </span>            : #if VERBOSE_REPARTITION
+<span class="lineNum">     724 </span>            :                     std::cout &lt;&lt; &quot;lmp: &quot; &lt;&lt; n &lt;&lt; &quot;; added: &quot; &lt;&lt; stop_tags.size() &lt;&lt; &quot;\n&quot;;
+<span class="lineNum">     725 </span>            : #endif // VERBOSE_REPARTITION
+<span class="lineNum">     726 </span><span class="lineNoCov">          0 :                     count_and_transfer_to_stoptags(keeper, transfer_threshold, counting);</span>
+<span class="lineNum">     727 </span>            :                 }
+<span class="lineNum">     728 </span>            :             }
+<span class="lineNum">     729 </span>            :         }
+<span class="lineNum">     730 </span>            : 
+<span class="lineNum">     731 </span>            :         // reset the sequence info, increment read number
+<span class="lineNum">     732 </span><span class="lineNoCov">          0 :         total_reads++;</span>
+<span class="lineNum">     733 </span>            : 
+<span class="lineNum">     734 </span>            :         // run callback, if specified
+<span class="lineNum">     735 </span><span class="lineNoCov">          0 :         if (total_reads % CALLBACK_PERIOD == 0) {</span>
+<span class="lineNum">     736 </span><span class="lineNoCov">          0 :             std::cout &lt;&lt; &quot;n reads: &quot; &lt;&lt; total_reads &lt;&lt; &quot;\n&quot;;</span>
+<span class="lineNum">     737 </span>            :         }
+<span class="lineNum">     738 </span>            :     }
+<span class="lineNum">     739 </span><span class="lineNoCov">          0 :     delete parser;</span>
+<span class="lineNum">     740 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     741 </span>            : 
+<span class="lineNum">     742 </span>            : //////////////////////////////////////////////////////////////////////
+<a name="743"><span class="lineNum">     743 </span>            : // graph stuff</a>
+<span class="lineNum">     744 </span>            : 
+<span class="lineNum">     745 </span><span class="lineNoCov">          0 : void Hashtable::calc_connected_graph_size(Kmer start,</span>
+<span class="lineNum">     746 </span>            :         unsigned long long&amp; count,
+<span class="lineNum">     747 </span>            :         KmerSet&amp; keeper,
+<span class="lineNum">     748 </span>            :         const unsigned long long threshold,
+<span class="lineNum">     749 </span>            :         bool break_on_circum)
+<span class="lineNum">     750 </span>            : const
+<span class="lineNum">     751 </span>            : {
+<span class="lineNum">     752 </span><span class="lineNoCov">          0 :     const BoundedCounterType val = get_count(start);</span>
+<span class="lineNum">     753 </span>            : 
+<span class="lineNum">     754 </span><span class="lineNoCov">          0 :     if (val == 0) {</span>
+<span class="lineNum">     755 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">     756 </span>            :     }
+<span class="lineNum">     757 </span>            : 
+<span class="lineNum">     758 </span><span class="lineNoCov">          0 :     Traverser traverser(this);</span>
+<span class="lineNum">     759 </span><span class="lineNoCov">          0 :     KmerQueue node_q;</span>
+<span class="lineNum">     760 </span>            :     node_q.push(start);
+<span class="lineNum">     761 </span>            : 
+<span class="lineNum">     762 </span>            :     // Avoid high-circumference k-mers
+<span class="lineNum">     763 </span>            :     auto filter = [&amp;] (Kmer&amp; n) {
+<span class="lineNum">     764 </span><span class="lineNoCov">          0 :         return !(break_on_circum &amp;&amp;</span>
+<span class="lineNum">     765 </span><span class="lineNoCov">          0 :                  traverser.degree(n) &gt; 4);</span>
+<span class="lineNum">     766 </span>            :     };
+<span class="lineNum">     767 </span>            : 
+<span class="lineNum">     768 </span><span class="lineNoCov">          0 :     while(!node_q.empty()) {</span>
+<span class="lineNum">     769 </span><span class="lineNoCov">          0 :         Kmer node = node_q.front();</span>
+<span class="lineNum">     770 </span><span class="lineNoCov">          0 :         node_q.pop();</span>
+<span class="lineNum">     771 </span>            : 
+<span class="lineNum">     772 </span>            :         // have we already seen me? don't count; exit.
+<span class="lineNum">     773 </span><span class="lineNoCov">          0 :         if (set_contains(keeper, node)) {</span>
+<span class="lineNum">     774 </span><span class="lineNoCov">          0 :             continue;</span>
+<span class="lineNum">     775 </span>            :         }
+<span class="lineNum">     776 </span>            : 
+<span class="lineNum">     777 </span>            :         // is this in stop_tags?
+<span class="lineNum">     778 </span><span class="lineNoCov">          0 :         if (set_contains(stop_tags, node)) {</span>
+<span class="lineNum">     779 </span>            :             continue;
+<span class="lineNum">     780 </span>            :         }
+<span class="lineNum">     781 </span>            : 
+<span class="lineNum">     782 </span>            :         // keep track of both seen kmers, and counts.
+<span class="lineNum">     783 </span>            :         keeper.insert(node);
+<span class="lineNum">     784 </span>            : 
+<span class="lineNum">     785 </span><span class="lineNoCov">          0 :         count += 1;</span>
+<span class="lineNum">     786 </span>            : 
+<span class="lineNum">     787 </span>            :         // are we past the threshold? truncate search.
+<span class="lineNum">     788 </span><span class="lineNoCov">          0 :         if (threshold &amp;&amp; count &gt;= threshold) {</span>
+<span class="lineNum">     789 </span><span class="lineNoCov">          0 :             return;</span>
+<span class="lineNum">     790 </span>            :         }
+<span class="lineNum">     791 </span>            : 
+<span class="lineNum">     792 </span>            :         // otherwise, explore in all directions.
+<span class="lineNum">     793 </span><span class="lineNoCov">          0 :         traverser.traverse_right(node, node_q, filter);</span>
+<span class="lineNum">     794 </span><span class="lineNoCov">          0 :         traverser.traverse_left(node, node_q, filter);</span>
+<span class="lineNum">     795 </span>            :     }
+<a name="796"><span class="lineNum">     796 </span>            : }</a>
+<span class="lineNum">     797 </span>            : 
+<span class="lineNum">     798 </span><span class="lineNoCov">          0 : unsigned int Hashtable::kmer_degree(HashIntoType kmer_f, HashIntoType kmer_r)</span>
+<span class="lineNum">     799 </span>            : {
+<span class="lineNum">     800 </span><span class="lineNoCov">          0 :     Traverser traverser(this);</span>
+<span class="lineNum">     801 </span><span class="lineNoCov">          0 :     Kmer node = build_kmer(kmer_f, kmer_r);</span>
+<span class="lineNum">     802 </span><span class="lineNoCov">          0 :     return traverser.degree(node);</span>
+<a name="803"><span class="lineNum">     803 </span>            : }</a>
+<span class="lineNum">     804 </span>            : 
+<span class="lineNum">     805 </span><span class="lineNoCov">          0 : unsigned int Hashtable::kmer_degree(const char * kmer_s)</span>
+<span class="lineNum">     806 </span>            : {
+<span class="lineNum">     807 </span><span class="lineNoCov">          0 :     Traverser traverser(this);</span>
+<span class="lineNum">     808 </span><span class="lineNoCov">          0 :     Kmer node = build_kmer(kmer_s);</span>
+<span class="lineNum">     809 </span><span class="lineNoCov">          0 :     return traverser.degree(node);</span>
+<span class="lineNum">     810 </span>            : }
+<span class="lineNum">     811 </span>            : 
+<span class="lineNum">     812 </span><span class="lineCov">        172 : void Hashtable::filter_if_present(const std::string &amp;infilename,</span>
+<span class="lineNum">     813 </span>            :                                   const std::string &amp;outputfile)
+<span class="lineNum">     814 </span>            : {
+<span class="lineNum">     815 </span><span class="lineCov">        172 :     IParser* parser = IParser::get_parser(infilename);</span>
+<span class="lineNum">     816 </span><span class="lineCov">        513 :     ofstream outfile(outputfile.c_str());</span>
+<span class="lineNum">     817 </span>            : 
+<span class="lineNum">     818 </span><span class="lineCov">        171 :     unsigned int total_reads = 0;</span>
+<span class="lineNum">     819 </span><span class="lineCov">        171 :     unsigned int reads_kept = 0;</span>
+<span class="lineNum">     820 </span>            : 
+<span class="lineNum">     821 </span><span class="lineCov">        342 :     Read read;</span>
+<span class="lineNum">     822 </span>            :     string seq;
+<span class="lineNum">     823 </span>            : 
+<span class="lineNum">     824 </span>            :     HashIntoType kmer;
+<span class="lineNum">     825 </span>            : 
+<span class="lineNum">     826 </span><span class="lineCov">      11742 :     while(!parser-&gt;is_complete()) {</span>
+<span class="lineNum">     827 </span>            :         try {
+<span class="lineNum">     828 </span><span class="lineCov">      11571 :             read = parser-&gt;get_next_read();</span>
+<span class="lineNum">     829 </span><span class="lineNoCov">          0 :         } catch (NoMoreReadsAvailable &amp;exc) {</span>
+<span class="lineNum">     830 </span>            :             break;
+<span class="lineNum">     831 </span>            :         }
+<span class="lineNum">     832 </span>            :         seq = read.sequence;
+<span class="lineNum">     833 </span>            : 
+<span class="lineNum">     834 </span><span class="lineCov">      11571 :         if (check_and_normalize_read(seq)) {</span>
+<span class="lineNum">     835 </span><span class="lineCov">      23142 :             KmerIterator kmers(seq.c_str(), _ksize);</span>
+<span class="lineNum">     836 </span>            :             bool keep = true;
+<span class="lineNum">     837 </span>            : 
+<span class="lineNum">     838 </span><span class="lineCov">    2769052 :             while (!kmers.done()) {</span>
+<span class="lineNum">     839 </span><span class="lineCov">    1380925 :                 kmer = kmers.next();</span>
+<span class="lineNum">     840 </span><span class="lineCov">    1380925 :                 if (get_count(kmer)) {</span>
+<span class="lineNum">     841 </span>            :                     keep = false;
+<span class="lineNum">     842 </span>            :                     break;
+<span class="lineNum">     843 </span>            :                 }
+<span class="lineNum">     844 </span>            :             }
+<span class="lineNum">     845 </span>            : 
+<span class="lineNum">     846 </span><span class="lineCov">      11571 :             if (keep) {</span>
+<span class="lineNum">     847 </span><span class="lineCov">       3601 :                 outfile &lt;&lt; &quot;&gt;&quot; &lt;&lt; read.name;</span>
+<span class="lineNum">     848 </span><span class="lineCov">       7202 :                 outfile &lt;&lt; &quot;\n&quot; &lt;&lt; seq &lt;&lt; &quot;\n&quot;;</span>
+<span class="lineNum">     849 </span>            :                 reads_kept++;
+<span class="lineNum">     850 </span>            :             }
+<span class="lineNum">     851 </span>            : 
+<span class="lineNum">     852 </span><span class="lineCov">      11571 :             total_reads++;</span>
+<span class="lineNum">     853 </span>            :         }
+<span class="lineNum">     854 </span>            :     }
+<span class="lineNum">     855 </span>            : 
+<span class="lineNum">     856 </span><span class="lineCov">        171 :     delete parser;</span>
+<span class="lineNum">     857 </span><span class="lineCov">        171 :     parser = NULL;</span>
+<span class="lineNum">     858 </span>            : 
+<span class="lineNum">     859 </span><span class="lineCov">        171 :     return;</span>
+<a name="860"><span class="lineNum">     860 </span>            : }</a>
+<span class="lineNum">     861 </span>            : 
+<span class="lineNum">     862 </span><span class="lineNoCov">          0 : size_t Hashtable::trim_on_stoptags(std::string seq) const</span>
+<span class="lineNum">     863 </span>            : {
+<span class="lineNum">     864 </span><span class="lineNoCov">          0 :     if (!check_and_normalize_read(seq)) {</span>
+<span class="lineNum">     865 </span>            :         return 0;
+<span class="lineNum">     866 </span>            :     }
+<span class="lineNum">     867 </span>            : 
+<span class="lineNum">     868 </span><span class="lineNoCov">          0 :     KmerIterator kmers(seq.c_str(), _ksize);</span>
+<span class="lineNum">     869 </span>            : 
+<span class="lineNum">     870 </span><span class="lineNoCov">          0 :     size_t i = _ksize - 2;</span>
+<span class="lineNum">     871 </span><span class="lineNoCov">          0 :     while (!kmers.done()) {</span>
+<span class="lineNum">     872 </span><span class="lineNoCov">          0 :         HashIntoType kmer = kmers.next();</span>
+<span class="lineNum">     873 </span><span class="lineNoCov">          0 :         if (set_contains(stop_tags, kmer)) {</span>
+<span class="lineNum">     874 </span>            :             return i;
+<span class="lineNum">     875 </span>            :         }
+<span class="lineNum">     876 </span><span class="lineNoCov">          0 :         i++;</span>
+<span class="lineNum">     877 </span>            :     }
+<span class="lineNum">     878 </span>            : 
+<span class="lineNum">     879 </span><span class="lineNoCov">          0 :     return seq.length();</span>
+<span class="lineNum">     880 </span>            : }
+<span class="lineNum">     881 </span>            : 
+<span class="lineNum">     882 </span><span class="lineNoCov">          0 : void Hashtable::traverse_from_tags(unsigned int distance,</span>
+<span class="lineNum">     883 </span>            :                                    unsigned int threshold,
+<span class="lineNum">     884 </span>            :                                    unsigned int frequency,
+<span class="lineNum">     885 </span>            :                                    CountingHash &amp;counting)
+<span class="lineNum">     886 </span>            : {
+<span class="lineNum">     887 </span><span class="lineNoCov">          0 :     unsigned int i = 0;</span>
+<span class="lineNum">     888 </span><span class="lineNoCov">          0 :     unsigned int n = 0;</span>
+<span class="lineNum">     889 </span><span class="lineNoCov">          0 :     unsigned int n_big = 0;</span>
+<span class="lineNum">     890 </span>            :     KmerSet keeper;
+<span class="lineNum">     891 </span>            : 
+<span class="lineNum">     892 </span>            : #if VERBOSE_REPARTITION
+<span class="lineNum">     893 </span>            :     std::cout &lt;&lt; all_tags.size() &lt;&lt; &quot; tags...\n&quot;;
+<span class="lineNum">     894 </span>            : #endif // 0
+<span class="lineNum">     895 </span>            : 
+<span class="lineNum">     896 </span><span class="lineNoCov">          0 :     for (SeenSet::const_iterator si = all_tags.begin(); si != all_tags.end();</span>
+<span class="lineNum">     897 </span>            :             ++si, i++) {
+<span class="lineNum">     898 </span>            : 
+<span class="lineNum">     899 </span><span class="lineNoCov">          0 :         n++;</span>
+<span class="lineNum">     900 </span><span class="lineNoCov">          0 :         Kmer tag = build_kmer(*si);</span>
+<span class="lineNum">     901 </span><span class="lineNoCov">          0 :         unsigned int count = traverse_from_kmer(tag, distance, keeper);</span>
+<span class="lineNum">     902 </span>            : 
+<span class="lineNum">     903 </span><span class="lineNoCov">          0 :         if (count &gt;= threshold) {</span>
+<span class="lineNum">     904 </span><span class="lineNoCov">          0 :             n_big++;</span>
+<span class="lineNum">     905 </span>            : 
+<span class="lineNum">     906 </span><span class="lineNoCov">          0 :             KmerSet::const_iterator ti;</span>
+<span class="lineNum">     907 </span><span class="lineNoCov">          0 :             for (ti = keeper.begin(); ti != keeper.end(); ++ti) {</span>
+<span class="lineNum">     908 </span><span class="lineNoCov">          0 :                 if (counting.get_count(*ti) &gt; frequency) {</span>
+<span class="lineNum">     909 </span><span class="lineNoCov">          0 :                     stop_tags.insert(*ti);</span>
+<span class="lineNum">     910 </span>            :                 } else {
+<span class="lineNum">     911 </span><span class="lineNoCov">          0 :                     counting.count(*ti);</span>
+<span class="lineNum">     912 </span>            :                 }
+<span class="lineNum">     913 </span>            :             }
+<span class="lineNum">     914 </span>            : #if VERBOSE_REPARTITION
+<span class="lineNum">     915 </span>            :             std::cout &lt;&lt; &quot;traversed from &quot; &lt;&lt; n &lt;&lt; &quot; tags total; &quot;
+<span class="lineNum">     916 </span>            :                       &lt;&lt; n_big &lt;&lt; &quot; big; &quot; &lt;&lt; keeper.size() &lt;&lt; &quot;\n&quot;;
+<span class="lineNum">     917 </span>            : #endif // 0
+<span class="lineNum">     918 </span>            :         }
+<span class="lineNum">     919 </span>            :         keeper.clear();
+<span class="lineNum">     920 </span>            : 
+<span class="lineNum">     921 </span>            :         if (n % 100 == 0) {
+<span class="lineNum">     922 </span>            : #if VERBOSE_REPARTITION
+<span class="lineNum">     923 </span>            :             std::cout &lt;&lt; &quot;traversed &quot; &lt;&lt; n &lt;&lt; &quot; &quot; &lt;&lt; n_big &lt;&lt; &quot; &quot; &lt;&lt;
+<span class="lineNum">     924 </span>            :                       all_tags.size() &lt;&lt; &quot; &quot; &lt;&lt; stop_tags.size() &lt;&lt; &quot;\n&quot;;
+<span class="lineNum">     925 </span>            : #endif // 0
+<span class="lineNum">     926 </span>            :         }
+<span class="lineNum">     927 </span>            :     }
+<span class="lineNum">     928 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     929 </span>            : 
+<span class="lineNum">     930 </span><span class="lineNoCov">          0 : unsigned int Hashtable::traverse_from_kmer(Kmer start,</span>
+<span class="lineNum">     931 </span>            :         unsigned int radius,
+<span class="lineNum">     932 </span>            :         KmerSet &amp;keeper,
+<span class="lineNum">     933 </span>            :         unsigned int max_count)
+<span class="lineNum">     934 </span>            : const
+<span class="lineNum">     935 </span>            : {
+<span class="lineNum">     936 </span>            : 
+<span class="lineNum">     937 </span><span class="lineNoCov">          0 :     Traverser traverser(this);</span>
+<span class="lineNum">     938 </span><span class="lineNoCov">          0 :     KmerQueue node_q;</span>
+<span class="lineNum">     939 </span><span class="lineNoCov">          0 :     std::queue&lt;unsigned int&gt; breadth_q;</span>
+<span class="lineNum">     940 </span><span class="lineNoCov">          0 :     unsigned int cur_breadth = 0;</span>
+<span class="lineNum">     941 </span><span class="lineNoCov">          0 :     unsigned int total = 0;</span>
+<span class="lineNum">     942 </span><span class="lineNoCov">          0 :     unsigned int nfound = 0;</span>
+<span class="lineNum">     943 </span>            : 
+<span class="lineNum">     944 </span>            :     auto filter = [&amp;] (Kmer&amp; n) {
+<span class="lineNum">     945 </span><span class="lineNoCov">          0 :         return !set_contains(keeper, n);</span>
+<span class="lineNum">     946 </span><span class="lineNoCov">          0 :     };</span>
+<span class="lineNum">     947 </span>            : 
+<span class="lineNum">     948 </span>            :     node_q.push(start);
+<span class="lineNum">     949 </span><span class="lineNoCov">          0 :     breadth_q.push(0);</span>
+<span class="lineNum">     950 </span>            : 
+<span class="lineNum">     951 </span><span class="lineNoCov">          0 :     while(!node_q.empty()) {</span>
+<span class="lineNum">     952 </span><span class="lineNoCov">          0 :         Kmer node = node_q.front();</span>
+<span class="lineNum">     953 </span><span class="lineNoCov">          0 :         node_q.pop();</span>
+<span class="lineNum">     954 </span>            : 
+<span class="lineNum">     955 </span><span class="lineNoCov">          0 :         unsigned int breadth = breadth_q.front();</span>
+<span class="lineNum">     956 </span>            :         breadth_q.pop();
+<span class="lineNum">     957 </span>            : 
+<span class="lineNum">     958 </span><span class="lineNoCov">          0 :         if (breadth &gt; radius) {</span>
+<span class="lineNum">     959 </span>            :             break;
+<span class="lineNum">     960 </span>            :         }
+<span class="lineNum">     961 </span>            : 
+<span class="lineNum">     962 </span><span class="lineNoCov">          0 :         if (max_count &amp;&amp; total &gt; max_count) {</span>
+<span class="lineNum">     963 </span>            :             break;
+<span class="lineNum">     964 </span>            :         }
+<span class="lineNum">     965 </span>            : 
+<span class="lineNum">     966 </span><span class="lineNoCov">          0 :         if (set_contains(keeper, node)) {</span>
+<span class="lineNum">     967 </span><span class="lineNoCov">          0 :             continue;</span>
+<span class="lineNum">     968 </span>            :         }
+<span class="lineNum">     969 </span>            : 
+<span class="lineNum">     970 </span><span class="lineNoCov">          0 :         if (set_contains(stop_tags, node)) {</span>
+<span class="lineNum">     971 </span>            :             continue;
+<span class="lineNum">     972 </span>            :         }
+<span class="lineNum">     973 </span>            : 
+<span class="lineNum">     974 </span>            :         // keep track of seen kmers
+<span class="lineNum">     975 </span>            :         keeper.insert(node);
+<span class="lineNum">     976 </span><span class="lineNoCov">          0 :         total++;</span>
+<span class="lineNum">     977 </span>            : 
+<span class="lineNum">     978 </span><span class="lineNoCov">          0 :         if (!(breadth &gt;= cur_breadth)) { // keep track of watermark, for debugging.</span>
+<span class="lineNum">     979 </span><span class="lineNoCov">          0 :             throw khmer_exception();</span>
+<span class="lineNum">     980 </span>            :         }
+<span class="lineNum">     981 </span><span class="lineNoCov">          0 :         if (breadth &gt; cur_breadth) {</span>
+<span class="lineNum">     982 </span><span class="lineNoCov">          0 :             cur_breadth = breadth;</span>
+<span class="lineNum">     983 </span>            :         }
+<span class="lineNum">     984 </span>            : 
+<span class="lineNum">     985 </span><span class="lineNoCov">          0 :         nfound = traverser.traverse_right(node, node_q, filter);</span>
+<span class="lineNum">     986 </span><span class="lineNoCov">          0 :         for (unsigned int i = 0; i&lt;nfound; ++i) {</span>
+<span class="lineNum">     987 </span><span class="lineNoCov">          0 :             breadth_q.push(breadth + 1);</span>
+<span class="lineNum">     988 </span>            :         }
+<span class="lineNum">     989 </span>            : 
+<span class="lineNum">     990 </span><span class="lineNoCov">          0 :         nfound = traverser.traverse_left(node, node_q, filter);</span>
+<span class="lineNum">     991 </span><span class="lineNoCov">          0 :         for (unsigned int i = 0; i&lt;nfound; ++i) {</span>
+<span class="lineNum">     992 </span><span class="lineNoCov">          0 :             breadth_q.push(breadth + 1);</span>
+<span class="lineNum">     993 </span>            :         }
+<span class="lineNum">     994 </span>            :     }
+<span class="lineNum">     995 </span>            : 
+<span class="lineNum">     996 </span><span class="lineNoCov">          0 :     return total;</span>
+<span class="lineNum">     997 </span>            : }
+<span class="lineNum">     998 </span>            : 
+<span class="lineNum">     999 </span><span class="lineNoCov">          0 : void Hashtable::load_stop_tags(std::string infilename, bool clear_tags)</span>
+<span class="lineNum">    1000 </span>            : {
+<span class="lineNum">    1001 </span><span class="lineNoCov">          0 :     ifstream infile;</span>
+<span class="lineNum">    1002 </span>            : 
+<span class="lineNum">    1003 </span>            :     // configure ifstream to raise exceptions for everything.
+<span class="lineNum">    1004 </span><span class="lineNoCov">          0 :     infile.exceptions(std::ifstream::failbit | std::ifstream::badbit |</span>
+<span class="lineNum">    1005 </span>            :                       std::ifstream::eofbit);
+<span class="lineNum">    1006 </span>            : 
+<span class="lineNum">    1007 </span>            :     try {
+<span class="lineNum">    1008 </span><span class="lineNoCov">          0 :         infile.open(infilename.c_str(), ios::binary);</span>
+<span class="lineNum">    1009 </span><span class="lineNoCov">          0 :     } catch (std::ifstream::failure &amp;e) {</span>
+<span class="lineNum">    1010 </span><span class="lineNoCov">          0 :         std::string err;</span>
+<span class="lineNum">    1011 </span><span class="lineNoCov">          0 :         if (!(infile.is_open())) {</span>
+<span class="lineNum">    1012 </span><span class="lineNoCov">          0 :             err = &quot;Cannot open stoptags file: &quot; + infilename;</span>
+<span class="lineNum">    1013 </span>            :         } else {
+<span class="lineNum">    1014 </span><span class="lineNoCov">          0 :             err = &quot;Unknown error in opening file: &quot; + infilename;</span>
+<span class="lineNum">    1015 </span>            :         }
+<span class="lineNum">    1016 </span><span class="lineNoCov">          0 :         throw khmer_file_exception(err);</span>
+<span class="lineNum">    1017 </span>            :     }
+<span class="lineNum">    1018 </span>            : 
+<span class="lineNum">    1019 </span><span class="lineNoCov">          0 :     if (clear_tags) {</span>
+<span class="lineNum">    1020 </span><span class="lineNoCov">          0 :         stop_tags.clear();</span>
+<span class="lineNum">    1021 </span>            :     }
+<span class="lineNum">    1022 </span>            : 
+<span class="lineNum">    1023 </span>            :     unsigned char version, ht_type;
+<span class="lineNum">    1024 </span><span class="lineNoCov">          0 :     unsigned int save_ksize = 0;</span>
+<span class="lineNum">    1025 </span>            : 
+<span class="lineNum">    1026 </span><span class="lineNoCov">          0 :     size_t tagset_size = 0;</span>
+<span class="lineNum">    1027 </span>            : 
+<span class="lineNum">    1028 </span>            :     try {
+<span class="lineNum">    1029 </span>            :         char signature[4];
+<span class="lineNum">    1030 </span><span class="lineNoCov">          0 :         infile.read(signature, 4);</span>
+<span class="lineNum">    1031 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;version, 1);</span>
+<span class="lineNum">    1032 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;ht_type, 1);</span>
+<span class="lineNum">    1033 </span><span class="lineNoCov">          0 :         if (!(std::string(signature, 4) == SAVED_SIGNATURE)) {</span>
+<span class="lineNum">    1034 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">    1035 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect file signature 0x&quot;;</span>
+<span class="lineNum">    1036 </span><span class="lineNoCov">          0 :             for(size_t i=0; i &lt; 4; ++i) {</span>
+<span class="lineNum">    1037 </span><span class="lineNoCov">          0 :                 err &lt;&lt; std::hex &lt;&lt; (int) signature[i];</span>
+<span class="lineNum">    1038 </span>            :             }
+<span class="lineNum">    1039 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot; while reading stoptags from &quot; &lt;&lt; infilename</span>
+<span class="lineNum">    1040 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot;; should be &quot; &lt;&lt; SAVED_SIGNATURE;</span>
+<span class="lineNum">    1041 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">    1042 </span><span class="lineNoCov">          0 :         } else if (!(version == SAVED_FORMAT_VERSION)) {</span>
+<span class="lineNum">    1043 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">    1044 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect file format version &quot; &lt;&lt; (int) version</span>
+<span class="lineNum">    1045 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot; while reading stoptags from &quot; &lt;&lt; infilename</span>
+<span class="lineNum">    1046 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot;; should be &quot; &lt;&lt; (int) SAVED_FORMAT_VERSION;</span>
+<span class="lineNum">    1047 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">    1048 </span><span class="lineNoCov">          0 :         } else if (!(ht_type == SAVED_STOPTAGS)) {</span>
+<span class="lineNum">    1049 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">    1050 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect file format type &quot; &lt;&lt; (int) ht_type</span>
+<span class="lineNum">    1051 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot; while reading stoptags from &quot; &lt;&lt; infilename;</span>
+<span class="lineNum">    1052 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">    1053 </span>            :         }
+<span class="lineNum">    1054 </span>            : 
+<span class="lineNum">    1055 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;save_ksize, sizeof(save_ksize));</span>
+<span class="lineNum">    1056 </span><span class="lineNoCov">          0 :         if (!(save_ksize == _ksize)) {</span>
+<span class="lineNum">    1057 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">    1058 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect k-mer size &quot; &lt;&lt; save_ksize</span>
+<span class="lineNum">    1059 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot; while reading stoptags from &quot; &lt;&lt; infilename;</span>
+<span class="lineNum">    1060 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">    1061 </span>            :         }
+<span class="lineNum">    1062 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;tagset_size, sizeof(tagset_size));</span>
+<span class="lineNum">    1063 </span>            : 
+<span class="lineNum">    1064 </span><span class="lineNoCov">          0 :         HashIntoType * buf = new HashIntoType[tagset_size];</span>
+<span class="lineNum">    1065 </span>            : 
+<span class="lineNum">    1066 </span><span class="lineNoCov">          0 :         infile.read((char *) buf, sizeof(HashIntoType) * tagset_size);</span>
+<span class="lineNum">    1067 </span>            : 
+<span class="lineNum">    1068 </span><span class="lineNoCov">          0 :         for (unsigned int i = 0; i &lt; tagset_size; i++) {</span>
+<span class="lineNum">    1069 </span><span class="lineNoCov">          0 :             stop_tags.insert(buf[i]);</span>
+<span class="lineNum">    1070 </span>            :         }
+<span class="lineNum">    1071 </span><span class="lineNoCov">          0 :         delete[] buf;</span>
+<span class="lineNum">    1072 </span><span class="lineNoCov">          0 :     } catch (std::ifstream::failure &amp;e) {</span>
+<span class="lineNum">    1073 </span><span class="lineNoCov">          0 :         std::string err = &quot;Error reading stoptags from: &quot; + infilename;</span>
+<span class="lineNum">    1074 </span><span class="lineNoCov">          0 :         throw khmer_file_exception(err);</span>
+<span class="lineNum">    1075 </span>            :     }
+<a name="1076"><span class="lineNum">    1076 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1077 </span>            : 
+<span class="lineNum">    1078 </span><span class="lineNoCov">          0 : void Hashtable::save_stop_tags(std::string outfilename)</span>
+<span class="lineNum">    1079 </span>            : {
+<span class="lineNum">    1080 </span><span class="lineNoCov">          0 :     ofstream outfile(outfilename.c_str(), ios::binary);</span>
+<span class="lineNum">    1081 </span><span class="lineNoCov">          0 :     size_t tagset_size = stop_tags.size();</span>
+<span class="lineNum">    1082 </span>            : 
+<span class="lineNum">    1083 </span><span class="lineNoCov">          0 :     HashIntoType * buf = new HashIntoType[tagset_size];</span>
+<span class="lineNum">    1084 </span>            : 
+<span class="lineNum">    1085 </span><span class="lineNoCov">          0 :     outfile.write(SAVED_SIGNATURE, 4);</span>
+<span class="lineNum">    1086 </span><span class="lineNoCov">          0 :     unsigned char version = SAVED_FORMAT_VERSION;</span>
+<span class="lineNum">    1087 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;version, 1);</span>
+<span class="lineNum">    1088 </span>            : 
+<span class="lineNum">    1089 </span><span class="lineNoCov">          0 :     unsigned char ht_type = SAVED_STOPTAGS;</span>
+<span class="lineNum">    1090 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;ht_type, 1);</span>
+<span class="lineNum">    1091 </span>            : 
+<span class="lineNum">    1092 </span><span class="lineNoCov">          0 :     unsigned int save_ksize = _ksize;</span>
+<span class="lineNum">    1093 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;save_ksize, sizeof(save_ksize));</span>
+<span class="lineNum">    1094 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;tagset_size, sizeof(tagset_size));</span>
+<span class="lineNum">    1095 </span>            : 
+<span class="lineNum">    1096 </span><span class="lineNoCov">          0 :     unsigned int i = 0;</span>
+<span class="lineNum">    1097 </span><span class="lineNoCov">          0 :     for (SeenSet::iterator pi = stop_tags.begin(); pi != stop_tags.end();</span>
+<span class="lineNum">    1098 </span>            :             ++pi, i++) {
+<span class="lineNum">    1099 </span><span class="lineNoCov">          0 :         buf[i] = *pi;</span>
+<span class="lineNum">    1100 </span>            :     }
+<span class="lineNum">    1101 </span>            : 
+<span class="lineNum">    1102 </span><span class="lineNoCov">          0 :     outfile.write((const char *) buf, sizeof(HashIntoType) * tagset_size);</span>
+<span class="lineNum">    1103 </span><span class="lineNoCov">          0 :     outfile.close();</span>
+<span class="lineNum">    1104 </span>            : 
+<span class="lineNum">    1105 </span><span class="lineNoCov">          0 :     delete[] buf;</span>
+<span class="lineNum">    1106 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">    1107 </span>            : 
+<span class="lineNum">    1108 </span><span class="lineNoCov">          0 : void Hashtable::print_stop_tags(std::string infilename)</span>
+<span class="lineNum">    1109 </span>            : {
+<span class="lineNum">    1110 </span><span class="lineNoCov">          0 :     ofstream printfile(infilename.c_str());</span>
+<span class="lineNum">    1111 </span>            : 
+<span class="lineNum">    1112 </span><span class="lineNoCov">          0 :     unsigned int i = 0;</span>
+<span class="lineNum">    1113 </span><span class="lineNoCov">          0 :     for (SeenSet::iterator pi = stop_tags.begin(); pi != stop_tags.end();</span>
+<span class="lineNum">    1114 </span>            :             ++pi, i++) {
+<span class="lineNum">    1115 </span><span class="lineNoCov">          0 :         std::string kmer = _revhash(*pi, _ksize);</span>
+<span class="lineNum">    1116 </span><span class="lineNoCov">          0 :         printfile &lt;&lt; kmer &lt;&lt; &quot;\n&quot;;</span>
+<span class="lineNum">    1117 </span>            :     }
+<span class="lineNum">    1118 </span>            : 
+<span class="lineNum">    1119 </span><span class="lineNoCov">          0 :     printfile.close();</span>
+<span class="lineNum">    1120 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">    1121 </span>            : 
+<span class="lineNum">    1122 </span><span class="lineNoCov">          0 : void Hashtable::print_tagset(std::string infilename)</span>
+<span class="lineNum">    1123 </span>            : {
+<span class="lineNum">    1124 </span><span class="lineNoCov">          0 :     ofstream printfile(infilename.c_str());</span>
+<span class="lineNum">    1125 </span>            : 
+<span class="lineNum">    1126 </span><span class="lineNoCov">          0 :     unsigned int i = 0;</span>
+<span class="lineNum">    1127 </span><span class="lineNoCov">          0 :     for (SeenSet::iterator pi = all_tags.begin(); pi != all_tags.end();</span>
+<span class="lineNum">    1128 </span>            :             ++pi, i++) {
+<span class="lineNum">    1129 </span><span class="lineNoCov">          0 :         std::string kmer = _revhash(*pi, _ksize);</span>
+<span class="lineNum">    1130 </span><span class="lineNoCov">          0 :         printfile &lt;&lt; kmer &lt;&lt; &quot;\n&quot;;</span>
+<span class="lineNum">    1131 </span>            :     }
+<span class="lineNum">    1132 </span>            : 
+<span class="lineNum">    1133 </span><span class="lineNoCov">          0 :     printfile.close();</span>
+<a name="1134"><span class="lineNum">    1134 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">    1135 </span>            : 
+<span class="lineNum">    1136 </span><span class="lineNoCov">          0 : unsigned int Hashtable::count_and_transfer_to_stoptags(KmerSet &amp;keeper,</span>
+<span class="lineNum">    1137 </span>            :         unsigned int threshold,
+<span class="lineNum">    1138 </span>            :         CountingHash &amp;counting)
+<span class="lineNum">    1139 </span>            : {
+<span class="lineNum">    1140 </span><span class="lineNoCov">          0 :     unsigned int n_inserted = 0;</span>
+<span class="lineNum">    1141 </span>            : 
+<span class="lineNum">    1142 </span><span class="lineNoCov">          0 :     KmerSet::const_iterator ti;</span>
+<span class="lineNum">    1143 </span><span class="lineNoCov">          0 :     for (ti = keeper.begin(); ti != keeper.end(); ++ti) {</span>
+<span class="lineNum">    1144 </span><span class="lineNoCov">          0 :         if (counting.get_count(*ti) &gt;= threshold) {</span>
+<span class="lineNum">    1145 </span><span class="lineNoCov">          0 :             stop_tags.insert(*ti);</span>
+<span class="lineNum">    1146 </span><span class="lineNoCov">          0 :             n_inserted++;</span>
+<span class="lineNum">    1147 </span>            :         } else {
+<span class="lineNum">    1148 </span><span class="lineNoCov">          0 :             counting.count(*ti);</span>
+<span class="lineNum">    1149 </span>            :         }
+<span class="lineNum">    1150 </span>            :     }
+<span class="lineNum">    1151 </span>            : 
+<span class="lineNum">    1152 </span><span class="lineNoCov">          0 :     return n_inserted;</span>
+<a name="1153"><span class="lineNum">    1153 </span>            : }</a>
+<span class="lineNum">    1154 </span>            : 
+<span class="lineNum">    1155 </span><span class="lineNoCov">          0 : void Hashtable::identify_stop_tags_by_position(std::string seq,</span>
+<span class="lineNum">    1156 </span>            :         std::vector&lt;unsigned int&gt; &amp;posns)
+<span class="lineNum">    1157 </span>            : const
+<span class="lineNum">    1158 </span>            : {
+<span class="lineNum">    1159 </span><span class="lineNoCov">          0 :     if (!check_and_normalize_read(seq)) {</span>
+<span class="lineNum">    1160 </span>            :         return;
+<span class="lineNum">    1161 </span>            :     }
+<span class="lineNum">    1162 </span>            : 
+<span class="lineNum">    1163 </span><span class="lineNoCov">          0 :     KmerIterator kmers(seq.c_str(), _ksize);</span>
+<span class="lineNum">    1164 </span>            : 
+<span class="lineNum">    1165 </span><span class="lineNoCov">          0 :     unsigned int i = 0;</span>
+<span class="lineNum">    1166 </span><span class="lineNoCov">          0 :     while(!kmers.done()) {</span>
+<span class="lineNum">    1167 </span><span class="lineNoCov">          0 :         HashIntoType kmer = kmers.next();</span>
+<span class="lineNum">    1168 </span>            : 
+<span class="lineNum">    1169 </span><span class="lineNoCov">          0 :         if (set_contains(stop_tags, kmer)) {</span>
+<span class="lineNum">    1170 </span><span class="lineNoCov">          0 :             posns.push_back(i);</span>
+<span class="lineNum">    1171 </span>            :         }
+<span class="lineNum">    1172 </span><span class="lineNoCov">          0 :         i++;</span>
+<span class="lineNum">    1173 </span>            :     }
+<span class="lineNum">    1174 </span>            : 
+<span class="lineNum">    1175 </span>            :     return;
+<span class="lineNum">    1176 </span>            : }
+<span class="lineNum">    1177 </span>            : 
+<span class="lineNum">    1178 </span><span class="lineNoCov">          0 : void Hashtable::extract_unique_paths(std::string seq,</span>
+<span class="lineNum">    1179 </span>            :                                      unsigned int min_length,
+<span class="lineNum">    1180 </span>            :                                      float min_unique_f,
+<span class="lineNum">    1181 </span>            :                                      std::vector&lt;std::string&gt; &amp;results)
+<span class="lineNum">    1182 </span>            : {
+<span class="lineNum">    1183 </span><span class="lineNoCov">          0 :     if (seq.size() &lt; min_length) {</span>
+<span class="lineNum">    1184 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">    1185 </span>            :     }
+<span class="lineNum">    1186 </span>            : 
+<span class="lineNum">    1187 </span><span class="lineNoCov">          0 :     float max_seen = 1.0 - min_unique_f;</span>
+<span class="lineNum">    1188 </span>            : 
+<span class="lineNum">    1189 </span><span class="lineNoCov">          0 :     min_length = min_length - _ksize + 1; // adjust for k-mer size.</span>
+<span class="lineNum">    1190 </span>            : 
+<span class="lineNum">    1191 </span><span class="lineNoCov">          0 :     KmerIterator kmers(seq.c_str(), _ksize);</span>
+<span class="lineNum">    1192 </span>            : 
+<span class="lineNum">    1193 </span>            :     std::deque&lt;bool&gt; seen_queue;
+<span class="lineNum">    1194 </span>            :     unsigned int n_already_seen = 0;
+<span class="lineNum">    1195 </span>            :     unsigned int n_kmers = 0;
+<span class="lineNum">    1196 </span>            : 
+<span class="lineNum">    1197 </span>            :     // first, put together an array for presence/absence of the k-mer
+<span class="lineNum">    1198 </span>            :     // at each given position.
+<span class="lineNum">    1199 </span><span class="lineNoCov">          0 :     while (!kmers.done()) {</span>
+<span class="lineNum">    1200 </span><span class="lineNoCov">          0 :         HashIntoType kmer = kmers.next();</span>
+<span class="lineNum">    1201 </span>            : 
+<span class="lineNum">    1202 </span><span class="lineNoCov">          0 :         if (get_count(kmer)) {</span>
+<span class="lineNum">    1203 </span><span class="lineNoCov">          0 :             seen_queue.push_back(true);</span>
+<span class="lineNum">    1204 </span><span class="lineNoCov">          0 :             n_already_seen++;</span>
+<span class="lineNum">    1205 </span>            :         } else {
+<span class="lineNum">    1206 </span><span class="lineNoCov">          0 :             seen_queue.push_back(false);</span>
+<span class="lineNum">    1207 </span>            :         }
+<span class="lineNum">    1208 </span><span class="lineNoCov">          0 :         n_kmers++;</span>
+<span class="lineNum">    1209 </span>            :     }
+<span class="lineNum">    1210 </span>            : 
+<span class="lineNum">    1211 </span>            :     // next, run through this array with 'i'.
+<span class="lineNum">    1212 </span>            : 
+<span class="lineNum">    1213 </span>            :     unsigned int i = 0;
+<span class="lineNum">    1214 </span><span class="lineNoCov">          0 :     while (i &lt; n_kmers - min_length) {</span>
+<span class="lineNum">    1215 </span>            :         unsigned int seen_counter, j;
+<span class="lineNum">    1216 </span>            : 
+<span class="lineNum">    1217 </span>            :         // For each starting 'i', count the number of 'seen' k-mers in the
+<span class="lineNum">    1218 </span>            :         // given window.
+<span class="lineNum">    1219 </span>            : 
+<span class="lineNum">    1220 </span>            :         // yes, inefficient n^2 algorithm.  sue me.
+<span class="lineNum">    1221 </span><span class="lineNoCov">          0 :         for (seen_counter = 0, j = 0; j &lt; min_length; j++) {</span>
+<span class="lineNum">    1222 </span><span class="lineNoCov">          0 :             if (seen_queue[i + j]) {</span>
+<span class="lineNum">    1223 </span><span class="lineNoCov">          0 :                 seen_counter++;</span>
+<span class="lineNum">    1224 </span>            :             }
+<span class="lineNum">    1225 </span>            :         }
+<span class="lineNum">    1226 </span>            : 
+<span class="lineNum">    1227 </span>            :         // If the fraction seen is small enough to be interesting, suggesting
+<span class="lineNum">    1228 </span>            :         // that this, in fact, a &quot;new&quot; window -- extend until it isn't, and
+<span class="lineNum">    1229 </span>            :         // then extract.
+<span class="lineNum">    1230 </span>            : 
+<span class="lineNum">    1231 </span><span class="lineNoCov">          0 :         if (!(j == min_length)) {</span>
+<span class="lineNum">    1232 </span><span class="lineNoCov">          0 :             throw khmer_exception();</span>
+<span class="lineNum">    1233 </span>            :         }
+<span class="lineNum">    1234 </span><span class="lineNoCov">          0 :         if ( ((float)seen_counter / (float) j) &lt;= max_seen) {</span>
+<span class="lineNum">    1235 </span>            :             unsigned int start = i;
+<span class="lineNum">    1236 </span>            : 
+<span class="lineNum">    1237 </span>            :             // extend the window until the end of the sequence...
+<span class="lineNum">    1238 </span><span class="lineNoCov">          0 :             while ((start + min_length) &lt; n_kmers) {</span>
+<span class="lineNum">    1239 </span><span class="lineNoCov">          0 :                 if (seen_queue[start]) {</span>
+<span class="lineNum">    1240 </span><span class="lineNoCov">          0 :                     seen_counter--;</span>
+<span class="lineNum">    1241 </span>            :                 }
+<span class="lineNum">    1242 </span><span class="lineNoCov">          0 :                 if (seen_queue[start + min_length]) {</span>
+<span class="lineNum">    1243 </span><span class="lineNoCov">          0 :                     seen_counter++;</span>
+<span class="lineNum">    1244 </span>            :                 }
+<span class="lineNum">    1245 </span><span class="lineNoCov">          0 :                 start++;</span>
+<span class="lineNum">    1246 </span>            : 
+<span class="lineNum">    1247 </span>            :                 // ...or until we've seen too many of the k-mers.
+<span class="lineNum">    1248 </span><span class="lineNoCov">          0 :                 if (((float)seen_counter / (float) min_length) &gt; max_seen) {</span>
+<span class="lineNum">    1249 </span>            :                     break;
+<span class="lineNum">    1250 </span>            :                 }
+<span class="lineNum">    1251 </span>            :             }
+<span class="lineNum">    1252 </span>            : 
+<span class="lineNum">    1253 </span>            :             // adjust for ending point.
+<span class="lineNum">    1254 </span><span class="lineNoCov">          0 :             if (start + min_length == n_kmers) {        // potentially decrement twice at end</span>
+<span class="lineNum">    1255 </span><span class="lineNoCov">          0 :                 if (((float)seen_counter / (float) min_length) &gt; max_seen) {</span>
+<span class="lineNum">    1256 </span><span class="lineNoCov">          0 :                     start--;</span>
+<span class="lineNum">    1257 </span>            :                 }
+<span class="lineNum">    1258 </span><span class="lineNoCov">          0 :                 start--;</span>
+<span class="lineNum">    1259 </span>            :             } else {
+<span class="lineNum">    1260 </span><span class="lineNoCov">          0 :                 start -= 2;</span>
+<span class="lineNum">    1261 </span>            :             }
+<span class="lineNum">    1262 </span>            : 
+<span class="lineNum">    1263 </span>            :             // ...and now extract the relevant portion of the sequence, and adjust
+<span class="lineNum">    1264 </span>            :             // starting pos'n.
+<span class="lineNum">    1265 </span><span class="lineNoCov">          0 :             results.push_back(seq.substr(i, start + min_length + _ksize - i));</span>
+<span class="lineNum">    1266 </span>            : 
+<span class="lineNum">    1267 </span><span class="lineNoCov">          0 :             i = start + min_length + 1;</span>
+<span class="lineNum">    1268 </span>            :         } else {
+<span class="lineNum">    1269 </span><span class="lineNoCov">          0 :             i++;</span>
+<span class="lineNum">    1270 </span>            :         }
+<span class="lineNum">    1271 </span>            :     }
+<span class="lineNum">    1272 </span>            : }
+<span class="lineNum">    1273 </span>            : 
+<span class="lineNum">    1274 </span>            : 
+<span class="lineNum">    1275 </span><span class="lineNoCov">          0 : void Hashtable::get_kmers(const std::string &amp;s,</span>
+<span class="lineNum">    1276 </span>            :                           std::vector&lt;std::string&gt; &amp;kmers_vec) const
+<span class="lineNum">    1277 </span>            : {
+<span class="lineNum">    1278 </span><span class="lineNoCov">          0 :     if (s.length() &lt; _ksize) {</span>
+<span class="lineNum">    1279 </span>            :         return;
+<span class="lineNum">    1280 </span>            :     }
+<span class="lineNum">    1281 </span><span class="lineNoCov">          0 :     for (unsigned int i = 0; i &lt; s.length() - _ksize + 1; i++) {</span>
+<span class="lineNum">    1282 </span><span class="lineNoCov">          0 :         std::string sub = s.substr(i, i + _ksize);</span>
+<span class="lineNum">    1283 </span><span class="lineNoCov">          0 :         kmers_vec.push_back(sub);</span>
+<span class="lineNum">    1284 </span>            :     }
+<span class="lineNum">    1285 </span>            : }
+<a name="1286"><span class="lineNum">    1286 </span>            : </a>
+<span class="lineNum">    1287 </span>            : 
+<span class="lineNum">    1288 </span><span class="lineNoCov">          0 : void Hashtable::get_kmer_hashes(const std::string &amp;s,</span>
+<span class="lineNum">    1289 </span>            :                                 std::vector&lt;HashIntoType&gt; &amp;kmers_vec) const
+<span class="lineNum">    1290 </span>            : {
+<span class="lineNum">    1291 </span><span class="lineNoCov">          0 :     KmerIterator kmers(s.c_str(), _ksize);</span>
+<span class="lineNum">    1292 </span>            : 
+<span class="lineNum">    1293 </span><span class="lineNoCov">          0 :     while(!kmers.done()) {</span>
+<span class="lineNum">    1294 </span><span class="lineNoCov">          0 :         HashIntoType kmer = kmers.next();</span>
+<span class="lineNum">    1295 </span><span class="lineNoCov">          0 :         kmers_vec.push_back(kmer);</span>
+<span class="lineNum">    1296 </span>            :     }
+<span class="lineNum">    1297 </span><span class="lineNoCov">          0 : }</span>
+<a name="1298"><span class="lineNum">    1298 </span>            : </a>
+<span class="lineNum">    1299 </span>            : 
+<span class="lineNum">    1300 </span><span class="lineNoCov">          0 : void Hashtable::get_kmer_counts(const std::string &amp;s,</span>
+<span class="lineNum">    1301 </span>            :                                 std::vector&lt;BoundedCounterType&gt; &amp;counts) const
+<span class="lineNum">    1302 </span>            : {
+<span class="lineNum">    1303 </span><span class="lineNoCov">          0 :     KmerIterator kmers(s.c_str(), _ksize);</span>
+<span class="lineNum">    1304 </span>            : 
+<span class="lineNum">    1305 </span><span class="lineNoCov">          0 :     while(!kmers.done()) {</span>
+<span class="lineNum">    1306 </span><span class="lineNoCov">          0 :         HashIntoType kmer = kmers.next();</span>
+<span class="lineNum">    1307 </span><span class="lineNoCov">          0 :         BoundedCounterType c = this-&gt;get_count(kmer);</span>
+<a name="1308"><span class="lineNum">    1308 </span><span class="lineNoCov">          0 :         counts.push_back(c);</span></a>
+<span class="lineNum">    1309 </span>            :     }
+<span class="lineNum">    1310 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">    1311 </span>            : 
+<span class="lineNum">    1312 </span>            : // vim: set sts=2 sw=2:
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/subset.hh</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - subset.hh<span style="font-size: 80%;"> (source / <a href="subset.hh.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2010-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #ifndef SUBSET_HH
+<span class="lineNum">      39 </span>            : #define SUBSET_HH
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #include &lt;stddef.h&gt;
+<span class="lineNum">      42 </span>            : #include &lt;queue&gt;
+<span class="lineNum">      43 </span>            : #include &lt;string&gt;
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : #include &quot;khmer.hh&quot;
+<span class="lineNum">      46 </span>            : #include &quot;traversal.hh&quot;
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : namespace khmer
+<span class="lineNum">      49 </span>            : {
+<span class="lineNum">      50 </span>            : class CountingHash;
+<span class="lineNum">      51 </span>            : class Hashbits;
+<span class="lineNum">      52 </span>            : class Hashtable;
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 : struct pre_partition_info {</span>
+<span class="lineNum">      55 </span>            :     HashIntoType kmer;
+<span class="lineNum">      56 </span>            :     SeenSet tagged_kmers;
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :     explicit pre_partition_info(HashIntoType _kmer) : kmer(_kmer) {};</span>
+<span class="lineNum">      59 </span>            : };
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            : class SubsetPartition
+<span class="lineNum">      62 </span>            : {
+<span class="lineNum">      63 </span>            :     friend class Hashtable;
+<span class="lineNum">      64 </span>            : protected:
+<span class="lineNum">      65 </span>            :     unsigned int next_partition_id;
+<span class="lineNum">      66 </span>            :     Hashtable * _ht;
+<span class="lineNum">      67 </span>            :     PartitionMap partition_map;
+<span class="lineNum">      68 </span>            :     ReversePartitionMap reverse_pmap;
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            :     void _clear_all_partitions();
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span>            :     PartitionID * _merge_two_partitions(PartitionID *orig_pp,
+<span class="lineNum">      73 </span>            :                                         PartitionID *new_pp);
+<span class="lineNum">      74 </span>            :     PartitionID * _join_partitions_by_tags(const SeenSet&amp; tagged_kmers,
+<span class="lineNum">      75 </span>            :                                            const HashIntoType kmer);
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            : public:
+<a name="78"><span class="lineNum">      78 </span>            :     explicit SubsetPartition(Hashtable * ht);</a>
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span><span class="lineCov">       3172 :     ~SubsetPartition()</span>
+<span class="lineNum">      81 </span><span class="lineCov">       9516 :     {</span>
+<span class="lineNum">      82 </span><span class="lineCov">       3172 :         _clear_all_partitions();</span>
+<span class="lineNum">      83 </span><span class="lineCov">       3172 :     }</span>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            :     PartitionID assign_partition_id(HashIntoType kmer, SeenSet&amp; tagged_kmers);
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span>            :     void set_partition_id(HashIntoType kmer, PartitionID p);
+<span class="lineNum">      88 </span>            :     void set_partition_id(std::string kmer_s, PartitionID p);
+<span class="lineNum">      89 </span>            :     PartitionID join_partitions(PartitionID orig, PartitionID join);
+<span class="lineNum">      90 </span>            :     PartitionID get_partition_id(std::string kmer_s);
+<span class="lineNum">      91 </span>            :     PartitionID get_partition_id(HashIntoType kmer);
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            :     PartitionID * get_new_partition()
+<span class="lineNum">      94 </span>            :     {
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :         PartitionID* pp = new PartitionID(next_partition_id);</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :         next_partition_id++;</span>
+<span class="lineNum">      97 </span>            :         return pp;
+<span class="lineNum">      98 </span>            :     }
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span>            :     void merge(SubsetPartition *);
+<span class="lineNum">     101 </span>            :     void merge_from_disk(std::string);
+<span class="lineNum">     102 </span>            :     void _merge_from_disk_consolidate(PartitionPtrMap&amp;);
+<span class="lineNum">     103 </span>            : 
+<span class="lineNum">     104 </span>            :     void save_partitionmap(std::string outfile);
+<span class="lineNum">     105 </span>            :     void load_partitionmap(std::string infile);
+<span class="lineNum">     106 </span>            :     void _validate_pmap();
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span>            :     void find_all_tags(Kmer start_kmer,
+<span class="lineNum">     109 </span>            :                        SeenSet&amp; tagged_kmers,
+<span class="lineNum">     110 </span>            :                        const SeenSet&amp; all_tags,
+<span class="lineNum">     111 </span>            :                        bool break_on_stop_tags=false,
+<span class="lineNum">     112 </span>            :                        bool stop_big_traversals=false);
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span>            :     unsigned int sweep_for_tags(const std::string&amp; seq,
+<span class="lineNum">     115 </span>            :                                 SeenSet&amp; tagged_kmers,
+<span class="lineNum">     116 </span>            :                                 const SeenSet&amp; all_tags,
+<span class="lineNum">     117 </span>            :                                 unsigned int range,
+<span class="lineNum">     118 </span>            :                                 bool break_on_stop_tags,
+<span class="lineNum">     119 </span>            :                                 bool stop_big_traversals);
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            :     void find_all_tags_truncate_on_abundance(Kmer start_kmer,
+<span class="lineNum">     122 </span>            :             SeenSet&amp; tagged_kmers,
+<span class="lineNum">     123 </span>            :             const SeenSet&amp; all_tags,
+<span class="lineNum">     124 </span>            :             BoundedCounterType min_count,
+<span class="lineNum">     125 </span>            :             BoundedCounterType max_count,
+<span class="lineNum">     126 </span>            :             bool break_on_stop_tags=false,
+<span class="lineNum">     127 </span>            :             bool stop_big_traversals=false);
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span>            :     void do_partition(HashIntoType first_kmer,
+<span class="lineNum">     130 </span>            :                       HashIntoType last_kmer,
+<span class="lineNum">     131 </span>            :                       bool break_on_stop_tags=false,
+<span class="lineNum">     132 </span>            :                       bool stop_big_traversals=false,
+<span class="lineNum">     133 </span>            :                       CallbackFn callback=0,
+<span class="lineNum">     134 </span>            :                       void * callback_data=0);
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            :     void do_partition_with_abundance(HashIntoType first_kmer,
+<span class="lineNum">     137 </span>            :                                      HashIntoType last_kmer,
+<span class="lineNum">     138 </span>            :                                      BoundedCounterType min_count,
+<span class="lineNum">     139 </span>            :                                      BoundedCounterType max_count,
+<span class="lineNum">     140 </span>            :                                      bool break_on_stop_tags=false,
+<span class="lineNum">     141 </span>            :                                      bool stop_big_traversals=false,
+<span class="lineNum">     142 </span>            :                                      CallbackFn callback=0,
+<span class="lineNum">     143 </span>            :                                      void * callback_data=0);
+<span class="lineNum">     144 </span>            : 
+<span class="lineNum">     145 </span>            :     void count_partitions(size_t&amp; n_partitions,
+<span class="lineNum">     146 </span>            :                           size_t&amp; n_unassigned);
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            :     size_t output_partitioned_file(const std::string &amp;infilename,
+<span class="lineNum">     149 </span>            :                                    const std::string &amp;outputfilename,
+<span class="lineNum">     150 </span>            :                                    bool output_unassigned=false,
+<span class="lineNum">     151 </span>            :                                    CallbackFn callback=0,
+<span class="lineNum">     152 </span>            :                                    void * callback_data=0);
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span>            :     unsigned int find_unpart(const std::string &amp;infilename,
+<span class="lineNum">     155 </span>            :                              bool traverse,
+<span class="lineNum">     156 </span>            :                              bool stop_big_traversals,
+<span class="lineNum">     157 </span>            :                              CallbackFn callback=0,
+<span class="lineNum">     158 </span>            :                              void * callback_data=0);
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            :     bool is_single_partition(std::string sequence);
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span>            :     void join_partitions_by_path(std::string sequence);
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span>            :     void partition_sizes(PartitionCountMap &amp;cm,
+<span class="lineNum">     165 </span>            :                          unsigned int&amp; n_unassigned) const;
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            :     void partition_size_distribution(PartitionCountDistribution &amp;d,
+<span class="lineNum">     168 </span>            :                                      unsigned int&amp; n_unassigned) const;
+<span class="lineNum">     169 </span>            : 
+<span class="lineNum">     170 </span>            :     void partition_average_coverages(PartitionCountMap &amp;cm,
+<span class="lineNum">     171 </span>            :                                      CountingHash * ht) const;
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span>            :     unsigned long long repartition_largest_partition(unsigned int, unsigned int,
+<span class="lineNum">     174 </span>            :             unsigned int, CountingHash&amp;);
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span>            :     void repartition_a_partition(const SeenSet&amp; partition_tags);
+<span class="lineNum">     177 </span>            :     void _clear_partition(PartitionID, SeenSet&amp; partition_tags);
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span>            :     void _merge_other(HashIntoType tag,
+<span class="lineNum">     180 </span>            :                       PartitionID other_partition,
+<span class="lineNum">     181 </span>            :                       PartitionPtrMap&amp; diskp_to_pp);
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span>            :     void report_on_partitions();
+<span class="lineNum">     184 </span>            : 
+<span class="lineNum">     185 </span>            :     void compare_to_partition(PartitionID, SubsetPartition *, PartitionID,
+<span class="lineNum">     186 </span>            :                               unsigned int &amp;n_only1,
+<span class="lineNum">     187 </span>            :                               unsigned int &amp;n_only2,
+<span class="lineNum">     188 </span>            :                               unsigned int &amp;n_shared);
+<span class="lineNum">     189 </span>            : };
+<span class="lineNum">     190 </span>            : }
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span>            : #endif // SUBSET_HH
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

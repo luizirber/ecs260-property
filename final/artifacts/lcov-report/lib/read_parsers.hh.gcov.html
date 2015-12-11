@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/read_parsers.hh</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - read_parsers.hh<span style="font-size: 80%;"> (source / <a href="read_parsers.hh.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">8</td>
+            <td class="headerCovTableEntry">30</td>
+            <td class="headerCovTableEntryLo">26.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">26.7 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2012-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #ifndef READ_PARSERS_HH
+<span class="lineNum">      39 </span>            : #define READ_PARSERS_HH
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #include &lt;regex.h&gt;
+<span class="lineNum">      42 </span>            : #include &lt;stddef.h&gt;
+<span class="lineNum">      43 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      44 </span>            : #include &lt;cstdlib&gt;
+<span class="lineNum">      45 </span>            : #include &lt;iostream&gt;
+<span class="lineNum">      46 </span>            : #include &lt;string&gt;
+<span class="lineNum">      47 </span>            : #include &lt;utility&gt;
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            : #include &quot;khmer.hh&quot;
+<span class="lineNum">      50 </span>            : #include &quot;khmer_exception.hh&quot;
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            : namespace khmer
+<span class="lineNum">      53 </span>            : {
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : namespace read_parsers
+<a name="58"><span class="lineNum">      58 </span>            : {</a>
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span><span class="lineNoCov">          0 : struct NoMoreReadsAvailable : public  khmer_file_exception {</span>
+<a name="61"><span class="lineNum">      61 </span>            :     explicit NoMoreReadsAvailable(const std::string&amp; msg) :</a>
+<span class="lineNum">      62 </span>            :         khmer_file_exception(msg) {}
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :     NoMoreReadsAvailable() :</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :         khmer_file_exception(&quot;No more reads available in this stream.&quot;) {}</span>
+<a name="65"><span class="lineNum">      65 </span>            : };</a>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 : struct InvalidRead : public  khmer_value_exception {</span>
+<span class="lineNum">      68 </span>            :     explicit InvalidRead(const std::string&amp; msg) :
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         khmer_value_exception(msg) {}</span>
+<span class="lineNum">      70 </span>            :     InvalidRead() :
+<span class="lineNum">      71 </span>            :         khmer_value_exception(&quot;Invalid FASTA/Q read&quot;) {}
+<a name="72"><span class="lineNum">      72 </span>            : };</a>
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 : struct UnknownPairReadingMode : public  khmer_value_exception {</span>
+<span class="lineNum">      75 </span>            :     explicit UnknownPairReadingMode(const std::string&amp; msg) :
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         khmer_value_exception(msg) {}</span>
+<span class="lineNum">      77 </span>            :     UnknownPairReadingMode() :
+<span class="lineNum">      78 </span>            :         khmer_value_exception(&quot;Unknown pair reading mode supplied.&quot;) {}
+<a name="79"><span class="lineNum">      79 </span>            : };</a>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 : struct InvalidReadPair : public  khmer_value_exception {</span>
+<a name="82"><span class="lineNum">      82 </span>            :     explicit InvalidReadPair(const std::string&amp; msg) :</a>
+<span class="lineNum">      83 </span>            :         khmer_value_exception(msg) {}
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     InvalidReadPair() :</span>
+<span class="lineNum">      85 </span><span class="lineNoCov">          0 :         khmer_value_exception(&quot;Invalid read pair detected.&quot;) {}</span>
+<a name="86"><span class="lineNum">      86 </span>            : };</a>
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span><span class="lineCov">     525142 : struct Read {</span>
+<span class="lineNum">      89 </span>            :     std:: string    name;
+<span class="lineNum">      90 </span>            :     std:: string    annotations;
+<span class="lineNum">      91 </span>            :     std:: string    sequence;
+<span class="lineNum">      92 </span>            :     std:: string    quality;
+<a name="93"><span class="lineNum">      93 </span>            :     // TODO? Add description field.</a>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span><span class="lineCov">      34599 :     inline void reset ( )</span>
+<span class="lineNum">      96 </span>            :     {
+<span class="lineNum">      97 </span><span class="lineCov">      34599 :         name.clear( );</span>
+<span class="lineNum">      98 </span><span class="lineCov">      34599 :         annotations.clear( );</span>
+<span class="lineNum">      99 </span><span class="lineCov">      34599 :         sequence.clear( );</span>
+<span class="lineNum">     100 </span><span class="lineCov">      34599 :         quality.clear( );</span>
+<span class="lineNum">     101 </span><span class="lineCov">      34599 :     }</span>
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :     void write_to(std::ostream&amp;);
+<span class="lineNum">     104 </span>            : };
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span>            : typedef std:: pair&lt; Read, Read &gt;  ReadPair;
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span>            : struct IParser {
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span>            :     enum {
+<span class="lineNum">     111 </span>            :         PAIR_MODE_ALLOW_UNPAIRED = 0,
+<span class="lineNum">     112 </span>            :         PAIR_MODE_IGNORE_UNPAIRED,
+<span class="lineNum">     113 </span>            :         PAIR_MODE_ERROR_ON_UNPAIRED
+<span class="lineNum">     114 </span>            :     };
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span>            :     static IParser * const  get_parser(
+<span class="lineNum">     117 </span>            :         std:: string const      &amp;ifile_name
+<span class="lineNum">     118 </span>            :     );
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span>            :     IParser( );
+<span class="lineNum">     121 </span>            :     virtual ~IParser( );
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span>            :     virtual bool                is_complete( ) = 0;
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            :     // Note: 'get_next_read' exists for legacy reasons.
+<span class="lineNum">     126 </span>            :     //       In the long term, it should be eliminated in favor of direct use of
+<span class="lineNum">     127 </span>            :     //       'imprint_next_read'. A potentially costly copy-by-value happens
+<span class="lineNum">     128 </span>            :     //       upon return.
+<span class="lineNum">     129 </span>            :     // TODO: Eliminate all calls to 'get_next_read'.
+<span class="lineNum">     130 </span>            :     // Or switch to C++11 w/ move constructors
+<span class="lineNum">     131 </span>            :     inline Read         get_next_read( )
+<span class="lineNum">     132 </span>            :     {
+<span class="lineNum">     133 </span>            :         Read the_read;
+<span class="lineNum">     134 </span><span class="lineCov">      34599 :         imprint_next_read( the_read );</span>
+<span class="lineNum">     135 </span>            :         return the_read;
+<span class="lineNum">     136 </span>            :     }
+<span class="lineNum">     137 </span>            :     virtual void        imprint_next_read( Read &amp;the_read ) = 0;
+<span class="lineNum">     138 </span>            : 
+<span class="lineNum">     139 </span>            :     virtual void        imprint_next_read_pair(
+<span class="lineNum">     140 </span>            :         ReadPair &amp;the_read_pair,
+<span class="lineNum">     141 </span>            :         uint8_t mode = PAIR_MODE_ERROR_ON_UNPAIRED
+<span class="lineNum">     142 </span>            :     );
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span>            :     size_t                  get_num_reads()
+<span class="lineNum">     145 </span>            :     {
+<span class="lineNum">     146 </span>            :         return _num_reads;
+<span class="lineNum">     147 </span>            :     }
+<span class="lineNum">     148 </span>            : 
+<span class="lineNum">     149 </span>            : protected:
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            :     size_t              _num_reads;
+<span class="lineNum">     152 </span>            :     bool        _have_qualities;
+<span class="lineNum">     153 </span>            :     regex_t             _re_read_2_nosub;
+<span class="lineNum">     154 </span>            :     regex_t             _re_read_1;
+<span class="lineNum">     155 </span>            :     regex_t             _re_read_2;
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            : #if (0)
+<span class="lineNum">     158 </span>            :     void                _imprint_next_read_pair_in_allow_mode(
+<span class="lineNum">     159 </span>            :         ReadPair &amp;the_read_pair
+<span class="lineNum">     160 </span>            :     );
+<span class="lineNum">     161 </span>            : #endif
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            :     void                _imprint_next_read_pair_in_ignore_mode(
+<span class="lineNum">     164 </span>            :         ReadPair &amp;the_read_pair
+<span class="lineNum">     165 </span>            :     );
+<span class="lineNum">     166 </span>            :     void                _imprint_next_read_pair_in_error_mode(
+<span class="lineNum">     167 </span>            :         ReadPair &amp;the_read_pair
+<span class="lineNum">     168 </span>            :     );
+<span class="lineNum">     169 </span>            :     bool                _is_valid_read_pair(
+<span class="lineNum">     170 </span>            :         ReadPair &amp;the_read_pair, regmatch_t &amp;match_1, regmatch_t &amp;match_2
+<span class="lineNum">     171 </span>            :     );
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span>            : }; // struct IParser
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span>            : class SeqAnParser : public IParser
+<span class="lineNum">     176 </span>            : {
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span>            : public:
+<span class="lineNum">     179 </span>            :     explicit SeqAnParser( const char * filename );
+<span class="lineNum">     180 </span>            :     ~SeqAnParser( );
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span>            :     bool is_complete( );
+<span class="lineNum">     183 </span>            :     void imprint_next_read(Read &amp;the_read);
+<span class="lineNum">     184 </span>            : 
+<span class="lineNum">     185 </span>            : private:
+<span class="lineNum">     186 </span>            :     struct Handle;
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span>            :     Handle* _private;
+<span class="lineNum">     189 </span>            : 
+<a name="190"><span class="lineNum">     190 </span>            : };</a>
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 : inline PartitionID _parse_partition_id(std::string name)</span>
+<span class="lineNum">     193 </span>            : {
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     PartitionID p = 0;</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     const char * s = name.c_str() + name.length() - 1;</span>
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     if (!(*(s + 1) == (unsigned int) NULL)) {</span>
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :         throw khmer_exception();</span>
+<span class="lineNum">     198 </span>            :     }
+<span class="lineNum">     199 </span>            : 
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     while(*s != '\t' &amp;&amp; s &gt;= name.c_str()) {</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         s--;</span>
+<span class="lineNum">     202 </span>            :     }
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     if (*s == '\t') {</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :         p = (PartitionID) atoi(s + 1);</span>
+<span class="lineNum">     206 </span>            :     } else {
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :         std::cerr &lt;&lt; &quot;consume_partitioned_fasta barfed on read &quot;  &lt;&lt; name &lt;&lt; &quot;\n&quot;;</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         throw khmer_exception();</span>
+<span class="lineNum">     209 </span>            :     }
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span><span class="lineNoCov">          0 :     return p;</span>
+<span class="lineNum">     212 </span>            : }
+<span class="lineNum">     213 </span>            : 
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            : } // namespace read_parsers
+<span class="lineNum">     217 </span>            : 
+<span class="lineNum">     218 </span>            : 
+<span class="lineNum">     219 </span>            : } // namespace khmer
+<span class="lineNum">     220 </span>            : 
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span>            : #endif // READ_PARSERS_HH
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span>            : // vim: set ft=cpp sts=4 sw=4 tw=80:
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

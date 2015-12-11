@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/khmer_exception.hh</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - khmer_exception.hh<span style="font-size: 80%;"> (source / <a href="khmer_exception.hh.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntryLo">47.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntryLo">22.2 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2014-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #ifndef KHMER_EXCEPTION_HH
+<span class="lineNum">      39 </span>            : #define KHMER_EXCEPTION_HH
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #include &lt;exception&gt;
+<span class="lineNum">      42 </span>            : #include &lt;string&gt;
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            : namespace khmer
+<span class="lineNum">      45 </span>            : {
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : ///
+<span class="lineNum">      48 </span>            : // A base class for all exceptions.
+<span class="lineNum">      49 </span>            : //
+<a name="50"><span class="lineNum">      50 </span>            : // All exceptions should be derived from this base class or a sub-class</a>
+<span class="lineNum">      51 </span>            : //
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 : class khmer_exception : public std::exception</span>
+<a name="53"><span class="lineNum">      53 </span>            : {</a>
+<span class="lineNum">      54 </span>            : public:
+<span class="lineNum">      55 </span><span class="lineCov">         13 :     explicit khmer_exception(const std::string&amp; msg = &quot;Generic khmer exception&quot;)</span>
+<a name="56"><span class="lineNum">      56 </span><span class="lineCov">         26 :         : _msg(msg) { }</span></a>
+<a name="57"><span class="lineNum">      57 </span>            : </a>
+<span class="lineNum">      58 </span><span class="lineCov">         26 :     virtual ~khmer_exception() throw() { }</span>
+<span class="lineNum">      59 </span><span class="lineCov">         13 :     virtual const char* what() const throw ()</span>
+<span class="lineNum">      60 </span>            :     {
+<span class="lineNum">      61 </span><span class="lineCov">         26 :         return _msg.c_str();</span>
+<span class="lineNum">      62 </span>            :     }
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            : protected:
+<span class="lineNum">      65 </span>            :     const std::string _msg;
+<span class="lineNum">      66 </span>            : };
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span>            : /////// Base Exceptions /////
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            : ///
+<a name="72"><span class="lineNum">      72 </span>            : // A base class for file exceptions.</a>
+<span class="lineNum">      73 </span>            : //
+<span class="lineNum">      74 </span><span class="lineCov">         13 : class khmer_file_exception : public khmer_exception</span>
+<span class="lineNum">      75 </span>            : {
+<span class="lineNum">      76 </span>            : public:
+<span class="lineNum">      77 </span>            :     explicit khmer_file_exception(const std::string&amp; msg)
+<span class="lineNum">      78 </span><span class="lineCov">         13 :         : khmer_exception(msg) { }</span>
+<span class="lineNum">      79 </span>            : };
+<a name="80"><span class="lineNum">      80 </span>            : </a>
+<span class="lineNum">      81 </span>            : // A base exception for value exceptions
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 : class khmer_value_exception : public khmer_exception</span>
+<span class="lineNum">      83 </span>            : {
+<span class="lineNum">      84 </span>            : public:
+<span class="lineNum">      85 </span>            :     explicit khmer_value_exception(const std::string&amp; msg)
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :         : khmer_exception(msg) { }</span>
+<span class="lineNum">      87 </span>            : };
+<span class="lineNum">      88 </span>            : 
+<a name="89"><span class="lineNum">      89 </span>            : /////// Specialised Exceptions /////</a>
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span><span class="lineCov">         26 : class InvalidStream : public khmer_file_exception</span>
+<span class="lineNum">      92 </span>            : {
+<span class="lineNum">      93 </span>            : public:
+<span class="lineNum">      94 </span>            :     InvalidStream()
+<span class="lineNum">      95 </span>            :         : khmer_file_exception(&quot;Generic InvalidStream error&quot;) {}
+<span class="lineNum">      96 </span>            :     explicit InvalidStream(const std::string&amp; msg)
+<span class="lineNum">      97 </span><span class="lineCov">         26 :         : khmer_file_exception(msg) {}</span>
+<a name="98"><span class="lineNum">      98 </span>            : };</a>
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 : class StreamReadError : public khmer_file_exception</span>
+<a name="101"><span class="lineNum">     101 </span>            : {</a>
+<span class="lineNum">     102 </span>            : public:
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     StreamReadError()</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         : khmer_file_exception(&quot;Generic StreamReadError error&quot;) {}</span>
+<span class="lineNum">     105 </span>            :     explicit StreamReadError(const std::string&amp; msg)
+<span class="lineNum">     106 </span>            :         : khmer_file_exception(msg) {}
+<span class="lineNum">     107 </span>            : };
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span>            : ///
+<span class="lineNum">     111 </span>            : // An exception for invalid arguments to functions
+<a name="112"><span class="lineNum">     112 </span>            : //</a>
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 : class InvalidValue : public khmer_value_exception</span>
+<span class="lineNum">     115 </span>            : {
+<span class="lineNum">     116 </span>            : public:
+<span class="lineNum">     117 </span>            :     explicit InvalidValue(const std::string&amp; msg)
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         : khmer_value_exception(msg) { }</span>
+<span class="lineNum">     119 </span>            : };
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            : ///
+<span class="lineNum">     122 </span>            : // An exception for trying to change a read-only attributes
+<a name="123"><span class="lineNum">     123 </span>            : //</a>
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 : class ReadOnlyAttribute : public khmer_exception</span>
+<span class="lineNum">     126 </span>            : {
+<span class="lineNum">     127 </span>            : public:
+<span class="lineNum">     128 </span>            :     explicit ReadOnlyAttribute(const std::string&amp; msg)
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :         : khmer_exception(msg) { }</span>
+<span class="lineNum">     130 </span>            : };
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span>            : } // end namespace khmer
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            : #endif // KHMER_EXCEPTION_HH
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            : // vim: set sts=2 sw=2:
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/hashbits.cc</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - hashbits.cc<span style="font-size: 80%;"> (source / <a href="hashbits.cc.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">108</td>
+            <td class="headerCovTableEntryLo">13.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2010-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #include &lt;errno.h&gt;
+<span class="lineNum">      39 </span>            : #include &lt;sstream&gt; // IWYU pragma: keep
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : #include &quot;hashbits.hh&quot;
+<span class="lineNum">      42 </span>            : #include &quot;hashtable.hh&quot;
+<span class="lineNum">      43 </span>            : #include &quot;khmer_exception.hh&quot;
+<span class="lineNum">      44 </span>            : #include &quot;read_parsers.hh&quot;
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            : using namespace std;
+<span class="lineNum">      47 </span>            : using namespace khmer;
+<span class="lineNum">      48 </span>            : using namespace khmer:: read_parsers;
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 : void Hashbits::save(std::string outfilename)</span>
+<span class="lineNum">      51 </span>            : {
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     if (!_counts[0]) {</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         throw khmer_exception();</span>
+<span class="lineNum">      54 </span>            :     }
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     unsigned int save_ksize = _ksize;</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :     unsigned char save_n_tables = _n_tables;</span>
+<span class="lineNum">      58 </span>            :     unsigned long long save_tablesize;
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :     unsigned long long save_occupied_bins = _occupied_bins;</span>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :     ofstream outfile(outfilename.c_str(), ios::binary);</span>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :     outfile.write(SAVED_SIGNATURE, 4);</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     unsigned char version = SAVED_FORMAT_VERSION;</span>
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;version, 1);</span>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :     unsigned char ht_type = SAVED_HASHBITS;</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;ht_type, 1);</span>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;save_ksize, sizeof(save_ksize));</span>
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :     outfile.write((const char *) &amp;save_n_tables, sizeof(save_n_tables));</span>
+<span class="lineNum">      72 </span>            :     outfile.write((const char *) &amp;save_occupied_bins,
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :                   sizeof(save_occupied_bins));</span>
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :     for (unsigned int i = 0; i &lt; _n_tables; i++) {</span>
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         save_tablesize = _tablesizes[i];</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :         unsigned long long tablebytes = save_tablesize / 8 + 1;</span>
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         outfile.write((const char *) &amp;save_tablesize, sizeof(save_tablesize));</span>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineNoCov">          0 :         outfile.write((const char *) _counts[i], tablebytes);</span>
+<span class="lineNum">      82 </span>            :     }
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :     if (outfile.fail()) {</span>
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         throw khmer_file_exception(strerror(errno));</span>
+<span class="lineNum">      85 </span>            :     }
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     outfile.close();</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            : /**
+<span class="lineNum">      90 </span>            :  * Loads @param infilename into Hashbits, with error checking on
+<span class="lineNum">      91 </span>            :  * file type and file version.  Populates _counts internally.
+<span class="lineNum">      92 </span>            :  */
+<span class="lineNum">      93 </span><span class="lineNoCov">          0 : void Hashbits::load(std::string infilename)</span>
+<span class="lineNum">      94 </span>            : {
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     ifstream infile;</span>
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span>            :     // configure ifstream to raise exceptions for everything.
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     infile.exceptions(std::ifstream::failbit | std::ifstream::badbit |</span>
+<span class="lineNum">      99 </span>            :                       std::ifstream::eofbit);
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            :     try {
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :         infile.open(infilename.c_str(), ios::binary);</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :     } catch (std::ifstream::failure &amp;e) {</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         std::string err;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :         if (!infile.is_open()) {</span>
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :             err = &quot;Cannot open k-mer graph file: &quot; + infilename;</span>
+<span class="lineNum">     107 </span>            :         } else {
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :             err = &quot;Unknown error in opening file: &quot; + infilename;</span>
+<span class="lineNum">     109 </span>            :         }
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :         throw khmer_file_exception(err);</span>
+<span class="lineNum">     111 </span>            :     }
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     if (_counts) {</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :         for (unsigned int i = 0; i &lt; _n_tables; i++) {</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :             delete[] _counts[i];</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :             _counts[i] = NULL;</span>
+<span class="lineNum">     117 </span>            :         }
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         delete[] _counts;</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         _counts = NULL;</span>
+<span class="lineNum">     120 </span>            :     }
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     _tablesizes.clear();</span>
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span>            :     try {
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :         unsigned int save_ksize = 0;</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :         unsigned char save_n_tables = 0;</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :         unsigned long long save_tablesize = 0;</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :         unsigned long long save_occupied_bins = 0;</span>
+<span class="lineNum">     128 </span>            :         char signature[4];
+<span class="lineNum">     129 </span>            :         unsigned char version, ht_type;
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :         infile.read(signature, 4);</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;version, 1);</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;ht_type, 1);</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :         if (!(std::string(signature, 4) == SAVED_SIGNATURE)) {</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Does not start with signature for a khmer file: 0x&quot;;</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :             for(size_t i=0; i &lt; 4; ++i) {</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :                 err &lt;&lt; std::hex &lt;&lt; (int) signature[i];</span>
+<span class="lineNum">     139 </span>            :             }
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot; Should be: &quot; &lt;&lt; SAVED_SIGNATURE;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :         } else if (!(version == SAVED_FORMAT_VERSION)) {</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect file format version &quot; &lt;&lt; (int) version</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot; while reading k-mer graph from &quot; &lt;&lt; infilename</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot;; should be &quot; &lt;&lt; (int) SAVED_FORMAT_VERSION;</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         } else if (!(ht_type == SAVED_HASHBITS)) {</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :             std::ostringstream err;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :             err &lt;&lt; &quot;Incorrect file format type &quot; &lt;&lt; (int) ht_type</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :                 &lt;&lt; &quot; while reading k-mer graph from &quot; &lt;&lt; infilename;</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :             throw khmer_file_exception(err.str());</span>
+<span class="lineNum">     153 </span>            :         }
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;save_ksize, sizeof(save_ksize));</span>
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;save_n_tables, sizeof(save_n_tables));</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         infile.read((char *) &amp;save_occupied_bins, sizeof(save_occupied_bins));</span>
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         _ksize = (WordLength) save_ksize;</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         _n_tables = (unsigned int) save_n_tables;</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :         _occupied_bins = save_occupied_bins;</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :         _init_bitstuff();</span>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         _counts = new Byte*[_n_tables];</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :         for (unsigned int i = 0; i &lt; _n_tables; i++) {</span>
+<span class="lineNum">     166 </span>            :             HashIntoType tablesize;
+<span class="lineNum">     167 </span>            :             unsigned long long tablebytes;
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :             infile.read((char *) &amp;save_tablesize, sizeof(save_tablesize));</span>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :             tablesize = (HashIntoType) save_tablesize;</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :             _tablesizes.push_back(tablesize);</span>
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :             tablebytes = tablesize / 8 + 1;</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :             _counts[i] = new Byte[tablebytes];</span>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :             unsigned long long loaded = 0;</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :             while (loaded != tablebytes) {</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :                 infile.read((char *) _counts[i], tablebytes - loaded);</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :                 loaded += infile.gcount();</span>
+<span class="lineNum">     181 </span>            :             }
+<span class="lineNum">     182 </span>            :         }
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         infile.close();</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     } catch (std::ifstream::failure &amp;e) {</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         std::string err;</span>
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         if (infile.eof()) {</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :             err = &quot;Unexpected end of k-mer graph file: &quot; + infilename;</span>
+<span class="lineNum">     188 </span>            :         } else {
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :             err = &quot;Error reading from k-mer graph file: &quot; + infilename;</span>
+<span class="lineNum">     190 </span>            :         }
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         throw khmer_file_exception(err);</span>
+<span class="lineNum">     192 </span>            :     }
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span><span class="lineCov">        600 : void Hashbits::update_from(const Hashbits &amp;other)</span>
+<span class="lineNum">     196 </span>            : {
+<span class="lineNum">     197 </span><span class="lineCov">        600 :     if (_ksize != other._ksize) {</span>
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :         throw khmer_exception(&quot;both nodegraphs must have same k size&quot;);</span>
+<span class="lineNum">     199 </span>            :     }
+<span class="lineNum">     200 </span><span class="lineCov">       1200 :     if (_tablesizes != other._tablesizes) {</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :         throw khmer_exception(&quot;both nodegraphs must have same table sizes&quot;);</span>
+<span class="lineNum">     202 </span>            :     }
+<span class="lineNum">     203 </span>            :     Byte tmp = 0;
+<span class="lineNum">     204 </span><span class="lineCov">       5400 :     for (unsigned int table_num = 0; table_num &lt; _n_tables; table_num++) {</span>
+<span class="lineNum">     205 </span><span class="lineCov">       2400 :         Byte * me = _counts[table_num];</span>
+<span class="lineNum">     206 </span><span class="lineCov">       2400 :         Byte * ot = other._counts[table_num];</span>
+<span class="lineNum">     207 </span><span class="lineCov">       4800 :         HashIntoType tablesize = _tablesizes[table_num];</span>
+<span class="lineNum">     208 </span><span class="lineCov">       2400 :         HashIntoType tablebytes = tablesize / 8 + 1;</span>
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span><span class="lineCov">  299994600 :         for (HashIntoType index = 0; index &lt; tablebytes; index++) {</span>
+<span class="lineNum">     211 </span>            :             // Bloom filters can be unioned with bitwise OR.
+<span class="lineNum">     212 </span>            :             // First, get the new value
+<span class="lineNum">     213 </span><span class="lineCov">  299992200 :             tmp = me[index] | ot[index];</span>
+<span class="lineNum">     214 </span><span class="lineCov">  299992200 :             if (table_num == 0) {</span>
+<span class="lineNum">     215 </span>            :                 // We'd like for the merged filter to have an accurate count of occupied bins.
+<span class="lineNum">     216 </span>            :                 // First, observe that HammingDistance(x,y) is equivalent to HammingWeight(x^y).
+<span class="lineNum">     217 </span>            :                 // Then, observe that the number of additional occupied bins from the update
+<span class="lineNum">     218 </span>            :                 // is the hamming distance between the original bin and the OR'd bin. Thus,
+<span class="lineNum">     219 </span>            :                 // we can use the builtin popcountll function, which calls a hardware instruction
+<span class="lineNum">     220 </span>            :                 // for hamming weight, with the original and merged bin, to find the number of
+<span class="lineNum">     221 </span>            :                 // additional occupied bins.
+<span class="lineNum">     222 </span><span class="lineCov">   74998800 :                 _occupied_bins += __builtin_popcountll(me[index] ^ tmp);</span>
+<span class="lineNum">     223 </span>            :             }
+<span class="lineNum">     224 </span><span class="lineCov">  299992200 :             me[index] = tmp;</span>
+<a name="225"><span class="lineNum">     225 </span>            :         }</a>
+<span class="lineNum">     226 </span>            :     }
+<span class="lineNum">     227 </span><span class="lineCov">        602 : }</span>
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            : // vim: set sts=2 sw=2:
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

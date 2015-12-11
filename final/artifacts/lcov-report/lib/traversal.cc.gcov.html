@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/traversal.cc</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - traversal.cc<span style="font-size: 80%;"> (source / <a href="traversal.cc.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">58</td>
+            <td class="headerCovTableEntryLo">1.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntryLo">11.1 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       6 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       7 </span>            : met:
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      10 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      13 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      14 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      15 </span>            :       with the distribution.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      18 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      19 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      20 </span>            :       permission.
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      23 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      24 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      25 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      26 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      27 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      28 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      29 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      30 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      31 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      32 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      33 </span>            : LICENSE (END)
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      36 </span>            : */
+<span class="lineNum">      37 </span>            : #include &quot;hashtable.hh&quot;
+<span class="lineNum">      38 </span>            : #include &quot;traversal.hh&quot;
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : using namespace khmer;
+<a name="41"><span class="lineNum">      41 </span>            : using namespace std;</a>
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 : Traverser::Traverser(const Hashtable * ht) :</span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :     KmerFactory(ht-&gt;ksize()), graph(ht)</span>
+<span class="lineNum">      45 </span>            : {
+<span class="lineNum">      46 </span><span class="lineNoCov">          0 :     bitmask = 0;</span>
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :     for (unsigned int i = 0; i &lt; _ksize; i++) {</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :         bitmask = (bitmask &lt;&lt; 2) | 3;</span>
+<span class="lineNum">      49 </span>            :     }
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     rc_left_shift = _ksize * 2 - 2;</span>
+<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 : Kmer Traverser::get_left(Kmer&amp; node, const char ch)</span>
+<span class="lineNum">      54 </span>            : {
+<span class="lineNum">      55 </span>            :     HashIntoType kmer_f, kmer_r;
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     kmer_f = ((node.kmer_f) &gt;&gt; 2 | twobit_repr(ch) &lt;&lt; rc_left_shift);</span>
+<span class="lineNum">      57 </span><span class="lineNoCov">          0 :     kmer_r = (((node.kmer_r) &lt;&lt; 2) &amp; bitmask) | (twobit_comp(ch));</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :     return build_kmer(kmer_f, kmer_r);</span>
+<span class="lineNum">      59 </span>            : }
+<a name="60"><span class="lineNum">      60 </span>            : </a>
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 : Kmer Traverser::get_right(Kmer&amp; node, const char ch)</span>
+<span class="lineNum">      63 </span>            : {
+<span class="lineNum">      64 </span>            :     HashIntoType kmer_f, kmer_r;
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :     kmer_f = (((node.kmer_f) &lt;&lt; 2) &amp; bitmask) | (twobit_repr(ch));</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :     kmer_r = ((node.kmer_r) &gt;&gt; 2) | (twobit_comp(ch) &lt;&lt; rc_left_shift);</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :     return build_kmer(kmer_f, kmer_r);</span>
+<a name="68"><span class="lineNum">      68 </span>            : }</a>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 : unsigned int Traverser::traverse_left(Kmer&amp; node,</span>
+<span class="lineNum">      71 </span>            :                                       KmerQueue &amp; node_q,
+<span class="lineNum">      72 </span>            :                                       std::function&lt;bool (Kmer&amp;)&gt; filter)
+<span class="lineNum">      73 </span>            : {
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :     unsigned int found = 0;</span>
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :     char bases[] = &quot;ACGT&quot;;</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :     char * base = bases;</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     while(*base != '\0') {</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :         Kmer prev_node = get_left(node, *base);</span>
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :         if (graph-&gt;get_count(prev_node) &amp;&amp; filter(prev_node)) {</span>
+<span class="lineNum">      81 </span>            :             node_q.push(prev_node);
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :             ++found;</span>
+<span class="lineNum">      83 </span>            :         }
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :         ++base;</span>
+<span class="lineNum">      85 </span>            :     }
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     return found;</span>
+<a name="88"><span class="lineNum">      88 </span>            : }</a>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 : unsigned int Traverser::traverse_right(Kmer&amp; node,</span>
+<span class="lineNum">      91 </span>            :                                        KmerQueue &amp; node_q,
+<span class="lineNum">      92 </span>            :                                        std::function&lt;bool (Kmer&amp;)&gt; filter)
+<span class="lineNum">      93 </span>            : {
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     unsigned int found = 0;</span>
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     char bases[] = &quot;ACGT&quot;;</span>
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :     char * base = bases;</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :     while(*base != '\0') {</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :         Kmer next_node = get_right(node, *base);</span>
+<span class="lineNum">     100 </span><span class="lineNoCov">          0 :         if (graph-&gt;get_count(next_node) &amp;&amp; filter(next_node)) {</span>
+<span class="lineNum">     101 </span>            :             node_q.push(next_node);
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :             ++found;</span>
+<span class="lineNum">     103 </span>            :         }
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :         ++base;</span>
+<span class="lineNum">     105 </span>            :     }
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :     return found;</span>
+<a name="108"><span class="lineNum">     108 </span>            : }</a>
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 : unsigned int Traverser::degree_left(Kmer&amp; node)</span>
+<span class="lineNum">     111 </span>            : {
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     unsigned int degree = 0;</span>
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     char bases[] = &quot;ACGT&quot;;</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     char * base = bases;</span>
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     while(*base != '\0') {</span>
+<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         Kmer prev_node = get_left(node, *base);</span>
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 :         if (graph-&gt;get_count(prev_node)) {</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :             ++degree;</span>
+<span class="lineNum">     120 </span>            :         }
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :         ++base;</span>
+<span class="lineNum">     122 </span>            :     }
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     return degree;</span>
+<a name="125"><span class="lineNum">     125 </span>            : }</a>
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 : unsigned int Traverser::degree_right(Kmer&amp; node)</span>
+<span class="lineNum">     128 </span>            : {
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     unsigned int degree = 0;</span>
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     char bases[] = &quot;ACGT&quot;;</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     char * base = bases;</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     while(*base != '\0') {</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :         Kmer next_node = get_right(node, *base);</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :         if (graph-&gt;get_count(next_node)) {</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :             ++degree;</span>
+<span class="lineNum">     137 </span>            :         }
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         ++base;</span>
+<span class="lineNum">     139 </span>            :     }
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     return degree;</span>
+<a name="142"><span class="lineNum">     142 </span>            : }</a>
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 : unsigned int Traverser::degree(Kmer&amp; node)</span>
+<a name="145"><span class="lineNum">     145 </span>            : {</a>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     return degree_right(node) + degree_left(node);</span>
+<span class="lineNum">     147 </span><span class="lineCov">          2 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

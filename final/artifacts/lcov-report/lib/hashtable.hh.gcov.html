@@ -1,0 +1,464 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/hashtable.hh</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - hashtable.hh<span style="font-size: 80%;"> (source / <a href="hashtable.hh.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">23</td>
+            <td class="headerCovTableEntryLo">60.9 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2010-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #ifndef HASHTABLE_HH
+<span class="lineNum">      39 </span>            : #define HASHTABLE_HH
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : #include &lt;stddef.h&gt;
+<span class="lineNum">      43 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      44 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      45 </span>            : #include &lt;fstream&gt;
+<span class="lineNum">      46 </span>            : #include &lt;iostream&gt;
+<span class="lineNum">      47 </span>            : #include &lt;list&gt;
+<span class="lineNum">      48 </span>            : #include &lt;map&gt;
+<span class="lineNum">      49 </span>            : #include &lt;queue&gt;
+<span class="lineNum">      50 </span>            : #include &lt;queue&gt;
+<span class="lineNum">      51 </span>            : #include &lt;set&gt;
+<span class="lineNum">      52 </span>            : #include &lt;string&gt;
+<span class="lineNum">      53 </span>            : #include &lt;vector&gt;
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            : #include &quot;khmer.hh&quot;
+<span class="lineNum">      56 </span>            : #include &quot;khmer_exception.hh&quot;
+<span class="lineNum">      57 </span>            : #include &quot;kmer_hash.hh&quot;
+<span class="lineNum">      58 </span>            : #include &quot;read_parsers.hh&quot;
+<span class="lineNum">      59 </span>            : #include &quot;traversal.hh&quot;
+<span class="lineNum">      60 </span>            : #include &quot;subset.hh&quot;
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            : namespace khmer
+<span class="lineNum">      63 </span>            : {
+<span class="lineNum">      64 </span>            : class CountingHash;
+<span class="lineNum">      65 </span>            : class Hashtable;
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            : namespace read_parsers
+<span class="lineNum">      68 </span>            : {
+<span class="lineNum">      69 </span>            : struct IParser;
+<span class="lineNum">      70 </span>            : }  // namespace read_parsers
+<span class="lineNum">      71 </span>            : }  // namespace khmer
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            : #define MAX_KEEPER_SIZE int(1e6)
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            : #define next_f(kmer_f, ch) ((((kmer_f) &lt;&lt; 2) &amp; bitmask) | (twobit_repr(ch)))
+<span class="lineNum">      76 </span>            : #define next_r(kmer_r, ch) (((kmer_r) &gt;&gt; 2) | (twobit_comp(ch) &lt;&lt; rc_left_shift))
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            : #define prev_f(kmer_f, ch) ((kmer_f) &gt;&gt; 2 | twobit_repr(ch) &lt;&lt; rc_left_shift)
+<span class="lineNum">      79 </span>            : #define prev_r(kmer_r, ch) ((((kmer_r) &lt;&lt; 2) &amp; bitmask) | (twobit_comp(ch)))
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span>            : #define set_contains(s, e) ((s).find(e) != (s).end())
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            : #define CALLBACK_PERIOD 100000
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            : namespace khmer
+<span class="lineNum">      86 </span>            : {
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span>            : class Hashtable: public
+<span class="lineNum">      89 </span>            :     KmerFactory                 // Base class implementation of a Bloom ht.
+<span class="lineNum">      90 </span>            : {
+<span class="lineNum">      91 </span>            :     friend class SubsetPartition;
+<span class="lineNum">      92 </span>            :     friend class LabelHash;
+<span class="lineNum">      93 </span>            :     friend class Traverser;
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            : protected:
+<span class="lineNum">      96 </span>            :     unsigned int _tag_density;
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :     unsigned int    _max_count;
+<span class="lineNum">      99 </span>            :     unsigned int    _max_bigcount;
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            :     //WordLength            _ksize;
+<span class="lineNum">     102 </span>            :     HashIntoType    bitmask;
+<a name="103"><span class="lineNum">     103 </span>            :     unsigned int    _nbits_sub_1;</a>
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span><span class="lineCov">       3172 :     explicit Hashtable( WordLength ksize )</span>
+<span class="lineNum">     106 </span>            :         : KmerFactory( ksize ),
+<span class="lineNum">     107 </span>            :           _max_count( MAX_KCOUNT ),
+<span class="lineNum">     108 </span><span class="lineCov">      12688 :           _max_bigcount( MAX_BIGCOUNT )</span>
+<span class="lineNum">     109 </span>            :     {
+<span class="lineNum">     110 </span><span class="lineCov">       3172 :         _tag_density = DEFAULT_TAG_DENSITY;</span>
+<span class="lineNum">     111 </span>            :         if (!(_tag_density % 2 == 0)) {
+<span class="lineNum">     112 </span>            :             throw khmer_exception();
+<span class="lineNum">     113 </span>            :         }
+<span class="lineNum">     114 </span>            :         _init_bitstuff();
+<span class="lineNum">     115 </span><span class="lineCov">       3172 :         partition = new SubsetPartition(this);</span>
+<span class="lineNum">     116 </span><span class="lineCov">       3172 :         _all_tags_spin_lock = 0;</span>
+<a name="117"><span class="lineNum">     117 </span><span class="lineCov">       3172 :     }</span></a>
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span><span class="lineCov">       3172 :     virtual ~Hashtable( )</span>
+<span class="lineNum">     120 </span><span class="lineCov">      15860 :     {</span>
+<span class="lineNum">     121 </span><span class="lineCov">       3172 :         delete partition;</span>
+<span class="lineNum">     122 </span><span class="lineCov">       3172 :     }</span>
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span>            :     void _init_bitstuff()
+<span class="lineNum">     125 </span>            :     {
+<span class="lineNum">     126 </span><span class="lineCov">       3172 :         bitmask = 0;</span>
+<span class="lineNum">     127 </span><span class="lineCov">      44408 :         for (unsigned int i = 0; i &lt; _ksize; i++) {</span>
+<span class="lineNum">     128 </span><span class="lineCov">      41236 :             bitmask = (bitmask &lt;&lt; 2) | 3;</span>
+<span class="lineNum">     129 </span>            :         }
+<span class="lineNum">     130 </span><span class="lineCov">       3172 :         _nbits_sub_1 = (_ksize*2 - 2);</span>
+<span class="lineNum">     131 </span>            :     }
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :     HashIntoType _next_hash(char ch, HashIntoType &amp;h, HashIntoType &amp;r) const
+<span class="lineNum">     134 </span>            :     {
+<span class="lineNum">     135 </span>            :         // left-shift the previous hash over
+<span class="lineNum">     136 </span>            :         h = h &lt;&lt; 2;
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span>            :         // 'or' in the current nt
+<span class="lineNum">     139 </span>            :         h |= twobit_repr(ch);
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span>            :         // mask off the 2 bits we shifted over.
+<span class="lineNum">     142 </span>            :         h &amp;= bitmask;
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span>            :         // now handle reverse complement
+<span class="lineNum">     145 </span>            :         r = r &gt;&gt; 2;
+<span class="lineNum">     146 </span>            :         r |= (twobit_comp(ch) &lt;&lt; _nbits_sub_1);
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            :         return uniqify_rc(h, r);
+<span class="lineNum">     149 </span>            :     }
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            :     void _clear_all_partitions()
+<span class="lineNum">     152 </span>            :     {
+<span class="lineNum">     153 </span>            :         if (partition != NULL) {
+<span class="lineNum">     154 </span>            :             partition-&gt;_clear_all_partitions();
+<span class="lineNum">     155 </span>            :         }
+<span class="lineNum">     156 </span>            :     }
+<span class="lineNum">     157 </span>            : 
+<span class="lineNum">     158 </span>            :     uint32_t _all_tags_spin_lock;
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            :     explicit Hashtable(const Hashtable&amp;);
+<span class="lineNum">     161 </span>            :     Hashtable&amp; operator=(const Hashtable&amp;);
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            : public:
+<span class="lineNum">     164 </span>            :     SubsetPartition * partition;
+<span class="lineNum">     165 </span>            :     SeenSet all_tags;
+<span class="lineNum">     166 </span>            :     SeenSet stop_tags;
+<span class="lineNum">     167 </span>            :     SeenSet repart_small_tags;
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span>            :     // accessor to get 'k'
+<span class="lineNum">     170 </span>            :     const WordLength ksize() const
+<span class="lineNum">     171 </span>            :     {
+<span class="lineNum">     172 </span>            :         return _ksize;
+<span class="lineNum">     173 </span>            :     }
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span>            :     virtual void count(const char * kmer) = 0;
+<span class="lineNum">     176 </span>            :     virtual void count(HashIntoType khash) = 0;
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span>            :     // get the count for the given k-mer.
+<span class="lineNum">     179 </span>            :     virtual const BoundedCounterType get_count(const char * kmer) const = 0;
+<span class="lineNum">     180 </span>            :     virtual const BoundedCounterType get_count(HashIntoType khash) const = 0;
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span>            :     virtual void save(std::string) = 0;
+<span class="lineNum">     183 </span>            :     virtual void load(std::string) = 0;
+<span class="lineNum">     184 </span>            : 
+<span class="lineNum">     185 </span>            :     // count every k-mer in the string.
+<span class="lineNum">     186 </span>            :     unsigned int consume_string(const std::string &amp;s);
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span>            :     // checks each read for non-ACGT characters
+<span class="lineNum">     189 </span>            :     bool check_and_normalize_read(std::string &amp;read) const;
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span>            :     // check each read for non-ACGT characters, and then consume it.
+<span class="lineNum">     192 </span>            :     unsigned int check_and_process_read(std::string &amp;read,
+<span class="lineNum">     193 </span>            :                                         bool &amp;is_valid);
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span>            :     // Count every k-mer in a FASTA or FASTQ file.
+<span class="lineNum">     196 </span>            :     // Note: Yes, the name 'consume_fasta' is a bit misleading,
+<span class="lineNum">     197 </span>            :     //       but the FASTA format is effectively a subset of the FASTQ format
+<span class="lineNum">     198 </span>            :     //       and the FASTA portion is what we care about in this case.
+<span class="lineNum">     199 </span>            :     void consume_fasta(
+<span class="lineNum">     200 </span>            :         std::string const   &amp;filename,
+<span class="lineNum">     201 </span>            :         unsigned int        &amp;total_reads,
+<span class="lineNum">     202 </span>            :         unsigned long long  &amp;n_consumed
+<span class="lineNum">     203 </span>            :     );
+<span class="lineNum">     204 </span>            :     // Count every k-mer from a stream of FASTA or FASTQ reads,
+<span class="lineNum">     205 </span>            :     // using the supplied parser.
+<span class="lineNum">     206 </span>            :     void consume_fasta(
+<span class="lineNum">     207 </span>            :         read_parsers:: IParser *            parser,
+<span class="lineNum">     208 </span>            :         unsigned int        &amp;total_reads,
+<span class="lineNum">     209 </span>            :         unsigned long long  &amp;n_consumed
+<span class="lineNum">     210 </span>            :     );
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span>            :     bool median_at_least(const std::string &amp;s,
+<span class="lineNum">     213 </span>            :                          unsigned int cutoff);
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span>            :     void get_median_count(const std::string &amp;s,
+<span class="lineNum">     216 </span>            :                           BoundedCounterType &amp;median,
+<span class="lineNum">     217 </span>            :                           float &amp;average,
+<span class="lineNum">     218 </span>            :                           float &amp;stddev);
+<span class="lineNum">     219 </span>            : 
+<span class="lineNum">     220 </span>            :     // number of unique k-mers
+<span class="lineNum">     221 </span>            :     virtual const HashIntoType n_unique_kmers() const = 0;
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span>            :     // count number of occupied bins
+<span class="lineNum">     224 </span>            :     virtual const HashIntoType n_occupied() const = 0;
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span>            :     // partitioning stuff
+<span class="lineNum">     227 </span>            :     void _validate_pmap()
+<span class="lineNum">     228 </span>            :     {
+<span class="lineNum">     229 </span>            :         if (partition) {
+<span class="lineNum">     230 </span>            :             partition-&gt;_validate_pmap();
+<span class="lineNum">     231 </span>            :         }
+<span class="lineNum">     232 </span>            :     }
+<span class="lineNum">     233 </span>            : 
+<span class="lineNum">     234 </span>            :     virtual void save_tagset(std::string);
+<span class="lineNum">     235 </span>            :     virtual void load_tagset(std::string, bool clear_tags=true);
+<a name="236"><span class="lineNum">     236 </span>            : </a>
+<span class="lineNum">     237 </span>            :     // for debugging/testing purposes only!
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :     void _set_tag_density(unsigned int d)</span>
+<span class="lineNum">     239 </span>            :     {
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         if (!(d % 2 == 0) || !all_tags.empty()) { // must be even and tags must exist</span>
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 :             throw khmer_exception();</span>
+<span class="lineNum">     242 </span>            :         }
+<span class="lineNum">     243 </span><span class="lineNoCov">          0 :         _tag_density = d;</span>
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span>            :     unsigned int _get_tag_density() const
+<span class="lineNum">     247 </span>            :     {
+<span class="lineNum">     248 </span>            :         return _tag_density;
+<span class="lineNum">     249 </span>            :     }
+<span class="lineNum">     250 </span>            : 
+<span class="lineNum">     251 </span>            :     void add_tag(HashIntoType tag)
+<span class="lineNum">     252 </span>            :     {
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :         all_tags.insert(tag);</span>
+<span class="lineNum">     254 </span>            :     }
+<span class="lineNum">     255 </span>            :     void add_stop_tag(HashIntoType tag)
+<span class="lineNum">     256 </span>            :     {
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         stop_tags.insert(tag);</span>
+<span class="lineNum">     258 </span>            :     }
+<span class="lineNum">     259 </span>            : 
+<span class="lineNum">     260 </span>            :     // Partitioning stuff.
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span>            :     size_t n_tags() const
+<span class="lineNum">     263 </span>            :     {
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         return all_tags.size();</span>
+<span class="lineNum">     265 </span>            :     }
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span>            :     void divide_tags_into_subsets(unsigned int subset_size, SeenSet&amp; divvy);
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span>            :     void add_kmer_to_tags(HashIntoType kmer)
+<span class="lineNum">     270 </span>            :     {
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :         all_tags.insert(kmer);</span>
+<span class="lineNum">     272 </span>            :     }
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span>            :     void clear_tags()
+<span class="lineNum">     275 </span>            :     {
+<span class="lineNum">     276 </span>            :         all_tags.clear();
+<span class="lineNum">     277 </span>            :     }
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span>            :     // Count every k-mer in a FASTA or FASTQ file.
+<span class="lineNum">     280 </span>            :     // Tag certain ones on the connectivity graph.
+<span class="lineNum">     281 </span>            :     void consume_fasta_and_tag(
+<span class="lineNum">     282 </span>            :         std::string const         &amp;filename,
+<span class="lineNum">     283 </span>            :         unsigned int      &amp;total_reads,
+<span class="lineNum">     284 </span>            :         unsigned long long  &amp;n_consumed
+<span class="lineNum">     285 </span>            :     );
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span>            :     // Count every k-mer from a stream of FASTA or FASTQ reads,
+<span class="lineNum">     288 </span>            :     // using the supplied parser.
+<span class="lineNum">     289 </span>            :     // Tag certain ones on the connectivity graph.
+<span class="lineNum">     290 </span>            :     void consume_fasta_and_tag(
+<span class="lineNum">     291 </span>            :         read_parsers:: IParser *            parser,
+<span class="lineNum">     292 </span>            :         unsigned int        &amp;total_reads,
+<span class="lineNum">     293 </span>            :         unsigned long long  &amp;n_consumed
+<span class="lineNum">     294 </span>            :     );
+<span class="lineNum">     295 </span>            : 
+<span class="lineNum">     296 </span>            :     void consume_sequence_and_tag(const std::string&amp; seq,
+<span class="lineNum">     297 </span>            :                                   unsigned long long&amp; n_consumed,
+<span class="lineNum">     298 </span>            :                                   SeenSet * new_tags = 0);
+<span class="lineNum">     299 </span>            : 
+<span class="lineNum">     300 </span>            : 
+<span class="lineNum">     301 </span>            :     void consume_fasta_and_tag_with_stoptags(const std::string &amp;filename,
+<span class="lineNum">     302 </span>            :             unsigned int &amp;total_reads,
+<span class="lineNum">     303 </span>            :             unsigned long long &amp;n_consumed);
+<span class="lineNum">     304 </span>            :     void consume_fasta_and_traverse(const std::string &amp;filename,
+<span class="lineNum">     305 </span>            :                                     unsigned int distance,
+<span class="lineNum">     306 </span>            :                                     unsigned int big_threshold,
+<span class="lineNum">     307 </span>            :                                     unsigned int transfer_threshold,
+<span class="lineNum">     308 </span>            :                                     CountingHash &amp;counting);
+<span class="lineNum">     309 </span>            : 
+<span class="lineNum">     310 </span>            :     void consume_partitioned_fasta(const std::string &amp;filename,
+<span class="lineNum">     311 </span>            :                                    unsigned int &amp;total_reads,
+<span class="lineNum">     312 </span>            :                                    unsigned long long &amp;n_consumed);
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span>            :     virtual BoundedCounterType test_and_set_bits(const char * kmer) = 0;
+<span class="lineNum">     315 </span>            :     virtual BoundedCounterType test_and_set_bits(HashIntoType khash) = 0;
+<span class="lineNum">     316 </span>            : 
+<span class="lineNum">     317 </span>            :     virtual std::vector&lt;HashIntoType&gt; get_tablesizes() const = 0;
+<span class="lineNum">     318 </span>            :     virtual const size_t n_tables() const = 0;
+<span class="lineNum">     319 </span>            : 
+<span class="lineNum">     320 </span>            :     void filter_if_present(const std::string &amp;infilename,
+<span class="lineNum">     321 </span>            :                            const std::string &amp;outputfilename);
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span>            :     size_t trim_on_stoptags(std::string sequence) const;
+<span class="lineNum">     324 </span>            : 
+<span class="lineNum">     325 </span>            :     void traverse_from_tags(unsigned int distance,
+<span class="lineNum">     326 </span>            :                             unsigned int threshold,
+<span class="lineNum">     327 </span>            :                             unsigned int num_high_todo,
+<span class="lineNum">     328 </span>            :                             CountingHash &amp;counting);
+<span class="lineNum">     329 </span>            : 
+<span class="lineNum">     330 </span>            :     unsigned int traverse_from_kmer(Kmer start,
+<span class="lineNum">     331 </span>            :                                     unsigned int radius,
+<span class="lineNum">     332 </span>            :                                     KmerSet &amp;keeper,
+<span class="lineNum">     333 </span>            :                                     unsigned int max_count = MAX_KEEPER_SIZE)
+<span class="lineNum">     334 </span>            :     const;
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span>            :     unsigned int count_and_transfer_to_stoptags(KmerSet &amp;keeper,
+<span class="lineNum">     337 </span>            :             unsigned int threshold,
+<span class="lineNum">     338 </span>            :             CountingHash &amp;counting);
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span>            :     virtual void print_tagset(std::string);
+<span class="lineNum">     341 </span>            :     virtual void print_stop_tags(std::string);
+<span class="lineNum">     342 </span>            :     virtual void save_stop_tags(std::string);
+<span class="lineNum">     343 </span>            :     void load_stop_tags(std::string filename, bool clear_tags=true);
+<span class="lineNum">     344 </span>            : 
+<span class="lineNum">     345 </span>            :     void identify_stop_tags_by_position(std::string sequence,
+<span class="lineNum">     346 </span>            :                                         std::vector&lt;unsigned int&gt; &amp;posns)
+<span class="lineNum">     347 </span>            :     const;
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span>            :     void extract_unique_paths(std::string seq,
+<span class="lineNum">     350 </span>            :                               unsigned int min_length,
+<span class="lineNum">     351 </span>            :                               float min_unique_f,
+<span class="lineNum">     352 </span>            :                               std::vector&lt;std::string&gt; &amp;results);
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span>            :     void calc_connected_graph_size(Kmer node,
+<span class="lineNum">     355 </span>            :                                    unsigned long long&amp; count,
+<span class="lineNum">     356 </span>            :                                    KmerSet&amp; keeper,
+<span class="lineNum">     357 </span>            :                                    const unsigned long long threshold=0,
+<span class="lineNum">     358 </span>            :                                    bool break_on_circum=false) const;
+<span class="lineNum">     359 </span>            : 
+<span class="lineNum">     360 </span>            :     typedef void (*kmer_cb)(const char * k, unsigned int n_reads, void *data);
+<span class="lineNum">     361 </span>            : 
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span>            :     unsigned int kmer_degree(HashIntoType kmer_f, HashIntoType kmer_r);
+<span class="lineNum">     364 </span>            :     unsigned int kmer_degree(const char * kmer_s);
+<span class="lineNum">     365 </span>            : 
+<span class="lineNum">     366 </span>            :     // return all k-mer substrings, on the forward strand.
+<span class="lineNum">     367 </span>            :     void get_kmers(const std::string &amp;s, std::vector&lt;std::string&gt; &amp;kmers)
+<span class="lineNum">     368 </span>            :     const;
+<span class="lineNum">     369 </span>            : 
+<span class="lineNum">     370 </span>            :     // return hash values for all k-mer substrings
+<span class="lineNum">     371 </span>            :     void get_kmer_hashes(const std::string &amp;s,
+<span class="lineNum">     372 </span>            :                          std::vector&lt;HashIntoType&gt; &amp;kmers) const;
+<span class="lineNum">     373 </span>            : 
+<span class="lineNum">     374 </span>            :     // return counts of all k-mers in this string.
+<span class="lineNum">     375 </span>            :     void get_kmer_counts(const std::string &amp;s,
+<span class="lineNum">     376 </span>            :                          std::vector&lt;BoundedCounterType&gt; &amp;counts) const;
+<span class="lineNum">     377 </span>            : };
+<span class="lineNum">     378 </span>            : }
+<span class="lineNum">     379 </span>            : 
+<span class="lineNum">     380 </span>            : 
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span>            : #define ACQUIRE_ALL_TAGS_SPIN_LOCK \
+<span class="lineNum">     383 </span>            :   while (!__sync_bool_compare_and_swap( &amp;_all_tags_spin_lock, 0, 1 ));
+<span class="lineNum">     384 </span>            : 
+<span class="lineNum">     385 </span>            : #define RELEASE_ALL_TAGS_SPIN_LOCK \
+<span class="lineNum">     386 </span>            :   __sync_bool_compare_and_swap( &amp;_all_tags_spin_lock, 1, 0 );
+<span class="lineNum">     387 </span>            : 
+<span class="lineNum">     388 </span>            : #endif // HASHTABLE_HH
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

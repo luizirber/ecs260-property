@@ -1,0 +1,586 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage-lcov.info - lib/hllcounter.cc</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">lib</a> - hllcounter.cc<span style="font-size: 80%;"> (source / <a href="hllcounter.cc.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage-lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">180</td>
+            <td class="headerCovTableEntry">202</td>
+            <td class="headerCovTableEntryMed">89.1 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-12-10 22:03:42</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntry">28</td>
+            <td class="headerCovTableEntryHi">92.9 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /*</a>
+<span class="lineNum">       2 </span>            : This file is part of khmer, https://github.com/dib-lab/khmer/, and is
+<span class="lineNum">       3 </span>            : Copyright (C) 2014-2015, Michigan State University.
+<span class="lineNum">       4 </span>            : Copyright (C) 2015, The Regents of the University of California.
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : Redistribution and use in source and binary forms, with or without
+<span class="lineNum">       7 </span>            : modification, are permitted provided that the following conditions are
+<span class="lineNum">       8 </span>            : met:
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     * Redistributions of source code must retain the above copyright
+<span class="lineNum">      11 </span>            :       notice, this list of conditions and the following disclaimer.
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     * Redistributions in binary form must reproduce the above
+<span class="lineNum">      14 </span>            :       copyright notice, this list of conditions and the following
+<span class="lineNum">      15 </span>            :       disclaimer in the documentation and/or other materials provided
+<span class="lineNum">      16 </span>            :       with the distribution.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :     * Neither the name of the Michigan State University nor the names
+<span class="lineNum">      19 </span>            :       of its contributors may be used to endorse or promote products
+<span class="lineNum">      20 </span>            :       derived from this software without specific prior written
+<span class="lineNum">      21 </span>            :       permission.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+<span class="lineNum">      24 </span>            : &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+<span class="lineNum">      25 </span>            : LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+<span class="lineNum">      26 </span>            : A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+<span class="lineNum">      27 </span>            : HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+<span class="lineNum">      28 </span>            : SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+<span class="lineNum">      29 </span>            : LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+<span class="lineNum">      30 </span>            : DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+<span class="lineNum">      31 </span>            : THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+<span class="lineNum">      32 </span>            : (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+<span class="lineNum">      33 </span>            : OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<span class="lineNum">      34 </span>            : LICENSE (END)
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : Contact: khmer-project@idyll.org
+<span class="lineNum">      37 </span>            : */
+<span class="lineNum">      38 </span>            : #include &lt;math.h&gt;
+<span class="lineNum">      39 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      40 </span>            : #include &lt;algorithm&gt;
+<span class="lineNum">      41 </span>            : #include &lt;map&gt;
+<span class="lineNum">      42 </span>            : #include &lt;numeric&gt;
+<span class="lineNum">      43 </span>            : #include &lt;utility&gt;
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : #include &quot;hllcounter.hh&quot;
+<span class="lineNum">      46 </span>            : #include &quot;khmer.hh&quot;
+<span class="lineNum">      47 </span>            : #include &quot;khmer_exception.hh&quot;
+<span class="lineNum">      48 </span>            : #include &quot;kmer_hash.hh&quot;
+<span class="lineNum">      49 </span>            : #include &quot;read_parsers.hh&quot;
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            : #ifdef _OPENMP
+<span class="lineNum">      52 </span>            : #include &lt;omp.h&gt;
+<span class="lineNum">      53 </span>            : #else
+<span class="lineNum">      54 </span>            : #define omp_get_thread_num() 0
+<span class="lineNum">      55 </span>            : #define omp_get_num_threads() 1
+<span class="lineNum">      56 </span>            : #endif
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            : #define arr_len(a) (a + sizeof a / sizeof a[0])
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            : using namespace khmer;
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span><span class="lineCov">          1 : std::map&lt;int, std::vector&lt;double&gt; &gt; rawEstimateData;</span>
+<span class="lineNum">      63 </span><span class="lineCov">          1 : std::map&lt;int, std::vector&lt;double&gt; &gt; biasData;</span>
+<a name="64"><span class="lineNum">      64 </span>            : </a>
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineCov">       1796 : double calc_alpha(const int p)</span>
+<span class="lineNum">      67 </span>            : {
+<span class="lineNum">      68 </span><span class="lineCov">       1796 :     if (p &lt; 4) {</span>
+<span class="lineNum">      69 </span>            :         // ceil(log2((1.04 / x) ^ 2)) = 4, solve for x
+<span class="lineNum">      70 </span>            :         throw InvalidValue(&quot;Please set error rate to a value &quot;
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :                            &quot;smaller than 0.367696&quot;);</span>
+<span class="lineNum">      72 </span><span class="lineCov">       1796 :     } else if (p &gt; 16) {</span>
+<span class="lineNum">      73 </span>            :         // ceil(log2((1.04 / x) ^ 2)) = 16, solve for x
+<span class="lineNum">      74 </span>            :         throw InvalidValue(&quot;Please set error rate to a value &quot;
+<span class="lineNum">      75 </span><span class="lineNoCov">          0 :                            &quot;greater than 0.0040624&quot;);</span>
+<span class="lineNum">      76 </span>            :     }
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :     /*
+<span class="lineNum">      79 </span>            :        For a description of following constants see
+<span class="lineNum">      80 </span>            :        HyperLogLog in Practice: Algorithmic Engineering of a State of The Art
+<span class="lineNum">      81 </span>            :           Cardinality Estimation Algorithm
+<span class="lineNum">      82 </span>            :        Stefan Heule, Marc Nunkesser and Alex Hall
+<span class="lineNum">      83 </span>            :        dx.doi.org/10.1145/2452376.2452456
+<span class="lineNum">      84 </span>            :     */
+<span class="lineNum">      85 </span><span class="lineCov">       1796 :     switch (p) {</span>
+<span class="lineNum">      86 </span>            :     case 4:
+<span class="lineNum">      87 </span>            :         return 0.673;
+<span class="lineNum">      88 </span>            :     case 5:
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 :         return 0.697;</span>
+<span class="lineNum">      90 </span>            :     case 6:
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :         return 0.709;</span>
+<span class="lineNum">      92 </span>            :     default:
+<span class="lineNum">      93 </span><span class="lineCov">       1796 :         return 0.7213 / (1.0 + 1.079 / (1 &lt;&lt; p));</span>
+<span class="lineNum">      94 </span>            :     }
+<span class="lineNum">      95 </span>            : }
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span><span class="lineCov">       1796 : void init_raw_estimate_data()</span>
+<span class="lineNum">      98 </span>            : {
+<span class="lineNum">      99 </span><span class="lineCov">       1796 :     if (rawEstimateData.empty()) {</span>
+<span class="lineNum">     100 </span><span class="lineCov">         16 :         for(int i=4; i &lt;= 18; i++) {</span>
+<span class="lineNum">     101 </span>            :             std::vector&lt;double&gt; v;
+<span class="lineNum">     102 </span><span class="lineCov">         15 :             switch(i) {</span>
+<span class="lineNum">     103 </span>            :             case 4:
+<span class="lineNum">     104 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_4, arr_len(RAW_ESTIMATE_DATA_4));</span>
+<span class="lineNum">     105 </span>            :                 break;
+<span class="lineNum">     106 </span>            :             case 5:
+<span class="lineNum">     107 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_5, arr_len(RAW_ESTIMATE_DATA_5));</span>
+<span class="lineNum">     108 </span>            :                 break;
+<span class="lineNum">     109 </span>            :             case 6:
+<span class="lineNum">     110 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_6, arr_len(RAW_ESTIMATE_DATA_6));</span>
+<span class="lineNum">     111 </span>            :                 break;
+<span class="lineNum">     112 </span>            :             case 7:
+<span class="lineNum">     113 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_7, arr_len(RAW_ESTIMATE_DATA_7));</span>
+<span class="lineNum">     114 </span>            :                 break;
+<span class="lineNum">     115 </span>            :             case 8:
+<span class="lineNum">     116 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_8, arr_len(RAW_ESTIMATE_DATA_8));</span>
+<span class="lineNum">     117 </span>            :                 break;
+<span class="lineNum">     118 </span>            :             case 9:
+<span class="lineNum">     119 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_9, arr_len(RAW_ESTIMATE_DATA_9));</span>
+<span class="lineNum">     120 </span>            :                 break;
+<span class="lineNum">     121 </span>            :             case 10:
+<span class="lineNum">     122 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_10, arr_len(RAW_ESTIMATE_DATA_10));</span>
+<span class="lineNum">     123 </span>            :                 break;
+<span class="lineNum">     124 </span>            :             case 11:
+<span class="lineNum">     125 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_11, arr_len(RAW_ESTIMATE_DATA_11));</span>
+<span class="lineNum">     126 </span>            :                 break;
+<span class="lineNum">     127 </span>            :             case 12:
+<span class="lineNum">     128 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_12, arr_len(RAW_ESTIMATE_DATA_12));</span>
+<span class="lineNum">     129 </span>            :                 break;
+<span class="lineNum">     130 </span>            :             case 13:
+<span class="lineNum">     131 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_13, arr_len(RAW_ESTIMATE_DATA_13));</span>
+<span class="lineNum">     132 </span>            :                 break;
+<span class="lineNum">     133 </span>            :             case 14:
+<span class="lineNum">     134 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_14, arr_len(RAW_ESTIMATE_DATA_14));</span>
+<span class="lineNum">     135 </span>            :                 break;
+<span class="lineNum">     136 </span>            :             case 15:
+<span class="lineNum">     137 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_15, arr_len(RAW_ESTIMATE_DATA_15));</span>
+<span class="lineNum">     138 </span>            :                 break;
+<span class="lineNum">     139 </span>            :             case 16:
+<span class="lineNum">     140 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_16, arr_len(RAW_ESTIMATE_DATA_16));</span>
+<span class="lineNum">     141 </span>            :                 break;
+<span class="lineNum">     142 </span>            :             case 17:
+<span class="lineNum">     143 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_17, arr_len(RAW_ESTIMATE_DATA_17));</span>
+<span class="lineNum">     144 </span>            :                 break;
+<span class="lineNum">     145 </span>            :             case 18:
+<span class="lineNum">     146 </span><span class="lineCov">          1 :                 v.assign(RAW_ESTIMATE_DATA_18, arr_len(RAW_ESTIMATE_DATA_18));</span>
+<span class="lineNum">     147 </span>            :                 break;
+<span class="lineNum">     148 </span>            :             }
+<span class="lineNum">     149 </span><span class="lineCov">         15 :             rawEstimateData[i] = v;</span>
+<span class="lineNum">     150 </span>            :         }
+<span class="lineNum">     151 </span>            :     }
+<span class="lineNum">     152 </span><span class="lineCov">       1796 : }</span>
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineCov">       1796 : void init_bias_data()</span>
+<span class="lineNum">     155 </span>            : {
+<span class="lineNum">     156 </span><span class="lineCov">       1796 :     if (biasData.empty()) {</span>
+<span class="lineNum">     157 </span><span class="lineCov">         16 :         for(int i=4; i &lt;= 18; i++) {</span>
+<span class="lineNum">     158 </span>            :             std::vector&lt;double&gt; v;
+<span class="lineNum">     159 </span><span class="lineCov">         15 :             switch(i) {</span>
+<span class="lineNum">     160 </span>            :             case 4:
+<span class="lineNum">     161 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_4, arr_len(RAW_BIAS_DATA_4));</span>
+<span class="lineNum">     162 </span>            :                 break;
+<span class="lineNum">     163 </span>            :             case 5:
+<span class="lineNum">     164 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_5, arr_len(RAW_BIAS_DATA_5));</span>
+<span class="lineNum">     165 </span>            :                 break;
+<span class="lineNum">     166 </span>            :             case 6:
+<span class="lineNum">     167 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_6, arr_len(RAW_BIAS_DATA_6));</span>
+<span class="lineNum">     168 </span>            :                 break;
+<span class="lineNum">     169 </span>            :             case 7:
+<span class="lineNum">     170 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_7, arr_len(RAW_BIAS_DATA_7));</span>
+<span class="lineNum">     171 </span>            :                 break;
+<span class="lineNum">     172 </span>            :             case 8:
+<span class="lineNum">     173 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_8, arr_len(RAW_BIAS_DATA_8));</span>
+<span class="lineNum">     174 </span>            :                 break;
+<span class="lineNum">     175 </span>            :             case 9:
+<span class="lineNum">     176 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_9, arr_len(RAW_BIAS_DATA_9));</span>
+<span class="lineNum">     177 </span>            :                 break;
+<span class="lineNum">     178 </span>            :             case 10:
+<span class="lineNum">     179 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_10, arr_len(RAW_BIAS_DATA_10));</span>
+<span class="lineNum">     180 </span>            :                 break;
+<span class="lineNum">     181 </span>            :             case 11:
+<span class="lineNum">     182 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_11, arr_len(RAW_BIAS_DATA_11));</span>
+<span class="lineNum">     183 </span>            :                 break;
+<span class="lineNum">     184 </span>            :             case 12:
+<span class="lineNum">     185 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_12, arr_len(RAW_BIAS_DATA_12));</span>
+<span class="lineNum">     186 </span>            :                 break;
+<span class="lineNum">     187 </span>            :             case 13:
+<span class="lineNum">     188 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_13, arr_len(RAW_BIAS_DATA_13));</span>
+<span class="lineNum">     189 </span>            :                 break;
+<span class="lineNum">     190 </span>            :             case 14:
+<span class="lineNum">     191 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_14, arr_len(RAW_BIAS_DATA_14));</span>
+<span class="lineNum">     192 </span>            :                 break;
+<span class="lineNum">     193 </span>            :             case 15:
+<span class="lineNum">     194 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_15, arr_len(RAW_BIAS_DATA_15));</span>
+<span class="lineNum">     195 </span>            :                 break;
+<span class="lineNum">     196 </span>            :             case 16:
+<span class="lineNum">     197 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_16, arr_len(RAW_BIAS_DATA_16));</span>
+<span class="lineNum">     198 </span>            :                 break;
+<span class="lineNum">     199 </span>            :             case 17:
+<span class="lineNum">     200 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_17, arr_len(RAW_BIAS_DATA_17));</span>
+<span class="lineNum">     201 </span>            :                 break;
+<span class="lineNum">     202 </span>            :             case 18:
+<span class="lineNum">     203 </span><span class="lineCov">          1 :                 v.assign(RAW_BIAS_DATA_18, arr_len(RAW_BIAS_DATA_18));</span>
+<span class="lineNum">     204 </span>            :                 break;
+<span class="lineNum">     205 </span>            :             }
+<span class="lineNum">     206 </span><span class="lineCov">         15 :             biasData[i] = v;</span>
+<span class="lineNum">     207 </span>            :         }
+<span class="lineNum">     208 </span>            :     }
+<a name="209"><span class="lineNum">     209 </span><span class="lineCov">       1796 : }</span></a>
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span><span class="lineCov">       1000 : double get_threshold(int p)</span>
+<span class="lineNum">     212 </span>            : {
+<span class="lineNum">     213 </span><span class="lineCov">       1000 :     return THRESHOLD_DATA[p - 4];</span>
+<span class="lineNum">     214 </span>            : }
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span><span class="lineCov">         38 : std::vector&lt;int&gt; get_nearest_neighbors(double E, std::vector&lt;double&gt; estimate)</span>
+<span class="lineNum">     217 </span>            : {
+<span class="lineNum">     218 </span><span class="lineCov">         38 :     std::vector&lt; std::pair&lt;double,int&gt; &gt; distance_map;</span>
+<span class="lineNum">     219 </span>            :     std::vector&lt;int&gt; nearest;
+<span class="lineNum">     220 </span>            : 
+<span class="lineNum">     221 </span><span class="lineCov">         38 :     int i = 0;</span>
+<span class="lineNum">     222 </span><span class="lineCov">       7714 :     for (std::vector&lt;double&gt;::iterator it = estimate.begin();</span>
+<span class="lineNum">     223 </span><span class="lineCov">       7676 :             it != estimate.end();</span>
+<span class="lineNum">     224 </span>            :             ++it) {
+<span class="lineNum">     225 </span><span class="lineCov">       7638 :         std::pair&lt;double, int&gt; p(pow(E - *it, 2.0), i);</span>
+<span class="lineNum">     226 </span><span class="lineCov">       7638 :         distance_map.push_back(p);</span>
+<span class="lineNum">     227 </span><span class="lineCov">       7638 :         i++;</span>
+<span class="lineNum">     228 </span>            :     }
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span><span class="lineCov">         38 :     sort(distance_map.begin(), distance_map.end());</span>
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span><span class="lineCov">        494 :     for(int k=0; k &lt; 6; k++) {</span>
+<span class="lineNum">     233 </span><span class="lineCov">        456 :         nearest.push_back(distance_map[k].second);</span>
+<span class="lineNum">     234 </span>            :     }
+<span class="lineNum">     235 </span>            : 
+<span class="lineNum">     236 </span><span class="lineCov">         38 :     return nearest;</span>
+<span class="lineNum">     237 </span>            : }
+<span class="lineNum">     238 </span>            : 
+<span class="lineNum">     239 </span><span class="lineCov">         38 : double estimate_bias(double E, int p)</span>
+<span class="lineNum">     240 </span>            : {
+<span class="lineNum">     241 </span><span class="lineCov">         38 :     std::vector&lt;double&gt; bias = biasData[p];</span>
+<span class="lineNum">     242 </span><span class="lineCov">         76 :     std::vector&lt;double&gt; raw_estimate = rawEstimateData[p];</span>
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span><span class="lineCov">        114 :     std::vector&lt;int&gt; nearest = get_nearest_neighbors(E, raw_estimate);</span>
+<span class="lineNum">     245 </span><span class="lineCov">         38 :     double estimate = 0.0;</span>
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span><span class="lineCov">        304 :     for (std::vector&lt;int&gt;::iterator it = nearest.begin();</span>
+<span class="lineNum">     248 </span><span class="lineCov">        266 :             it != nearest.end();</span>
+<span class="lineNum">     249 </span>            :             ++it) {
+<span class="lineNum">     250 </span><span class="lineCov">        456 :         estimate += bias[*it];</span>
+<span class="lineNum">     251 </span>            :     }
+<span class="lineNum">     252 </span><span class="lineCov">         76 :     return estimate / nearest.size();</span>
+<a name="253"><span class="lineNum">     253 </span>            : }</a>
+<span class="lineNum">     254 </span>            : 
+<span class="lineNum">     255 </span><span class="lineCov">     622592 : double ep_sum(double acc, int b)</span>
+<span class="lineNum">     256 </span>            : {
+<span class="lineNum">     257 </span><span class="lineCov">     622592 :     return acc += pow(2.0, float(-b));</span>
+<a name="258"><span class="lineNum">     258 </span>            : }</a>
+<span class="lineNum">     259 </span>            : 
+<span class="lineNum">     260 </span><span class="lineCov">    3374645 : int get_rho(HashIntoType w, int max_width)</span>
+<span class="lineNum">     261 </span>            : {
+<span class="lineNum">     262 </span><span class="lineCov">    3374645 :     return max_width - floor(log2(w));</span>
+<span class="lineNum">     263 </span>            : }
+<span class="lineNum">     264 </span>            : 
+<span class="lineNum">     265 </span><span class="lineCov">       1000 : HLLCounter::HLLCounter(double error_rate, WordLength ksize)</span>
+<span class="lineNum">     266 </span>            : {
+<span class="lineNum">     267 </span><span class="lineCov">       1000 :     if (error_rate &lt; 0) {</span>
+<span class="lineNum">     268 </span>            :         throw InvalidValue(&quot;Please set error rate to a value &quot;
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :                            &quot;greater than zero&quot;);</span>
+<span class="lineNum">     270 </span>            :     }
+<span class="lineNum">     271 </span><span class="lineCov">       1000 :     int p = ceil(log2(pow(1.04 / error_rate, 2)));</span>
+<span class="lineNum">     272 </span><span class="lineCov">       1000 :     this-&gt;init(p, ksize);</span>
+<span class="lineNum">     273 </span><span class="lineCov">       1000 : }</span>
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span><span class="lineCov">        796 : HLLCounter::HLLCounter(int p, WordLength ksize)</span>
+<span class="lineNum">     276 </span>            : {
+<span class="lineNum">     277 </span><span class="lineCov">        796 :     this-&gt;init(p, ksize);</span>
+<span class="lineNum">     278 </span><span class="lineCov">        796 : }</span>
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span><span class="lineCov">       1796 : void HLLCounter::init(int p, WordLength ksize)</span>
+<span class="lineNum">     281 </span>            : {
+<span class="lineNum">     282 </span><span class="lineCov">       1796 :     this-&gt;alpha = calc_alpha(p);</span>
+<span class="lineNum">     283 </span><span class="lineCov">       1796 :     this-&gt;p = p;</span>
+<span class="lineNum">     284 </span><span class="lineCov">       1796 :     this-&gt;_ksize = ksize;</span>
+<span class="lineNum">     285 </span><span class="lineCov">       1796 :     this-&gt;m = 1 &lt;&lt; p;</span>
+<span class="lineNum">     286 </span><span class="lineCov">       3592 :     std::vector&lt;int&gt; M(this-&gt;m, 0.0);</span>
+<span class="lineNum">     287 </span><span class="lineCov">       1796 :     this-&gt;M = M;</span>
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span><span class="lineCov">       1796 :     init_raw_estimate_data();</span>
+<span class="lineNum">     290 </span><span class="lineCov">       1796 :     init_bias_data();</span>
+<a name="291"><span class="lineNum">     291 </span><span class="lineCov">       1796 : }</span></a>
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span><span class="lineCov">        400 : double HLLCounter::get_erate()</span>
+<span class="lineNum">     294 </span>            : {
+<span class="lineNum">     295 </span><span class="lineCov">        400 :     return 1.04 / sqrt(this-&gt;m);</span>
+<span class="lineNum">     296 </span>            : }
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 : void HLLCounter::set_erate(double error_rate)</span>
+<span class="lineNum">     299 </span>            : {
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :     if (count(this-&gt;M.begin(), this-&gt;M.end(), 0) != this-&gt;m) {</span>
+<span class="lineNum">     301 </span>            :         throw ReadOnlyAttribute(&quot;You can only change error rate prior to &quot;
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :                                 &quot;first counting&quot;);</span>
+<span class="lineNum">     303 </span>            :     }
+<span class="lineNum">     304 </span>            : 
+<span class="lineNum">     305 </span><span class="lineNoCov">          0 :     if (error_rate &lt; 0) {</span>
+<span class="lineNum">     306 </span>            :         throw InvalidValue(&quot;Please set error rate to a value &quot;
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :                            &quot;greater than zero&quot;);</span>
+<span class="lineNum">     308 </span>            :     }
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :     int p = ceil(log2(pow(1.04 / error_rate, 2)));</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :     this-&gt;init(p, this-&gt;_ksize);</span>
+<span class="lineNum">     311 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     312 </span>            : 
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 : void HLLCounter::set_ksize(WordLength new_ksize)</span>
+<span class="lineNum">     314 </span>            : {
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :     if (count(this-&gt;M.begin(), this-&gt;M.end(), 0) != this-&gt;m) {</span>
+<span class="lineNum">     316 </span>            :         throw ReadOnlyAttribute(&quot;You can only change k-mer size prior to &quot;
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :                                 &quot;first counting&quot;);</span>
+<span class="lineNum">     318 </span>            :     }
+<span class="lineNum">     319 </span>            : 
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :     this-&gt;init(this-&gt;p, new_ksize);</span>
+<span class="lineNum">     321 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span><span class="lineCov">         38 : double HLLCounter::_Ep()</span>
+<span class="lineNum">     324 </span>            : {
+<span class="lineNum">     325 </span><span class="lineCov">        114 :     double sum = accumulate(this-&gt;M.begin(), this-&gt;M.end(), 0.0, ep_sum);</span>
+<span class="lineNum">     326 </span><span class="lineCov">         38 :     double E = this-&gt;alpha * pow(this-&gt;m, 2.0) / sum;</span>
+<span class="lineNum">     327 </span>            : 
+<span class="lineNum">     328 </span><span class="lineCov">         38 :     if (E &lt;= (5 * (double)this-&gt;m)) {</span>
+<span class="lineNum">     329 </span><span class="lineCov">         38 :         return E - estimate_bias(E, this-&gt;p);</span>
+<span class="lineNum">     330 </span>            :     }
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            :     return E;
+<span class="lineNum">     333 </span>            : }
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span><span class="lineCov">       1000 : HashIntoType HLLCounter::estimate_cardinality()</span>
+<span class="lineNum">     336 </span>            : {
+<span class="lineNum">     337 </span><span class="lineCov">       3000 :     long V = count(this-&gt;M.begin(), this-&gt;M.end(), 0);</span>
+<span class="lineNum">     338 </span>            : 
+<span class="lineNum">     339 </span><span class="lineCov">       1000 :     if (V &gt; 0) {</span>
+<span class="lineNum">     340 </span><span class="lineCov">       1000 :         double H = this-&gt;m * log((double)this-&gt;m / V);</span>
+<span class="lineNum">     341 </span><span class="lineCov">       1000 :         if (H &lt;= get_threshold(this-&gt;p)) {</span>
+<span class="lineNum">     342 </span><span class="lineCov">        962 :             return H;</span>
+<span class="lineNum">     343 </span>            :         }
+<span class="lineNum">     344 </span>            :     }
+<span class="lineNum">     345 </span><span class="lineCov">         38 :     return this-&gt;_Ep();</span>
+<span class="lineNum">     346 </span>            : }
+<span class="lineNum">     347 </span>            : 
+<span class="lineNum">     348 </span><span class="lineCov">    3367876 : void HLLCounter::add(const std::string &amp;value)</span>
+<span class="lineNum">     349 </span>            : {
+<span class="lineNum">     350 </span><span class="lineCov">    3367876 :     HashIntoType x = khmer::_hash_murmur(value);</span>
+<span class="lineNum">     351 </span><span class="lineCov">    3344693 :     HashIntoType j = x &amp; (this-&gt;m - 1);</span>
+<span class="lineNum">     352 </span><span class="lineCov">   13433732 :     this-&gt;M[j] = std::max(this-&gt;M[j], get_rho(x &gt;&gt; this-&gt;p, 64 - this-&gt;p));</span>
+<a name="353"><span class="lineNum">     353 </span><span class="lineCov">    3372173 : }</span></a>
+<span class="lineNum">     354 </span>            : 
+<span class="lineNum">     355 </span><span class="lineCov">      21838 : unsigned int HLLCounter::consume_string(const std::string &amp;inp)</span>
+<span class="lineNum">     356 </span>            : {
+<span class="lineNum">     357 </span><span class="lineCov">      21838 :     unsigned int n_consumed = 0;</span>
+<span class="lineNum">     358 </span><span class="lineCov">      43673 :     std::string kmer = &quot;&quot;;</span>
+<span class="lineNum">     359 </span><span class="lineCov">      43673 :     std::string s = inp;</span>
+<span class="lineNum">     360 </span>            : 
+<span class="lineNum">     361 </span><span class="lineCov">   10948795 :     for (unsigned int i = 0; i &lt; s.length(); i++)  {</span>
+<span class="lineNum">     362 </span><span class="lineCov">    7270085 :         s[i] &amp;= 0xdf; // toupper - knock out the &quot;lowercase bit&quot;</span>
+<span class="lineNum">     363 </span>            :     }
+<span class="lineNum">     364 </span>            : 
+<span class="lineNum">     365 </span><span class="lineCov">    3631333 :     for(std::string::const_iterator it = s.begin(); it != s.end(); ++it) {</span>
+<span class="lineNum">     366 </span><span class="lineCov">    3609495 :         kmer.push_back(*it);</span>
+<span class="lineNum">     367 </span><span class="lineCov">    3618917 :         if (kmer.size() &lt; _ksize) {</span>
+<span class="lineNum">     368 </span>            :             continue;
+<span class="lineNum">     369 </span>            :         }
+<span class="lineNum">     370 </span><span class="lineCov">    3352047 :         this-&gt;add(kmer);</span>
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span><span class="lineCov">    3364690 :         kmer.erase(0, 1);</span>
+<span class="lineNum">     373 </span><span class="lineCov">    3337282 :         n_consumed++;</span>
+<span class="lineNum">     374 </span>            :     }
+<span class="lineNum">     375 </span><span class="lineCov">      43674 :     return n_consumed;</span>
+<a name="376"><span class="lineNum">     376 </span>            : }</a>
+<span class="lineNum">     377 </span>            : 
+<span class="lineNum">     378 </span><span class="lineCov">        200 : void HLLCounter::consume_fasta(</span>
+<span class="lineNum">     379 </span>            :     std::string const &amp;filename,
+<span class="lineNum">     380 </span>            :     bool stream_records,
+<span class="lineNum">     381 </span>            :     unsigned int &amp;total_reads,
+<span class="lineNum">     382 </span>            :     unsigned long long &amp;n_consumed)
+<span class="lineNum">     383 </span>            : {
+<span class="lineNum">     384 </span><span class="lineCov">        200 :     read_parsers::IParser * parser = read_parsers::IParser::get_parser(filename);</span>
+<span class="lineNum">     385 </span>            : 
+<span class="lineNum">     386 </span><span class="lineCov">        199 :     consume_fasta(parser, stream_records, total_reads, n_consumed);</span>
+<span class="lineNum">     387 </span>            : 
+<span class="lineNum">     388 </span><span class="lineCov">        199 :     delete parser;</span>
+<a name="389"><span class="lineNum">     389 </span><span class="lineCov">        199 : }</span></a>
+<span class="lineNum">     390 </span>            : 
+<span class="lineNum">     391 </span><span class="lineCov">        199 : void HLLCounter::consume_fasta(</span>
+<span class="lineNum">     392 </span>            :     read_parsers::IParser *parser,
+<span class="lineNum">     393 </span>            :     bool stream_records,
+<span class="lineNum">     394 </span>            :     unsigned int &amp;      total_reads,
+<span class="lineNum">     395 </span>            :     unsigned long long &amp;    n_consumed)
+<span class="lineNum">     396 </span>            : {
+<span class="lineNum">     397 </span>            : 
+<span class="lineNum">     398 </span><span class="lineCov">        199 :     read_parsers::Read read;</span>
+<span class="lineNum">     399 </span>            :     HLLCounter** counters;
+<span class="lineNum">     400 </span>            :     unsigned int *n_consumed_partial;
+<span class="lineNum">     401 </span>            :     unsigned int *total_reads_partial;
+<span class="lineNum">     402 </span>            : 
+<a name="403"><span class="lineNum">     403 </span><span class="lineCov">        199 :     n_consumed = 0;</span></a>
+<span class="lineNum">     404 </span>            : 
+<span class="lineNum">     405 </span><span class="lineCov">        991 :     #pragma omp parallel</span>
+<span class="lineNum">     406 </span>            :     {
+<span class="lineNum">     407 </span><span class="lineCov">        792 :         #pragma omp master</span>
+<span class="lineNum">     408 </span>            :         {
+<span class="lineNum">     409 </span><span class="lineCov">        199 :             counters = (HLLCounter**)calloc(omp_get_num_threads(),</span>
+<span class="lineNum">     410 </span><span class="lineCov">        199 :             sizeof(HLLCounter*));</span>
+<span class="lineNum">     411 </span>            :             n_consumed_partial = (unsigned int*)calloc(omp_get_num_threads(),
+<span class="lineNum">     412 </span><span class="lineCov">        199 :             sizeof(unsigned int));</span>
+<span class="lineNum">     413 </span>            :             total_reads_partial = (unsigned int*)calloc(omp_get_num_threads(),
+<span class="lineNum">     414 </span><span class="lineCov">        199 :             sizeof(unsigned int));</span>
+<span class="lineNum">     415 </span>            : 
+<span class="lineNum">     416 </span><span class="lineCov">        995 :             for (int i=0; i &lt; omp_get_num_threads(); i++)</span>
+<span class="lineNum">     417 </span>            :             {
+<span class="lineNum">     418 </span><span class="lineCov">        796 :                 HLLCounter *newc = new HLLCounter(this-&gt;p, this-&gt;_ksize);</span>
+<span class="lineNum">     419 </span><span class="lineCov">        796 :                 counters[i] = newc;</span>
+<span class="lineNum">     420 </span>            :             }
+<span class="lineNum">     421 </span>            : 
+<span class="lineNum">     422 </span><span class="lineCov">      11001 :             while (!parser-&gt;is_complete())</span>
+<span class="lineNum">     423 </span>            :             {
+<span class="lineNum">     424 </span>            :                 // Iterate through the reads and consume their k-mers.
+<span class="lineNum">     425 </span>            :                 try {
+<span class="lineNum">     426 </span><span class="lineCov">      10802 :                     read = parser-&gt;get_next_read();</span>
+<span class="lineNum">     427 </span><span class="lineNoCov">          0 :                 } catch (read_parsers::NoMoreReadsAvailable) {</span>
+<span class="lineNum">     428 </span>            :                     break;
+<span class="lineNum">     429 </span>            :                 }
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span><span class="lineCov">       5401 :                 if (stream_records) {</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :                     read.write_to(std::cout);</span>
+<a name="433"><span class="lineNum">     433 </span>            :                 }</a>
+<span class="lineNum">     434 </span>            : 
+<span class="lineNum">     435 </span><span class="lineCov">      21603 :                 #pragma omp task default(none) firstprivate(read) \</span>
+<span class="lineNum">     436 </span>            :                 shared(counters, n_consumed_partial, total_reads_partial)
+<span class="lineNum">     437 </span>            :                 {
+<span class="lineNum">     438 </span>            :                     bool is_valid;
+<span class="lineNum">     439 </span><span class="lineCov">       5401 :                     int n, t = omp_get_thread_num();</span>
+<span class="lineNum">     440 </span><span class="lineCov">       5401 :                     n = counters[t]-&gt;check_and_process_read(read.sequence,</span>
+<span class="lineNum">     441 </span><span class="lineCov">       5400 :                                                             is_valid);</span>
+<span class="lineNum">     442 </span><span class="lineCov">       5400 :                     n_consumed_partial[t] += n;</span>
+<span class="lineNum">     443 </span><span class="lineCov">       5400 :                     if (is_valid) {</span>
+<span class="lineNum">     444 </span><span class="lineCov">       5399 :                         total_reads_partial[t] += 1;</span>
+<span class="lineNum">     445 </span>            :                     }
+<span class="lineNum">     446 </span>            :                 }
+<span class="lineNum">     447 </span>            : 
+<span class="lineNum">     448 </span>            :             } // while reads left for parser
+<span class="lineNum">     449 </span>            :         }
+<span class="lineNum">     450 </span><span class="lineCov">        792 :         #pragma omp taskwait</span>
+<span class="lineNum">     451 </span>            : 
+<span class="lineNum">     452 </span><span class="lineCov">        792 :         #pragma omp master</span>
+<span class="lineNum">     453 </span>            :         {
+<span class="lineNum">     454 </span><span class="lineCov">       1791 :             for (int i=0; i &lt; omp_get_num_threads(); ++i)</span>
+<span class="lineNum">     455 </span>            :             {
+<span class="lineNum">     456 </span><span class="lineCov">        796 :                 this-&gt;merge(*counters[i]);</span>
+<span class="lineNum">     457 </span><span class="lineCov">       1592 :                 delete counters[i];</span>
+<span class="lineNum">     458 </span><span class="lineCov">        796 :                 n_consumed += n_consumed_partial[i];</span>
+<span class="lineNum">     459 </span><span class="lineCov">        796 :                 total_reads += total_reads_partial[i];;</span>
+<span class="lineNum">     460 </span>            :             }
+<span class="lineNum">     461 </span><span class="lineCov">        199 :             free(counters);</span>
+<span class="lineNum">     462 </span><span class="lineCov">        199 :             free(n_consumed_partial);</span>
+<span class="lineNum">     463 </span><span class="lineCov">        199 :             free(total_reads_partial);</span>
+<span class="lineNum">     464 </span>            :         }
+<span class="lineNum">     465 </span>            :     }
+<a name="466"><span class="lineNum">     466 </span><span class="lineCov">        199 : }</span></a>
+<span class="lineNum">     467 </span>            : 
+<span class="lineNum">     468 </span><span class="lineCov">       5401 : unsigned int HLLCounter::check_and_process_read(std::string &amp;read,</span>
+<span class="lineNum">     469 </span>            :         bool &amp;is_valid)
+<span class="lineNum">     470 </span>            : {
+<span class="lineNum">     471 </span><span class="lineCov">       5401 :     is_valid = check_and_normalize_read(read);</span>
+<span class="lineNum">     472 </span>            : 
+<span class="lineNum">     473 </span><span class="lineCov">       5394 :     if (!is_valid) {</span>
+<span class="lineNum">     474 </span>            :         return 0;
+<span class="lineNum">     475 </span>            :     }
+<span class="lineNum">     476 </span>            : 
+<span class="lineNum">     477 </span><span class="lineCov">       5394 :     return consume_string(read);</span>
+<a name="478"><span class="lineNum">     478 </span>            : }</a>
+<span class="lineNum">     479 </span>            : 
+<span class="lineNum">     480 </span><span class="lineCov">       5401 : bool HLLCounter::check_and_normalize_read(std::string &amp;read) const</span>
+<span class="lineNum">     481 </span>            : {
+<span class="lineNum">     482 </span><span class="lineCov">       5401 :     bool is_valid = true;</span>
+<span class="lineNum">     483 </span>            : 
+<span class="lineNum">     484 </span><span class="lineCov">       5401 :     if (read.length() &lt; this-&gt;_ksize) {</span>
+<span class="lineNum">     485 </span>            :         return false;
+<span class="lineNum">     486 </span>            :     }
+<span class="lineNum">     487 </span>            : 
+<span class="lineNum">     488 </span><span class="lineCov">    5199713 :     for (unsigned int i = 0; i &lt; read.length(); i++) {</span>
+<span class="lineNum">     489 </span><span class="lineCov">    3457840 :         read[i] &amp;= 0xdf; // toupper - knock out the &quot;lowercase bit&quot;</span>
+<span class="lineNum">     490 </span><span class="lineCov">    3455756 :         if (read[i] == 'N') {</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :             read[i] = 'A';</span>
+<span class="lineNum">     492 </span>            :         }
+<span class="lineNum">     493 </span><span class="lineCov">    6182593 :         if (!is_valid_dna( read[i] )) {</span>
+<span class="lineNum">     494 </span>            :             is_valid = false;
+<span class="lineNum">     495 </span>            :             break;
+<span class="lineNum">     496 </span>            :         }
+<span class="lineNum">     497 </span>            :     }
+<span class="lineNum">     498 </span>            : 
+<span class="lineNum">     499 </span>            :     return is_valid;
+<span class="lineNum">     500 </span>            : }
+<span class="lineNum">     501 </span>            : 
+<span class="lineNum">     502 </span><span class="lineCov">       1196 : void HLLCounter::merge(HLLCounter &amp;other)</span>
+<span class="lineNum">     503 </span>            : {
+<span class="lineNum">     504 </span><span class="lineCov">       1196 :     if (this-&gt;p != other.p || this-&gt;_ksize != other._ksize) {</span>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :         throw khmer_exception(&quot;HLLCounters to be merged must be created with same parameters&quot;);</span>
+<span class="lineNum">     506 </span>            :     }
+<span class="lineNum">     507 </span><span class="lineCov">   58788184 :     for(unsigned int i=0; i &lt; this-&gt;M.size(); ++i) {</span>
+<a name="508"><span class="lineNum">     508 </span><span class="lineCov">   78381056 :         this-&gt;M[i] = std::max(other.M[i], this-&gt;M[i]);</span></a>
+<span class="lineNum">     509 </span>            :     }
+<span class="lineNum">     510 </span><span class="lineCov">       1199 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
