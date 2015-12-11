@@ -35,8 +35,6 @@
 \crefname{figure}{Figure}{Figures}
 \crefname{subfigure}{Figure}{Figures}
 
-
-
 \begin{document}%
 
 \title{Practical Property-based testing in scientific software}
@@ -51,6 +49,7 @@
 \maketitle
 
 \begin{abstract}
+
 \end{abstract}
 
 \section{Introduction}
@@ -92,7 +91,7 @@ any string used as input generates a hash value (an integer),
 which can be used to generate the original string again.
 The implementation using Hypothesis is the following:
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}[language=Python,basicstyle=\small\tt,caption={Motivating example: testing a reversible hash function},label={revhash}]
 @given(text("ACGT"))
 def test_forward_hash_no_rc(kmer):
     ksize = len(kmer)
@@ -229,6 +228,13 @@ This document can be used as a quickstart and introduction to these testing tech
 
 \section{Experimental Results}
 
+We wrote 16 property tests,
+with at least two tests covering each of the areas proposed for the incremental exploration.
+These tests were enough to generated a method coverage of $37.9\%$ in the C++ code (the \emph{lib} directory),
+as shown in table \ref{table:lcov}.
+The \emph{khmer} directory contains the glue code for calling C++ code from Python,
+and while important it wasn't part of our initial focus.
+
 \noindent
 \begin{minipage}{\columnwidth}
   \captionsetup{type=table}
@@ -247,25 +253,222 @@ This document can be used as a quickstart and introduction to these testing tech
   \caption{Line and function coverage information from LCOV.}\label{table:lcov}
 \end{minipage}
 
-\subsection{HyperLogLog}
+\subsection{Interesting bugs found}
 
-When running the hypothesis function to test HyperLogLog cardinality estimation,
-a total error rate of 1\% or less is expected as an output.
-However the actual result is 3\%,
-which exceeds the expected error rate tremendously.
-Our next step is to evaluate the test inputs and discover the cause of this failure.
+\subsubsection{The HyperLogLog cardinality estimation is out of the error bounds}
 
-\subsection{Countgraph.consume fasta}
+When running the test for HyperLogLog cardinality estimation,
+a total error rate of 1\% or less is expected.
+We set up the test to also consider when less than one hundred unique elements are tested,
+because over or underestimating by 1 or 2 is still acceptable (we want to estimate large cardinalities).
+However,
+even considering the hashing function is not perfectly uniform (and so smalls variations on the error rate are expected),
+Hypothesis found falsifying examples for both low cardinality cases (10 items in the set, 7 in the HyperLogLog) and large cardinalities (where it was closer to 3\%.
 
-As up to date we are using \emph{@given} decorator to set preconditons before generating test inputs to meet the input format requirements.
-However these inputs are insufficient to test the corner cases.
-Our next step is to determine how to implement fuzzing to generate random inputs in order to test for the corner cases.
-We created test cases that did not add format restraints when generating input list,
-and observed the behaviors between our functions and test oracles when the invalid inputs are fed.
+\begin{lstlisting}[language=Python,basicstyle=\small\tt,caption={HyperLogLog cardinality estimation test},label=hlltest]
+@given(st.lists(st_kmer,
+                min_size=10,
+                unique_by=lex_rc))
+def test_hll_cardinality(kmers):
+    oracle = set()
+    hll = khmer.HLLCounter(0.01, KSIZE)
 
-\subsection{Generalizing Current Unit Tests}
+    for kmer in kmers:
+        oracle.update([kmer])
+        hll.consume_string(kmer)
 
-% filter_if_present example
+    if len(oracle) < 100:
+        assert abs(len(oracle) - len(hll)) <= 2
+    else:
+        error = (abs(len(hll) - len(oracle))
+                 / len(oracle))
+        assert error <= 0.02
+\end{lstlisting}
+
+
+The falsifying example can now be used to understand why the estimation is not behaving as expected,
+but it will demand more analysis to figure this.
+
+\begin{lstlisting}[language=Bash,basicstyle=\tiny\tt,caption={HyperLogLog cardinality estimation test output, with falsifying example},label=hlltestoutput]
+======================================================================
+FAIL: Testing HyperLogLog cardinality estimation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  (...)
+  File "test_hypothesis.py", line 230, in test_hll_cardinality
+    assert abs(len(oracle) - len(hll)) <= 2, (len(oracle), len(hll))
+AssertionError: (10, 7)
+-------------------- >> begin captured stdout << ---------------------
+Falsifying example: test_hll_cardinality(kmers=['CTTCGTCCTTGTC',
+'CCTTGCTTTTTGT', 'GCCGCGCTGTGCT', 'GCGTTTTCGTTTC', 'AAAAAAAAAAAAA',
+'AAACAAAAAAAAA', 'AAAAAAAAACAAA', 'AAAAAAAAAAACA', 'ACAAAAAAAAAAA',
+'CTCTCTCCCTTCC'])
+--------------------- >> end captured stdout << ----------------------
+\end{lstlisting}
+
+\subsubsection{Introducing invalid data, finding inconsistent behavior}
+
+All tests are still using only valid data as input,
+except one: \emph{test\_countgraph\_consume\_fasta}.
+We used this test to start implementing invalid input generation,
+and it was an appropriate choice because \emph{Countgraph} (the library name for Count-Min sketches)
+implements both a \emph{consume\_fasta} method (for reading multiple records from a file) and \emph{consume},
+which consumes the sequence from only one record.
+We allow invalid records to be generated by accepting any Unicode character,
+either for names or sequences.
+Because generating long lists of records without errors would be very difficult if we chose each element between valid and invalid,
+we opted for generating either a list with only valid records (same behavior from initial implementation),
+or generating lists with invalid records (which might have valid records too, but rarely).
+All these options can be controlled by using search strategies defined by default on Hypothesis:
+\emph{one\_of} and \emph{lists}.
+\emph{st\_record} and \emph{st\_invalid\_records} are the strategies we defined using basic default strategies to generate both valid and invalid records.
+
+\begin{lstlisting}[language=Python,basicstyle=\tiny\tt,caption={Countgraph sequence consumption test},label={CountgraphTest}]
+@given(st.one_of(st.lists(st_record),
+                 st.lists(st_invalid_record)))
+def test_countgraph_consume_fasta(records):
+    cg_fasta = khmer.Countgraph(KSIZE, TABLE_SIZE, N_TABLES)
+    cg_string = khmer.Countgraph(KSIZE, TABLE_SIZE, N_TABLES)
+
+    fasta = fasta_build(records)
+    with NamedTemporaryFile() as temp:
+        temp.write(fasta.encode('utf-8'))
+        temp.flush()
+
+        try:
+            cg_fasta.consume_fasta(temp.name)
+        except OSError:
+            assert fasta == ''
+
+    for record in records:
+        cg_string.consume(record['sequence'])
+
+    assert cg_fasta.n_unique_kmers() == cg_string.n_unique_kmers()
+    assert cg_fasta.n_occupied() == cg_string.n_occupied()
+    assert cg_fasta.hashsizes() == cg_string.hashsizes()
+\end{lstlisting}
+
+Surprisingly,
+we didn't even have to finish implementing the property checks to find a bug:
+during prototyping we hit an error and we found inconsistencies in the behavior of both functions.
+\emph{consume\_fasta} accepted an invalid record without errors,
+but when \emph{consume} was executed on the same record a validation error was reported.
+
+\begin{lstlisting}[language=Bash,basicstyle=\tiny\tt,caption={Inconsistent behavior between consume\_fasta and consume},label={CountgraphConsumeOutput}]
+======================================================================
+ERROR: tests.test_hypothesis.test_countgraph_consume_fasta
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  (...)
+  File "tests/test_hypothesis.py", line 199, in test_countgraph_consume_fasta
+    cg_string.consume(record['sequence'])
+ValueError: string length must >= the hashtable k-mer size
+-------------------- >> begin captured stdout << ---------------------
+Falsifying example: test_countgraph_consume_fasta(records=[
+		{'name': '0', 'sequence': '0'}])
+--------------------- >> end captured stdout << ----------------------
+\end{lstlisting}
+
+The question is: Which behavior is correct? \emph{consume\_fasta} ignored invalid records,
+but this should probably be controlled with a parameter for the method,
+instead of silently ignoring records.
+\emph{consume} raised an exception,
+but depending on the analysis being done we might want to just ignore errors instead of crashing the program.
+
+\subsection{Generalizing existing unit tests}
+
+Because we already have many unit tests available for khmer,
+we wanted to figure out how to leverage this knowledge to make it easier to write Hypothesis test.
+As an example,
+we show here how we converted the unit test for the \emph{Nodegraph.filter\_if\_present} method into a Hypothesis test.
+
+The \emph{filter\_if\_present} unit test takes two previously generated files,
+\emph{filter-test-A.fa} and \emph{filter-test-B.fa'},
+and reads the first one as a mask using \emph{consume\_fasta}.
+\emph{Nodegraph.filter\_if\_present} then takes the second file as input,
+and filter out any sequence containing \emph{k-mers} from the first file,
+writing the output to a third file.
+Finally,
+this final file is read as records and two specific values are checked:
+if only one record remained,
+and if the record name is '3'.
+
+\begin{lstlisting}[language=Python,basicstyle=\tiny\tt,caption={filter\_if\_present unit test},label={FilterUnit}]
+def test_filter_if_present():
+    nodegraph = khmer._Nodegraph(32, [3, 5])
+
+    maskfile = utils.get_test_data('filter-test-A.fa')
+    inputfile = utils.get_test_data('filter-test-B.fa')
+    outfile = utils.get_temp_filename('filter')
+
+    nodegraph.consume_fasta(maskfile)
+    nodegraph.filter_if_present(inputfile, outfile)
+
+    records = list(screed.open(outfile))
+    assert len(records) == 1
+    assert records[0]['name'] == '3'
+
+\end{lstlisting}
+
+While useful to check if it works in this case,
+the test can be generalized as follows:
+
+\begin{enumerate}
+\item generate two lists of records: \emph{mask} and \emph{records}
+\item write both lists to files: the \emph{mask\_fasta} file contains all records from the \emph{mask} list,
+while the \emph{input\_fasta} file contains all sequences (from both \emph{mask} and \emph{records}).
+\item instead of checking for specific values in the filtered records,
+write an assertion verifying if all sequences present in \emph{mask} are absent in the filtered records.
+\item finally, use the \emph{@example} decorator to list the records from the original files from the unit test,
+guaranteeing that we are still checking the initial case every time.
+\end{enumerate}
+
+While more verbose due to file manipulation,
+the following code implement all items from the list and can be executed for any generated input:
+
+\begin{lstlisting}[language=Python,basicstyle=\tiny\tt,caption={filter\_if\_present Hypothesis test},label={FilterHypothesis}]
+@given(st.lists(st_record), st.lists(st_record))
+@example([{"name": "a", "sequence": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}],
+         [{"name": "1", "sequence": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
+          {"name": "2", "sequence": "GAGATCAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
+          {"name": "3", "sequence": "AGAGATACACAAGATAGAGAGACCCAGGAGGGGG"}])
+def test_nodegraph_filter_if_present(mask, records):
+    ng = khmer.Nodegraph(KSIZE, TABLE_SIZE, N_TABLES)
+
+    mask_fasta = fasta_build(mask)
+    with NamedTemporaryFile() as maskfile:
+        maskfile.write(mask_fasta.encode('utf-8'))
+        maskfile.flush()
+
+        try:
+            ng.consume_fasta(maskfile.name)
+        except OSError:
+            assert mask_fasta == ''
+
+    input_fasta = fasta_build(records)
+    with NamedTemporaryFile() as outfile:
+        with NamedTemporaryFile() as inputfile:
+            inputfile.write(mask_fasta.encode('utf-8'))
+            inputfile.write(input_fasta.encode('utf-8'))
+            inputfile.flush()
+
+            try:
+                ng.filter_if_present(inputfile.name, outfile.name)
+            except OSError:
+                assert input_fasta == ''
+
+        with screed.open(outfile.name) as filtered:
+            filtered_records = [r for r in filtered]
+
+    assert all(m['sequence'] not in r['sequence']
+               for m in mask
+               for r in filtered_records)
+
+\end{lstlisting}
+
+%\subsection{Initial strategies for biological sequence data}
+
+%\subsection{Practical guidelines for property-based testing}
 
 \section{Related Work}
 
@@ -335,7 +538,7 @@ The result of this is shipping buggy software to users.
 The problem is:
 bugs found by users are more expensive than bugs found before a user sees them,
 since in the former case the result could be lost users, lost time and etc.
-Also, fixing a production bug needs more analysis since 
+Also, fixing a production bug needs more analysis since
 there can not be extended down time for production system.
 Hypothesis is a good example of reducing the effort of finding bugs.
 
@@ -348,6 +551,8 @@ It produces boolean output to the BEBOP model checker to compute the set of reac
 C2BP is part of the SLAM tool kit, which goal is to check a program’s temporal safety properties automatically.
 
 \section{Conclusion}
+
+
 
 \bibliography{property}
 
