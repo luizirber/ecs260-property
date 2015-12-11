@@ -50,8 +50,8 @@
 
 \maketitle
 
-%\begin{abstract}
-%\end{abstract}
+\begin{abstract}
+\end{abstract}
 
 \section{Introduction}
 Correct software is expensive to develop.
@@ -68,19 +68,22 @@ and every pull request is tested on a Continuous Integration server (Jenkins).
 It has high coverage (90\% line coverage) derived from manually written (~600) unit tests,
 but many tests were written just to trigger coverage,
 with no particular focus on correctness.
-According to\citet{claessen_quickcheck:_2011},
-the false sense of security could be the most serious deficiency when passing numerous tests to one’s program.
-In many cases of unification, one variable is heavily overrepresented among test cases that satisfy the precondition.
-Even every property is verified, they still cannot be considered as fully tested.
-Can we do better, without increasing development cost (too much)?
+
+According to \citet{claessen_quickcheck:_2011},
+passing numerous tests in trivial cases can create a false sense of security,
+and many of the unit tests currently in khmer fits the description.
+One technique available for better testing is property-based testing,
+where instead of testing for specific cases the test is generalized (in terms of properties),
+and a library generates inputs to try to falsify these properties.
+If every property is verified the software cannot be considered as correct and fully tested,
+but it does provide stronger evidence it is not wrong in complex cases.
 
 \section{Motivating Example}
 
 Hashing is an essential operation in khmer,
 since all the core data structures depend on good hash functions to perform correctly.
-Since the development process is public and coordinated through GitHub,
-an exploratory branch was created,
-with an accompanying issue and discussion:
+Benefiting from a public development process coordinated through GitHub,
+an exploratory branch was created with an accompanying issue and discussion:
 \url{https://github.com/dib-lab/khmer/issues/990}
 
 This original exploration used a property from the hash function,
@@ -108,12 +111,12 @@ This example contains some important aspects:
 meaning each $kmer$ is a string with alphabet "ACGT".
 \item the $assume$ function asserts that the generated $kmer$ is not an empty string,
 and also not longer than 32 characters.
+This is used by Hypothesis to guide the input generation.
 \item the conditions are tested using normal Python syntax (assert, variables, function calls)
 \end{enumerate}
 
 The input specification was added later,
-by the way.
-The code was not prepared to deal with empty strings,
+because the code was not prepared to deal with empty strings,
 strings longer than 32 characters or with a different alphabet.
 These are all bugs that need to be fixed,
 and they are good to show the approach.
@@ -129,61 +132,69 @@ because khmer already have a Jenkins CI server up and running,
 but it is not as easy to track coverage in it).
 Every change committed to the repository is tested,
 generating coverage data (in \emph{gcov} format) and uploaded to Coveralls for analysis.
+Since Coveralls doesn't support function coverage,
+we also set up LCOV and uploaded the generated report to another server.
 Links for the reports are available in the project repository README:
 \url{https://github.com/luizirber/ecs260-property/}
 
 \subsection{Incremental exploration}
 Our plan is to understand what are the best options to generate meaningful Hypothesis tests to find incorrect behavior in khmer.
-To achieve that we plan to do progressive coverage and exploration of the khmer codebase,
+We'll do progressive coverage and exploration of the khmer codebase,
 starting from simpler pieces and building up knowledge to be able to tackle complex regions.
-We are combining unit testing and fuzzing and if possible extend it to property based testing.
-Fuzzing \citet{qi2013research} is a technique introduced in 1990 and found failures in unix utilities by generating random inputs.
-In our tests in hypothesis we have restricted a alphabet ('A','C','G','T') on the start and then we'll also  
-generate random inputs to check that our methods do not crash.
+This allows us to start from valid input (to figure out what properties make sense to be tested),
+and then increase the complexity of the code by generating invalid inputs too.
+Most tests will deal with biological data in the form \emph{sequences},
+strings on a restricted alphabet "ACGT",
+or \emph{records} composed of a \emph{name} (initially restricted to printable ASCII characters), \emph{sequence} and optionally a \emph{quality score} for each character in the \emph{sequence}.
+We can increase the complexity (and the validity) of inputs by allowing extra characters in any of the fields of a record.
+In the extreme case,
+after the code is sufficiently resilient,
+we can also start generating unustructured random data,
+turning the whole approach into a fuzzing test.
+Fuzzing \citet{qi2013research} is a technique introduced in 1990 which found failures in UNIX utilities by generating random inputs,
+but it doesn't help with correctness verification,
+only to find crashing bugs.
 
 We split the plan into four areas:
 
 \subsubsection{Hashing}
-Hashing is the implementation of hash functions used to map strings to an integer space,
-and in some cases this operation is reversed.
-"Hash function maps data of arbitrary size to data of fixed size."\citet{hash}
-We use one property from reverse\_hash to return the smallest string between kmer and its reverse complement in lexicographical order.
+Hashing is the implementation of functions mapping strings to an integer space.
+Depending on the implementation this operation is reversible.
 
 \subsubsection{HyperLogLog}
-HyperLogLog is an algorithm that finds the relative number of unique elements in a data set.
-It is a probabilistic cardinality estimator that can accquire the cardinality while consuming less memory.
-The algorithm uses a hash function in the original multiset to produce uniformly-distributed random numbers that have the same cardinality.\cite{hyperloglog_2012}
-It estimates the cardinality of a multiset by calculating the maximum number of leading zeros in the binary representation of each number is the basis of HyperLogLog algorithm.\citet{hyperloglog_2007}
-We implement a $set$ as an oracle in the test for HyperLogLog cardinality estimation,
-and add test inputs to both the oracle and HyperLogLog function to check the size of the set.
-Then the results will be compared and evaluated. 
+HyperLogLog is an algorithm that finds the number of unique elements in a multiset.
+It is a probabilistic cardinality estimator,
+consuming less memory than exact solutions.
+The algorithm uses a hash function in the original multiset to produce uniformly-distributed random numbers that have the same cardinality \citet{hyperloglog_2007}.
+Usually a $set$ can be used as an oracle in tests involving HyperLogLog,
+since the cardinality estimation is an operation equivalent to the size of the set.
 
 \subsubsection{Bloom Filter}
 A Bloom Filter is a data structure designed to check the presence of an element in a set rapidly and memory-efficiently.
 A bit vector is the base structure of a bloom filter,
-where each empty cell represents a bit and the number below is its index.\citet{bloom_filter}
+where each empty cell represents a bit and the number below is its index. \citet{bloom_filter}
 In order to add an element to the table,
 we will hash it a few times and then set the bits in the bit vector at the index of those hashes to 1.
 False positive matches are possible,
 but false negatives are not.
-We implement a $set$ as an oracle in the test, and add test inputs to both the oracle and the Bloom Filter.
-The goal is to implement the set membership operation and make the assertion that every element present in 
-the set is also present in the Bloom Filter.
+A $set$ is the ideal oracle for a Bloom Filter.
 
 \subsubsection{Count-Min Sketch}
 Count-Min Sketch is a probabilistic data structure that projects events to frequencies with the implementation of hash functions.
-The output is a frequency table.\citet{count_min_sketch}
+The output is a frequency table \citet{count_min_sketch}.
 The goal is to consume a stream of events one at a time,
-and count the frequency of different types of events in it without storing the whole stream.\citet{count_min_sketch_2005}
-An object collection.Counter servers as an oracle in this case to implement frequency counting.
-The goal is to check whether every element in the counter is also available with equal or higher frequency on the Coun-Min sketch.
+and count the frequency of different types of events in it without storing the whole stream \citet{count_min_sketch_2005}.
+In the Python standard library there is a class,
+\emph{collection.Counter},
+that can be used as an oracle for frequency counting.
 
 \subsection{Unit tests adaptation}
-Many unit tests for khmer are based on a single input,
-and checking the results for the case.
+Many unit tests for khmer are based on fixed values,
+and checking the results for this specific value.
 Hypothesis has a decorator,
 \emph{@example},
-that can be used to run specific inputs and so to prototype new tests:
+that can be used to run specific inputs.
+We can use this to to prototype new tests:
 by copying the unit test and setting the example,
 we have a working test and then can generalize for some property.
 
@@ -198,16 +209,25 @@ starting from the core data structures and moving to specialized methods (the on
 We're not aiming at complete line or branch coverage,
 but it is likely that we can get good coverage with the Hypothesis tests,
 even if inconsistent between runs because new test cases will be generated.
-Coveralls is a web service to help track the coverage of our code.
-The code should be hosted in github or bitbucket to use this service.
+
+Coveralls is a web service to help track the coverage of our code,
+and since all the code is hosted on GitHub it is easy to integrate it to the workflow.
 We are then using Travis CI to get a report on the coverage level.
-Travis can be enabled by the click of a button from github repository.
-We are also using LCOV to report function coverage. 
-LCOV is a graphical front-end for GCC's coverage testing tool gcov. 
-It collects data from gcov for more than one source file and creates web pages containing the 
-source code with coverage details. 
-It also adds pages for easy navigation in the file structure. 
+Travis can be enabled by the click of a button from GitHub repository.
+We are also using LCOV to report function coverage,
+because Coveralls doesn't support it.
+LCOV is a graphical front-end for GCC's coverage testing tool gcov.
+It collects data from gcov for more than one source file and creates web pages containing the
+source code with coverage details.
+It also adds pages for easy navigation in the file structure.
 LCOV supports line coverage, function coverage and branch coverage measurement.
+
+Finally,
+we want to document and generate guidelines for testing similar software,
+as well as other biological data analysis projects or scientific in general.
+This document can be used as a quickstart and introduction to these testing techniques in specialized fields.
+
+\section{Experimental Results}
 
 \noindent
 \begin{minipage}{\columnwidth}
@@ -215,44 +235,37 @@ LCOV supports line coverage, function coverage and branch coverage measurement.
   \centering
   \begin{tabular}{|c|c|c|}
   \toprule
-  Directory & Line Coverage & Functions \\ 
+  Directory & Line Coverage & Functions \\
   \midrule
-  khmer		& 14.0\% (217/1554)	& 19.5\% (29/149) \\ 
-  lib		& 19.1\%(580/3042)	& 37.9\% (96/253) \\ 
+  khmer		& 14.0\% (217/1554)	& 19.5\% (29/149) \\
+  lib		& 19.1\%(580/3042)	& 37.9\% (96/253) \\
   Total		& 17.3\% (797/4596)	& 31.1\% (125/402) \\
   \bottomrule
   \end{tabular}
   \medskip
 
-  \caption{Line and function coverage information from LCOV.}\label{table:clove}
+  \caption{Line and function coverage information from LCOV.}\label{table:lcov}
 \end{minipage}
 
-Finally,
-we want to document and generate guidelines for testing similar software,
-as well as other biological data analysis projects or scientific in general.
-This document can be used as a quickstart and introduction to these testing techniques in specialized fields.
+\subsection{HyperLogLog}
 
-\subsection{Failure In hypothesis Function}
-When running the hypothesis function to test HyperLogLog cardinality estimation, 
-a total error rate of 1\% or less is expected as an output. 
-However the actual result is 3\%, 
-which exceeds the expected error rate tremendously. 
+When running the hypothesis function to test HyperLogLog cardinality estimation,
+a total error rate of 1\% or less is expected as an output.
+However the actual result is 3\%,
+which exceeds the expected error rate tremendously.
 Our next step is to evaluate the test inputs and discover the cause of this failure.
 
-\subsection{Generating Random Inputs Without Preconditions}
-As up to date we are using \emph{@given} decorator to set preconditons before generating test inputs to meet the input format requirements. 
-However these inputs are insufficient to test the corner cases. 
+\subsection{Countgraph.consume fasta}
+
+As up to date we are using \emph{@given} decorator to set preconditons before generating test inputs to meet the input format requirements.
+However these inputs are insufficient to test the corner cases.
 Our next step is to determine how to implement fuzzing to generate random inputs in order to test for the corner cases.
 We created test cases that did not add format restraints when generating input list,
 and observed the behaviors between our functions and test oracles when the invalid inputs are fed.
 
-\section{Experimental Results}
-
-\subsection{HyperLogLog}
-
-\subsection{Countgraph.consume fasta}
-
 \subsection{Generalizing Current Unit Tests}
+
+% filter_if_present example
 
 \section{Related Work}
 
@@ -333,6 +346,8 @@ a tool that combines predicate abstraction, model checking, symbolic reasoning, 
 C2PB is able to perform predicate abstraction of C programs automatically.
 It produces boolean output to the BEBOP model checker to compute the set of reachable states.
 C2BP is part of the SLAM tool kit, which goal is to check a program’s temporal safety properties automatically.
+
+\section{Conclusion}
 
 \bibliography{property}
 
