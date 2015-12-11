@@ -50,6 +50,14 @@
 
 \begin{abstract}
 
+Developing correct software is difficult and expensive.
+On top of this, research groups need to balance the scientific needs and software correctness due to lack of resources or incentives,
+among many other parameters.
+In this article we present our findings while exploring a property-based testing framework in the context of scientific applications,
+with special focus on biological sequencing data analysis.
+Property-based testing provides a good tradeoff between development effort and software correctness,
+and can be a viable alternative to unit testing and fuzzing in scientific contexts.
+
 \end{abstract}
 
 \section{Introduction}
@@ -543,7 +551,7 @@ there can not be extended down time for production system.
 Hypothesis is a good example of reducing the effort of finding bugs.
 
 \subsection{Automatic Predicate Abstraction of C Programs}
-Model checking has been proven very efficient in testing hardware and protocol domains.\citet{model_checking}
+Model checking has been proven very efficient in testing hardware and protocol domains. \citet{model_checking}
 The increase of interest in the implementation of model checking in software has led to the development of C2BP,
 a tool that combines predicate abstraction, model checking, symbolic reasoning, and iterative refinement to test a program.
 C2PB is able to perform predicate abstraction of C programs automatically.
@@ -552,6 +560,18 @@ C2BP is part of the SLAM tool kit, which goal is to check a program’s temporal
 
 \section{Conclusion}
 
+Property-based testing is an interesting alternative to unit testing,
+and the Hypothesis library approach,
+where property-based tests are written like unit testing and explore Python syntax to do input generation,
+is a good fit for research software,
+which usually lacks formal specification.
+We explored how to apply this idea to \emph{khmer},
+a library for biological sequence data analysis,
+and found bugs,
+inconsistent behavior and uncovered test cases with just a few tests.
+Finally,
+we created some input generation strategies that can be used by other projects in the same area,
+and hopefully our efforts can also be useful for other scientific areas.
 
 
 \bibliography{property}
