@@ -27,6 +27,7 @@ After installing Docker (we suggest the [Docker Toolbox][7] if you're running Wi
 you can run it by executing the following command:
 
 ``` bash
+$ docker pull luizirber/khmer:latest
 $ docker run -it luizirber/khmer:latest
 ```
 
@@ -34,12 +35,8 @@ If you access to a terminal with the software installed,
 you can also do
 
 ``` bash
+$ docker pull luizirber/khmer:latest
 $ docker run -it luizirber/khmer:latest /bin/bash
-```
-
-and run
-
-``` bash
 $ make test
 ```
 
@@ -50,6 +47,8 @@ https://hub.docker.com/r/luizirber/khmer/
 
 We collected artifacts on [final/artifacts](final/artifacts) for convenience,
 but they are also available online (mostly on [PR #1324][1]).
+It's is not so easy to visualize this on GitHub,
+so you might want to download the repository and open it locally.
 
 - [lcov-report/index.html][11]: LCOV report for function and line coverage.
 - [diff.htm][12]: Graphical diff containing our tests and additions to the original codebase.
